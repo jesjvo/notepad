@@ -1,0 +1,45 @@
+html, body, #root{
+-webkit-user-select: none;
+-webkit-app-region: drag;
+height: 100%; width: 100%;
+
+margin: 0;  padding: 0;
+border: none;
+overflow: hidden;
+
+transition: .25s;
+}
+
+::selection { /* Code for Firefox */
+    background: rgb(77, 175, 255, .5) !important;
+  }
+
+#Light{
+    filter: invert(0);
+    transition: .25s;
+}
+
+#Dark{
+    filter: invert(.75) contrast(1.1);
+    transition: .15s;
+}
+
+button{
+    transition: .2s;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+}
+
+.App{
+    height: 100%; width: 100%;
+    background-color: rgb(255, 255, 255);
+
+    display: flex; flex-direction: row; gap: 0;
+}
+
+.Content{
+    height: 100%; width: calc(100vw);
+    background-color: rgba(0, 0, 0, 0);
+
+    display: flex; gap: 0;
+}
