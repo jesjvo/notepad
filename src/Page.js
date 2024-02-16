@@ -27,7 +27,7 @@ const ipcRenderer = window.require("electron").ipcRenderer;
 
 export default function Page() {
   const [WidthText, setWidthText] = useState('65px')
-  const handleWidthText=()=>{if(WidthText==='65px'){setWidthText('205px')}else{setWidthText('65px')}}
+  const handleWidthText=()=>{if(WidthText==='65px'){setWidthText('170px')}else{setWidthText('65px')}}
   
   const [WidthAlign, setWidthAlign] = useState('65px')
   const handleWidthAlign=()=>{if(WidthAlign==='65px'){setWidthAlign('170px') }else{setWidthAlign('65px')}}
@@ -93,21 +93,21 @@ export default function Page() {
         <div className='PageInterface'>
           <div className='PageHeader'>
             
-            <button className='selectContentBtn' style={{margin:'5px', width:'25px', height:'25px'}}
+            <button className='selectContentBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
             onClick={() => editor.chain().focus().undo().run()}
           ><IoIosUndo/></button>
-          <button className='selectContentBtn' style={{margin:'5px', width:'25px', height:'25px'}}
+          <button className='selectContentBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
             onClick={() => editor.chain().focus().redo().run()}
           ><IoIosRedo/></button>
           </div>
 
         {
-        editor && <BubbleMenu className="floating-menu" tippyOptions={{ duration: 1000 }} editor={editor}>
+        editor && <BubbleMenu className="floating-menu" tippyOptions={{ duration: 500 }} editor={editor}>
           <div className='editorMenu'>
             <button
                 style={{minWidth:'25px', fontWeight:'bold', borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px'}}
                 onClick={() => editor.chain().focus().toggleBold().run()}
-                className={editor.isActive('bold') ? 'is-active' : ''}>
+                className={editor.isActive('bold') ? 'is-active' : 'hello'}>
               B
             </button>
           
@@ -137,15 +137,10 @@ export default function Page() {
               <button     
                 style={{minWidth:'65px'}}
                 onClick={()=>{handleWidthText()}}>
-              Text {WidthText==='205px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
+              Text {WidthText==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
               </button>
-            {WidthText==='205px' ?
+            {WidthText==='170px' ?
             <>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().setParagraph().run()}>
-              <LuType style={IconStyle}/>
-            </button>
             <button 
                 style={{minWidth:'35px'}}
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
@@ -224,134 +219,12 @@ export default function Page() {
         </BubbleMenu>
         }
 
-
-        {
-        editor && <FloatingMenu className="floating-menu" tippyOptions={{ duration: 1000, }} editor={editor}>
-          <div className='editorMenu'>
-            <button
-                style={{minWidth:'25px', fontWeight:'bold', borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px'}}
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                className={editor.isActive('bold') ? 'is-active' : ''}>
-              B
-            </button>
-          
-            <button
-                style={{minWidth:'25px', fontStyle:'italic'}}
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={editor.isActive('italic') ? 'is-active' : ''}>
-              i
-            </button>
-
-            <button
-                style={{minWidth:'25px', textDecoration:'underline'}}
-                onClick={() => editor.chain().focus().toggleUnderline().run()}
-                className={editor.isActive('underline') ? 'is-active' : ''}>
-              U
-            </button>
-
-            <button
-                style={{minWidth:'25px', textDecoration:'line-through', borderRight:'solid 1px rgba(0,0,0,.06)'}}
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                className={editor.isActive('strike') ? 'is-active' : ''}>
-              S
-            </button>
-
-            <div style={{width:WidthText, display:'flex', alignItems:'center', transition:'.2s', borderRight:'solid 1px rgba(0,0,0,.06)'}}
-            onMouseLeave={()=>{setWidthText('65px')}}>
-              <button     
-                style={{minWidth:'65px'}}
-                onClick={()=>{handleWidthText()}}>
-              Text {WidthText==='205px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
-              </button>
-            {WidthText==='205px' ?
-            <>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().setParagraph().run()}>
-              <LuType style={IconStyle}/>
-            </button>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
-              <LuHeading1 style={IconStyle}/>
-            </button>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-              <LuHeading2 style={IconStyle}/>
-            </button>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-              <LuHeading3 style={IconStyle}/>
-            </button>
-            </>
-            :  null}
-            </div>
-            
-            <div style={{width:WidthList, borderRight:'solid 1px rgba(0,0,0,.06)', display:'flex', alignItems:'center', transition:'.2s'}}
-            onMouseLeave={()=>{setWidthList('65px')}}>
-              <button     
-                style={{minWidth:'65px'}}
-                onClick={()=>{handleWidthList()}}>
-              List {WidthList==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
-              </button>
-            {WidthList==='170px' ?
-              <>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().toggleBulletList().run()}>
-                <LuList style={IconStyle}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-                <LuListOrdered style={IconStyle}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                <LuFoldVertical style={IconStyle}/>
-              </button>
-              </>
-              :  null}
-            </div>
-            
-            <div style={{width:WidthAlign, display:'flex', alignItems:'center', transition:'.2s', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
-            onMouseLeave={()=>{setWidthAlign('65px')}}>
-              <button     
-                style={{minWidth:'65px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
-                onClick={()=>{handleWidthAlign()}}>
-              Align {WidthAlign==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
-              </button>
-            {WidthAlign==='170px' ?
-              <>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().setTextAlign('left').run()}>
-                <LuAlignLeft style={IconStyle}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().setTextAlign('center').run()}>
-                <LuAlignCenter style={IconStyle}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
-                  onClick={() => editor.chain().focus().setTextAlign('right').run()}>
-                <LuAlignRight style={IconStyle}/>
-              </button>
-              </>
-              :  null}
-              </div>
-            </div>
-          </FloatingMenu>
-        }
-
         {editor && hoveringNode.active ? 
-        <div style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-40, zIndex:100}}>
-          <button className='selectContentBtn' onClick={()=>{selectContent()}}>+</button>
-        </div>
+        <>
+          <button
+          style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-40, zIndex:100}}
+          className='selectContentBtn' onClick={()=>{selectContent()}}>+</button>
+        </>
         : null }
 
         <EditorContent editor={editor} />

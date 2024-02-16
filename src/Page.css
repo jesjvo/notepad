@@ -11,8 +11,9 @@
 }
 
 .PageHeader{
+  background-color: transparent;
     -webkit-app-region: drag;
-    width: 100%; min-height: 30px;
+    width: 100%; height: 30px; margin-bottom: 10px;
     display: flex; flex-direction: row;
     justify-content: end;
 }
@@ -21,10 +22,10 @@
 
 .tiptap{
     color: rgba(0, 0, 0, 0.9); background-color: transparent;
-    height: calc(100vh - 30px); width: calc(100vw - 200px);
+    height: calc(100vh - 40px); width: calc(100vw - 200px);
     padding: 0 100px 0 100px;
     overflow-y: scroll; outline: none; line-height: 1.1;
-    font-size: large; letter-spacing: .25px;
+    font-size: large; letter-spacing: .25px; font-family: 'Times New Roman';
     > * + * {
         margin-top: 0.75em;
       }
@@ -37,9 +38,12 @@
       h1,
       h2,
       h3 {
-
-        line-height: 1;
+        line-height: 1.1;
       }
+}
+
+.is-active{
+  color: rgb(0, 140, 255) !important;
 }
 
 .menuEditor button{
@@ -49,8 +53,13 @@
 .editorMenu{
     background-color: white;
     width: fit-content; height: 28px;
-    margin-left: 25px; border: solid 1px rgba(0, 0, 0, 0.06); border-radius: 4px;
-    box-shadow: 0 5px 10px 1px rgba(0, 0, 0, 0.2);
+    margin-left: 25px; border-radius: 4px;
+    box-shadow:
+      0 0px 2px hsl(0deg 0% 0% / 0.025),
+      0 2px 4px hsl(0deg 0% 0% / 0.035),
+      0 4px 8px hsl(0deg 0% 0% / 0.045),
+      0 8px 16px 2px hsl(0deg 0% 0% / 0.055)
+    ;
     display: flex; flex-direction: row;
 }
 
@@ -65,10 +74,15 @@
 }
 
 .selectContentBtn{
-  color: rgba(0, 0, 0, 0.5); background-color: transparent;
+  color: rgba(0, 0, 0, 0.35); background-color: transparent;
   height: 20px; width: 20px;
   border-radius: 4px;
-  box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.2);
+  box-shadow:
+  0 0px 2px hsl(0deg 0% 0% / 0.025),
+  0 2px 4px hsl(0deg 0% 0% / 0.035),
+  0 4px 8px hsl(0deg 0% 0% / 0.045),
+  0 8px 16px 2px hsl(0deg 0% 0% / 0.055)
+;
   border: none;
 }.selectContentBtn:hover{
   background-color: rgba(0, 0, 0, 0.05);
