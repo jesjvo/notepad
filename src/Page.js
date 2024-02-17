@@ -92,17 +92,20 @@ export default function Page() {
     <div className='Page'>
         <div className='PageInterface'>
           <div className='PageHeader'>
-            
-            <button className='selectContentBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
+          <button className='headerBtn' style={{margin:'2.5px', width:'auto', height:'25px', fontWeight:'bold'}}>
+          File</button>
+          <button className='headerBtn' style={{margin:'2.5px', width:'auto', height:'25px', fontWeight:'bold'}}>
+          Save</button>
+            <button className='headerBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
             onClick={() => editor.chain().focus().undo().run()}
           ><IoIosUndo/></button>
-          <button className='selectContentBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
+          <button className='headerBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
             onClick={() => editor.chain().focus().redo().run()}
           ><IoIosRedo/></button>
           </div>
 
         {
-        editor && <BubbleMenu className="floating-menu" tippyOptions={{ duration: 500 }} editor={editor}>
+        editor && <BubbleMenu className="floating-menu" tippyOptions={{ duration: 500, delay: 1000 }} editor={editor}>
           <div className='editorMenu'>
             <button
                 style={{minWidth:'25px', fontWeight:'bold', borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px'}}
@@ -133,7 +136,7 @@ export default function Page() {
             </button>
 
             <div style={{width:WidthText, display:'flex', alignItems:'center', transition:'.2s', borderRight:'solid 1px rgba(0,0,0,.06)'}}
-            onMouseLeave={()=>{setWidthText('65px')}}>
+            >
               <button     
                 style={{minWidth:'65px'}}
                 onClick={()=>{handleWidthText()}}>
@@ -161,7 +164,7 @@ export default function Page() {
             </div>
             
             <div style={{width:WidthList, borderRight:'solid 1px rgba(0,0,0,.06)', display:'flex', alignItems:'center', transition:'.2s'}}
-            onMouseLeave={()=>{setWidthList('65px')}}>
+            >
               <button     
                 style={{minWidth:'65px'}}
                 onClick={()=>{handleWidthList()}}>
@@ -189,7 +192,7 @@ export default function Page() {
             </div>
             
             <div style={{width:WidthAlign, display:'flex', alignItems:'center', transition:'.2s', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
-            onMouseLeave={()=>{setWidthAlign('65px')}}>
+            >
               <button     
                 style={{minWidth:'65px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
                 onClick={()=>{handleWidthAlign()}}>

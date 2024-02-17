@@ -30,7 +30,7 @@ class App extends React.Component {
   render(){
     return(
       <div className='App' id={this.state.mode}>
-        <div className='Content'>    
+        <div className='Content'>
           <Page></Page>
         </div>
       </div>
