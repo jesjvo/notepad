@@ -12,20 +12,40 @@
 }
 
 .PageHeader{
-  background-color: rgba(0, 0, 0, 0.025); border-bottom: solid 1px rgba(0, 0, 0, .025);
   -webkit-app-region: drag;
-  width: calc(100% - 60px); height: 30px; margin-bottom: 10px; padding-left: 60px;
+  width: calc(100%); height: 35px; margin-bottom: 5px;
+  display: flex; flex-direction: row;
+}
+
+.PageHeader-left{
+  width: 50%; height: 35px;
+
+  gap: 4px;
   display: flex; flex-direction: row; align-items: center;
+}
+
+.PageHeader-right{
+  width: 50%; height: 35px;
+
+  gap: 4px;
+  display: flex; flex-direction: row; align-items: center; justify-content: end;
+}
+
+.PageBottom{
+  width: 100%; height: 25px;
+  background-color: transparent;
+
+  display: flex; flex-direction: row; align-items: center; justify-content: start; gap: 5px;
 }
 
 /*Editor*/
 
 .tiptap{
     color: rgba(0, 0, 0, 0.9);
-    height: calc(100vh - 40px); width: calc(100vw - 40vw);
-    padding: 0 calc(100vw - 80vw) 0 calc(100vw - 80vw);
-    overflow-y: scroll; outline: none; line-height: 1.1;
-    font-size: large; letter-spacing: .25px; font-family: 'Times New Roman';
+    height: calc(100vh - 65px); width: calc(100% - 50%);
+    padding: 0 calc(100% - 75%) 0 calc(100% - 75%);
+    overflow-y: scroll; outline: none;
+    font-size: medium; font-family: 'Publico Text';
     > * + * {
         margin-top: 0.75em;
       }
@@ -38,8 +58,24 @@
       h1,
       h2,
       h3 {
+        font-family: 'Times New Roman';
         line-height: 1.1;
       }
+}
+
+.character-count{
+  z-index: 10;
+  height: 20px; width: fit-content;
+  color: rgba(0, 0, 0, 0.3);
+  font-family: Arial; font-size: 14px;
+}
+
+.tiptap p.is-empty::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
 .is-active{
@@ -55,17 +91,18 @@
     width: fit-content; height: 28px;
     margin-left: 25px; border-radius: 4px;
     box-shadow:
-      0 0px 2px hsl(0deg 0% 0% / 0.025),
-      0 2px 4px hsl(0deg 0% 0% / 0.035),
-      0 4px 8px hsl(0deg 0% 0% / 0.045),
-      0 8px 16px 2px hsl(0deg 0% 0% / 0.055)
+      0 0px 1px hsl(0deg 0% 0% / 0.06),
+      0 0px 2px hsl(0deg 0% 0% / 0.035),
+      0 2px 4px hsl(0deg 0% 0% / 0.045),
+      0 4px 8px hsl(0deg 0% 0% / 0.055),
+      0 8px 16px 2px hsl(0deg 0% 0% / 0.065)
     ;
     display: flex; flex-direction: row;
 }
 
 .editorMenu button{
     background-color: transparent;
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(0, 0, 0, 0.9);
     height: 28px;
     border: none;
 
@@ -74,7 +111,7 @@
 }
 
 .selectContentBtn{
-  color: rgba(0, 0, 0, 0.35); background-color: transparent;
+  color: rgba(0, 0, 0, 0.3); background-color: transparent;
   height: 20px; width: 20px;
   border-radius: 4px;
   box-shadow:
@@ -89,11 +126,13 @@
 }
 
 .headerBtn{
-  color: rgba(0, 0, 0, 0.35); background-color: transparent;
-  height: 20px; width: 20px;
+  height: 27px;
+  color: rgba(0, 0, 0, 0.9); background-color: transparent;
   border-radius: 4px;
+  font-size: 14px;
   border: none;
 }.headerBtn:hover{
   background-color: rgba(0, 0, 0, 0.05);
 }
+
 

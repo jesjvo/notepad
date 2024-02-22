@@ -9,8 +9,8 @@ class App extends React.Component {
   constructor(){
     super();
     this.state = {
+      pageView : false, contentWidth : '100vw',
       mode : "Light",
-      openPage : false,
       activeContainer : true
     }
   }
@@ -27,11 +27,15 @@ class App extends React.Component {
   else{this.setState({activeContainer:true})}
   }
 
+  handlePage(){
+    return true
+  }
+
   render(){
     return(
       <div className='App' id={this.state.mode}>
         <div className='Content'>
-          <Page></Page>
+          <Page openPage={()=>{this.handlePage()}}></Page>
         </div>
       </div>
     )

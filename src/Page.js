@@ -4,13 +4,14 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import CharacterCount from '@tiptap/extension-character-count';
+import Placeholder from '@tiptap/extension-placeholder'
 
 //pages
 import './Page.css'
 import './App.css';
 
 //icons
-import { FaCaretLeft } from "react-icons/fa";
+import { FaCaretLeft, FaFolderOpen, FaSave } from "react-icons/fa";
 import { FaCaretRight } from "react-icons/fa6";
 import { IoIosRedo } from "react-icons/io";
 import { IoIosUndo } from "react-icons/io";
@@ -25,7 +26,8 @@ const IconStyle={borderRadius:'4px', padding:'4px', width:'18px', height:'18px'}
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
-export default function Page() {
+export default function Page({openPage}) {
+
   const [WidthText, setWidthText] = useState('65px')
   const handleWidthText=()=>{if(WidthText==='65px'){setWidthText('170px')}else{setWidthText('65px')}}
   
@@ -36,6 +38,7 @@ export default function Page() {
   const handleWidthList=()=>{if(WidthList==='65px'){setWidthList('170px') }else{setWidthList('65px')}}
 
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null})
+  const [characterHover, setCharacterHover] = useState(true)
 
   const editor = useEditor({
     onUpdate({ editor }){
@@ -51,7 +54,16 @@ export default function Page() {
         types: ['heading', 'paragraph'],
       }),
       CharacterCount,
+      Placeholder.configure({
+        placeholder: ({ node }) => {
+          if (node.type.name === 'heading' || 'paragraph') {
+            return 'Type something here...'
+          }
+        },
+      }),
       ],
+      content:`
+      `
     }
   )
 
@@ -68,8 +80,7 @@ export default function Page() {
             left:rect.left,
             top:rect.top
           });
-          ipcRenderer.send('message', rect.top)
-      }
+        }
       }
     }
     } catch (error) {
@@ -85,28 +96,44 @@ export default function Page() {
     const { selection } = editor.state;
     const { $from, $to } = selection;
     editor.commands.setTextSelection({ from: $from.start(), to: $to.end()})
-    editor.commands.setBold()
+    
+  }
+
+  if (!editor) {
+    return null
   }
 
   return (
     <div className='Page'>
         <div className='PageInterface'>
           <div className='PageHeader'>
-          <button className='headerBtn' style={{margin:'2.5px', width:'auto', height:'25px', fontWeight:'bold'}}>
-          File</button>
-          <button className='headerBtn' style={{margin:'2.5px', width:'auto', height:'25px', fontWeight:'bold'}}>
-          Save</button>
-            <button className='headerBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
-            onClick={() => editor.chain().focus().undo().run()}
-          ><IoIosUndo/></button>
-          <button className='headerBtn' style={{margin:'2.5px', width:'25px', height:'25px'}}
-            onClick={() => editor.chain().focus().redo().run()}
-          ><IoIosRedo/></button>
+            <div className='PageHeader-left'>
+              <div></div>
+              <button className='headerBtn' style={{width:'auto'}}
+              onClick={openPage}>
+                <FaFolderOpen/>
+              </button>
+              <button className='headerBtn' style={{width:'auto'}}>
+                Save
+              </button>
+            </div>
+            <div className='PageHeader-right'>
+              <button className='headerBtn' style={{width:'27px'}}
+                onClick={() => editor.chain().focus().undo().run()}>
+                <IoIosUndo/>
+              </button>
+              <button className='headerBtn' style={{width:'27px'}}
+                onClick={() => editor.chain().focus().redo().run()}>
+                <IoIosRedo/>
+              </button>
+              <div></div>
+            </div>
           </div>
 
         {
         editor && <BubbleMenu className="floating-menu" tippyOptions={{ duration: 500, delay: 1000 }} editor={editor}>
-          <div className='editorMenu'>
+          {hoveringNode.active ?
+            <div className='editorMenu'>
             <button
                 style={{minWidth:'25px', fontWeight:'bold', borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px'}}
                 onClick={() => editor.chain().focus().toggleBold().run()}
@@ -138,7 +165,7 @@ export default function Page() {
             <div style={{width:WidthText, display:'flex', alignItems:'center', transition:'.2s', borderRight:'solid 1px rgba(0,0,0,.06)'}}
             >
               <button     
-                style={{minWidth:'65px'}}
+                style={{minWidth:'65px', letterSpacing:'.25px'}}
                 onClick={()=>{handleWidthText()}}>
               Text {WidthText==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
               </button>
@@ -166,7 +193,7 @@ export default function Page() {
             <div style={{width:WidthList, borderRight:'solid 1px rgba(0,0,0,.06)', display:'flex', alignItems:'center', transition:'.2s'}}
             >
               <button     
-                style={{minWidth:'65px'}}
+                style={{minWidth:'65px', letterSpacing:'.25px'}}
                 onClick={()=>{handleWidthList()}}>
               List {WidthList==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
               </button>
@@ -194,7 +221,7 @@ export default function Page() {
             <div style={{width:WidthAlign, display:'flex', alignItems:'center', transition:'.2s', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
             >
               <button     
-                style={{minWidth:'65px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
+                style={{minWidth:'65px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px', letterSpacing:'.25px'}}
                 onClick={()=>{handleWidthAlign()}}>
               Align {WidthAlign==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
               </button>
@@ -218,19 +245,32 @@ export default function Page() {
               </>
               :  null}
             </div>
-          </div>
+          </div> : null}
         </BubbleMenu>
         }
 
-        {editor && hoveringNode.active ? 
+        {editor && hoveringNode.active ?  
         <>
           <button
           style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-40, zIndex:100}}
           className='selectContentBtn' onClick={()=>{selectContent()}}>+</button>
         </>
         : null }
-
+      
         <EditorContent editor={editor} />
+        <div className='PageBottom'>
+          <div></div>
+          <div className="character-count" onMouseEnter={()=>setCharacterHover(false)} onMouseLeave={()=>setCharacterHover(true)}>
+              {characterHover ?
+              <div>
+              {editor.storage.characterCount.words()} words
+              </div> :
+              <div>
+              {editor.storage.characterCount.characters()} characters
+              </div>
+            }
+          </div>
+        </div>
         </div>
     </div>
     )

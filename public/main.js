@@ -7,7 +7,7 @@ const path = require('path');
 let mainWindow;
 app.on("ready", () => {
     mainWindow = new BrowserWindow({
-        titleBarStyle:'hidden',
+        frame:false,
         fullscreen:false,
         minWidth: 920, minHeight: 610,
         width:920,
