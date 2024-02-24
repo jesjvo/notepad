@@ -10,7 +10,7 @@ overflow: hidden;
 transition: .25s;
 }
 
-::selection { /* Code for Firefox */
+::selection {
     background: rgba(77, 175, 255, 0.35) !important;
   }
 
