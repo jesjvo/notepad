@@ -20,40 +20,65 @@ import {
       }
 from "react-icons/lu";
 
-import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrCatalogOption, GrMore, GrExpand, GrContract } from "react-icons/gr";
+import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrCatalogOption, GrMore } from "react-icons/gr";
 
 //styles
 const IconStyle={borderRadius:'4px', padding:'4px', width:'18px', height:'18px'}
 
-  const ButtonStyle={
-    height:'30px', textAlign:'start', marginLeft:'2.5px', marginRight:'2.5px', borderRadius:'4px',
-    display:'flex', flexDirection:'row', alignItems:'center'
-}
-
 const ipcRenderer = window.require("electron").ipcRenderer;
 
-export function PopUp({close, leftDom, topDom}){
-  const popupRef = useRef(null); //pop up ref
+export function SelectContentPopUp({close, leftDom, topDom}){
+  const popupRef = useRef(null);
   const [position, setPosition] = useState({ x: leftDom, y: topDom });
 
   useEffect(() => {
     const updatePosition = () => {
-      const { left, top, width, height } = popupRef.current.getBoundingClientRect();
+      const { top, height, left, width } = popupRef.current.getBoundingClientRect();
       const { innerWidth, innerHeight } = window;
       let newX = position.x;
       let newY = position.y;
 
-      ipcRenderer.send('message', `Left : ${left}, Top ${top}, Width : ${width}, Height : ${height}, InnerWidth : ${innerWidth}, InnerHeight : ${innerHeight}`)
+      if(left + width > innerWidth) {}
+      if(left < 0) {newX = 10}
 
-      // Check if popup overflows on the bottom
-      if (top + height > innerHeight) {
-        newY = innerHeight - (innerHeight - topDom) - height - 50;
-      }
+      if (top + height > innerHeight) {newY = innerHeight - (innerHeight - position.y) - height - 50}
+      if (top < 0) {newY = 10}
 
-      // Check if popup overflows on the top
-      if (top < 0) {
-        newY = 10;
-      }
+      setPosition({ x: newX, y: newY });
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+    };
+    }, [position]);
+
+  return(
+    <div className='backgroundPopUp'>
+      <div className='backgroundPopUpClose' onClick={close}></div>
+       <div className='popUp' ref={popupRef}
+       style={{left: position.x, top: position.y}}>
+          <button>Bold</button>
+       </div>
+    </div>
+  )
+}
+
+export function NewContentPopUp({close, leftDom, topDom}){
+  const popupRef = useRef(null);
+  const [position, setPosition] = useState({ x: leftDom, y: topDom });
+
+  useEffect(() => {
+    const updatePosition = () => {
+      const { top, height } = popupRef.current.getBoundingClientRect();
+      const { innerHeight } = window;
+      let newX = position.x;
+      let newY = position.y;
+
+      if (top + height > innerHeight) {newY = innerHeight - (innerHeight - position.y) - height - 50}
+      if (top < 0) {newY = 10}
 
       setPosition({ x: newX, y: newY });
     };
@@ -85,7 +110,7 @@ export function PopUp({close, leftDom, topDom}){
           </button>
           <button className='popUpBtn'>
             <LuHeading3 className='popUpIcon' strokeWidth={1}/>
-            <p className='popUpP'><strong>Header 3</strong><br></br>Larger text</p>
+            <p className='popUpP'><strong>Header 3</strong><br></br>Large text</p>
           </button>
           <button className='popUpBtn'>
             <LuListOrdered className='popUpIcon' strokeWidth={1}/>
@@ -104,6 +129,8 @@ export function PopUp({close, leftDom, topDom}){
   )
 }
 
+
+
 export default function Page({openPage}) {
 
   const [WidthText, setWidthText] = useState('65px')
@@ -118,7 +145,9 @@ export default function Page({openPage}) {
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null}) //hovering button on editor
   const [characterHover, setCharacterHover] = useState(true) //character/words div
 
-  const [showPopUp, setShowPopUp] = useState(false) //character/words div
+  const [newContentDisplay, setNewContentDisplay] = useState(false)
+  const [selectContentDisplay, setSelectContentDisplay] = useState(false)
+
 
   const editor = useEditor({
     onUpdate({ editor }){
@@ -142,8 +171,6 @@ export default function Page({openPage}) {
         },
       }),
       ],
-      content:`
-      `
     }
   )
 
@@ -176,6 +203,7 @@ export default function Page({openPage}) {
     const { selection } = editor.state;
     const { $from, $to } = selection;
     editor.commands.setTextSelection({ from: $from.start(), to: $to.end()})
+    setSelectContentDisplay(true)
   }
 
   const addNewContent=()=>{
@@ -184,7 +212,7 @@ export default function Page({openPage}) {
     editor.commands.focus($to.end())
     editor.chain().insertContentAt($to.end(), {type: "paragraph"}).focus($to.end()).run()
     updateSelection()
-    setShowPopUp(true)
+    setNewContentDisplay(true)
   }
 
   if (!editor) {
@@ -193,9 +221,8 @@ export default function Page({openPage}) {
 
   return (
     <div className='Page'>
-      {showPopUp ?
-      <PopUp close={()=>{setShowPopUp(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>
-      : null}
+      {newContentDisplay ? <NewContentPopUp close={()=>{setNewContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>: null}
+      {selectContentDisplay ? <SelectContentPopUp close={()=>{setSelectContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>: null}
         <div className='PageInterface'>
           <div className='PageHeader'>
             <div className='PageHeader-left'>
