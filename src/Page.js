@@ -15,7 +15,7 @@ import { FaCaretLeft } from "react-icons/fa";
 import { FaCaretRight } from "react-icons/fa6";
 import {LuHeading1, LuHeading2, LuHeading3, LuListOrdered, LuList, LuTextCursor,
         LuFoldVertical, LuAlignCenter, LuAlignRight, LuAlignLeft, LuCopy, LuDelete, LuListChecks} from "react-icons/lu";
-import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrCatalogOption, GrMore, GrBlockQuote } from "react-icons/gr";
+import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrCatalogOption, GrMore } from "react-icons/gr";
 
 //styles
 const IconStyle={borderRadius:'4px', padding:'4px', width:'18px', height:'18px'}
@@ -69,16 +69,6 @@ export function SelectContentPopUp({close, leftDom, topDom}){
           </button>
           <div className='divider'></div>
           <button className='popUpBtnX'>
-            <LuList className='popUpIconX'/>
-          </button>
-          <button className='popUpBtnX'>
-            <LuListOrdered className='popUpIconX'/>
-          </button>
-          <button className='popUpBtnX'>
-            <LuListChecks className='popUpIconX'/>
-          </button>
-          <div className='divider'></div>
-          <button className='popUpBtnX'>
             <LuAlignLeft className='popUpIconX' strokeWidth={2}/>
           </button>
           <button className='popUpBtnX'>
@@ -93,6 +83,26 @@ export function SelectContentPopUp({close, leftDom, topDom}){
           </button>
           <button className='popUpBtnX'>
             <LuDelete className='popUpIconX' strokeWidth={2}/>
+          </button>
+          <div className='divider'></div>
+          <button className='popUpBtnX'>
+            <LuList className='popUpIconX'/>
+          </button>
+          <button className='popUpBtnX'>
+            <LuListOrdered className='popUpIconX'/>
+          </button>
+          <button className='popUpBtnX'>
+            <LuListChecks className='popUpIconX'/>
+          </button>
+          <div className='divider'></div>
+          <button className='popUpBtnX'>
+            <LuHeading1 className='popUpIconX' strokeWidth={2}/>
+          </button>
+          <button className='popUpBtnX'>
+            <LuHeading2 className='popUpIconX' strokeWidth={2}/>
+          </button>
+          <button className='popUpBtnX'>
+            <LuHeading3 className='popUpIconX' strokeWidth={2}/>
           </button>
        </div>
     </div>
@@ -156,7 +166,7 @@ export function NewContentPopUp({close, leftDom, topDom}){
           </button>
           <button className='popUpBtn'>
             <LuListChecks className='popUpIcon' strokeWidth={1}/>
-            <p className='popUpP'><strong>Ordered List</strong><br></br>Dot-point list</p>
+            <p className='popUpP'><strong>Check List</strong><br></br>Checkbox list</p>
           </button>
           <button className='popUpBtn'>
             <LuFoldVertical className='popUpIcon' strokeWidth={1}/>

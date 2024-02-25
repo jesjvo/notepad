@@ -57,7 +57,7 @@
   padding: 4px;
   -webkit-app-region: no-drag !important;
   position: relative;
-  width: 170px; height: fit-content; max-height: 250px; overflow-y: scroll;
+  width: 170px; height: fit-content; max-height: 250px; overflow-y: scroll; overflow-x: hidden;
   background-color: white;
   border-radius: 4px;
   box-shadow:
@@ -72,7 +72,7 @@
   padding: 4px;
   -webkit-app-region: no-drag !important;
   position: relative;
-  width: fit-content; height: 25px; max-width: fit-content; overflow-x: scroll;
+  width: 370px; height: 25px; overflow-x: scroll; overflow-y: hidden;
   background-color: white;
   border-radius: 4px;
   box-shadow:
@@ -121,6 +121,11 @@
 .popUpPX{
   color: rgba(0, 0, 0, 0.9); margin: 2px;
   width: 9px; font-family: 'Arial'; font-size: 14px; text-align: center;
+}
+
+.divider{
+    margin: 4px;
+    height: 100%; border: solid .5px rgba(0, 0, 0, .06);;
 }
 
 /*Editor*/

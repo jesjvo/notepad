@@ -14,11 +14,6 @@ transition: .25s;
     background: rgba(77, 175, 255, 0.35) !important;
   }
 
-.divider{
-    margin-left: 4px; margin-right: 4px;
-    width: .5px; height: 100%; background-color: rgba(0, 0, 0, .3);
-}
-
 #Light{
     filter: invert(0);
     transition: .25s;
