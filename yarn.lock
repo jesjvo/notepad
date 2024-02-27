@@ -2271,10 +2271,10 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-blockquote/-/extension-blockquote-2.1.16.tgz"
   integrity sha512-1OMk8cBrL0VnbnzD3XHx7U4oMDCiXRR7Spfl9JqwC9pS4RosOUBySNxpEBwhSegB0pK6sd7m44qLqj00If+cHA==
 
-"@tiptap/extension-bold@^2.1.16":
-  version "2.1.16"
-  resolved "https://registry.npmjs.org/@tiptap/extension-bold/-/extension-bold-2.1.16.tgz"
-  integrity sha512-gz2VrBkRRsGBiOHx1qB++VUfpuRdhJp6jlgNqqHFbIkjKr2NB+u7oiH5SbjlL4eG0wlam1QA4jAkXhZgdvkA4g==
+"@tiptap/extension-bold@^2.1.16", "@tiptap/extension-bold@^2.2.4":
+  version "2.2.4"
+  resolved "https://registry.npmjs.org/@tiptap/extension-bold/-/extension-bold-2.2.4.tgz"
+  integrity sha512-v3tTLc8YESFZPOGj5ByFr8VbmQ/PTo49T1vsK50VubxIN/5r9cXlKH8kb3dZlZxCxJa3FrXNO/M8rdGBSWQvSg==
 
 "@tiptap/extension-bubble-menu@^2.2.3":
   version "2.2.3"
@@ -2355,10 +2355,10 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-horizontal-rule/-/extension-horizontal-rule-2.1.16.tgz"
   integrity sha512-Q+Zp0lJF7212YIuZnbMmn4KC1MZoZjQIuvSd+DOgCwKSeUcTXBbljDjOiN8yrY134r+A4fFM7KHTXWYqZGZQug==
 
-"@tiptap/extension-italic@^2.1.16":
-  version "2.1.16"
-  resolved "https://registry.npmjs.org/@tiptap/extension-italic/-/extension-italic-2.1.16.tgz"
-  integrity sha512-6mFGPBGxd2aICJ5Q3zYxuXO8slKoOP/PsSjEQn1bjs3h8Q3mPxHX290ePVp728o5F0myM9sxKSz2V6/VeuS/Yw==
+"@tiptap/extension-italic@^2.1.16", "@tiptap/extension-italic@^2.2.4":
+  version "2.2.4"
+  resolved "https://registry.npmjs.org/@tiptap/extension-italic/-/extension-italic-2.2.4.tgz"
+  integrity sha512-qIhGNvWnsQswSgEMRA8jQQjxfkOGNAuNWKEVQX9DPoqAUgknT41hQcAMP8L2+OdACpb2jbVMOO5Cy5Dof2L8/w==
 
 "@tiptap/extension-list-item@^2.1.16":
   version "2.1.16"

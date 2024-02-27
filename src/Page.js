@@ -5,11 +5,14 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder'
-import { TaskItem } from '@tiptap/extension-task-item';
+import TaskItem from '@tiptap/extension-task-item';
 import Highlight from '@tiptap/extension-highlight';
+import TaskList from '@tiptap/extension-task-list';
+import Italic from '@tiptap/extension-italic';
+import Bold from '@tiptap/extension-bold';
 import { Color } from '@tiptap/extension-color'
 
-//pages
+//css
 import './Page.css'
 import './App.css';
 
@@ -20,7 +23,8 @@ import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrSearch, GrMore } from 
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
-export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, setUnderline, setStrike}){
+export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, setUnderline, setStrike, setAlignLeft, setAlignCenter, setAlignRight,
+                                    setOrderedList, setBulletList, setCheckList, setHeader1, setHeader2, setHeader3}){
   const popupRef = useRef(null);
   const [position, setPosition] = useState({ x: leftDom, y: topDom });
 
@@ -74,15 +78,15 @@ export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, 
 
           <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
 
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setAlignLeft}>
             <LuAlignLeft className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Left</p>
           </button>
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setAlignCenter}>
             <LuAlignCenter className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Center</p>
           </button>
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setAlignRight}>
             <LuAlignRight className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Right</p>
           </button>
@@ -100,30 +104,30 @@ export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, 
 
           <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
 
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setBulletList}>
             <LuList className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Bullet list</p>
           </button>
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setOrderedList}>
             <LuListOrdered className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
-            <p className='popUpP'>Number list</p>
+            <p className='popUpP'>Ordered list</p>
           </button>
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setCheckList}>
             <LuListChecks className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Check list</p>
           </button>
 
           <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
 
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setHeader1}>
             <LuHeading1 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Heading 1</p>
           </button>
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setHeader2}>
             <LuHeading2 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Heading 2</p>
           </button>
-          <button className='popUpBtn' style={{height:'28px'}}>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setHeader3}>
             <LuHeading3 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Heading 3</p>
           </button>
@@ -185,7 +189,7 @@ export function NewContentPopUp({close, leftDom, topDom}){
           </button>
           <button className='popUpBtn' style={{height: '50px'}}>
             <LuListOrdered className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
-            <p className='popUpP'><strong>Number List</strong><br></br>Integer list</p>
+            <p className='popUpP'><strong>Ordered List</strong><br></br>Integer list</p>
           </button>
           <button className='popUpBtn' style={{height: '50px'}}>
             <LuListChecks className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
@@ -229,8 +233,21 @@ export default function Page({openPage}) {
     extensions: [
       StarterKit,
       Underline,
+      Italic.configure({
+        HTMLAttributes: {
+          class: 'is-italic',
+        },
+      }),
+      Bold.configure({
+        HTMLAttributes: {
+          class: 'is-bold',
+        },
+      }),
       Color,
-      TaskItem,
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -330,14 +347,14 @@ export default function Page({openPage}) {
   const setHeader3=()=>{
     editor.chain().focus().toggleHeading({ level: 3 }).run()
   }
-  const setNumberList=()=>{
+  const setOrderedList=()=>{
     editor.chain().focus().toggleOrderedList().run()
   }
-  const setOrderList=()=>{
+  const setBulletList=()=>{
     editor.chain().focus().toggleBulletList().run()
   }
   const setCheckList=()=>{
-    editor.chain().focus().toggleTaskList().run()
+    editor.commands.toggleTaskList()
   }
 
 
@@ -349,7 +366,9 @@ export default function Page({openPage}) {
     <div className='Page'>
       {newContentDisplay ? <NewContentPopUp close={()=>{setNewContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>: null}
       {selectContentDisplay ? <SelectContentPopUp close={()=>{setSelectContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}
-      setBold={()=>{setBold()}} setItalic={()=>{setItalic()}} setUnderline={()=>{setUnderline()}} setStrike={()=>{setStrike()}}
+      setBold={()=>{setBold()}} setItalic={()=>{setItalic()}} setUnderline={()=>{setUnderline()}} setStrike={()=>{setStrike()}} setAlignLeft={()=>{setAlignLeft()}}
+      setAlignCenter={()=>{setAlignCenter()}} setAlignRight={()=>{setAlignRight()}} setBulletList={()=>{setBulletList()}} setOrderedList={()=>{setOrderedList()}}
+      setCheckList={()=>{setCheckList()}} setHeader1={()=>{setHeader1()}} setHeader2={()=>{setHeader2()}} setHeader3={()=>{setHeader3()}}
       />: null}
         <div className='PageInterface'>
           <div className='PageHeader'>
@@ -392,10 +411,10 @@ export default function Page({openPage}) {
         {editor && hoveringNode.active ?  
         <>
           <button
-          style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-40, zIndex:100}}
+          style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-50, zIndex:100}}
           className='selectContentBtn' onClick={()=>{selectContent()}}><GrDrag size={14}/></button>
           <button
-          style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-70, zIndex:100}}
+          style={{position:'absolute', top:hoveringNode.top, left:hoveringNode.left-80, zIndex:100}}
           className='selectContentBtn' onClick={()=>{addNewContent()}}><GrAdd size={14}/></button>
         </>
         : null }
