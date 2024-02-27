@@ -5,24 +5,22 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import CharacterCount from '@tiptap/extension-character-count';
 import Placeholder from '@tiptap/extension-placeholder'
+import { TaskItem } from '@tiptap/extension-task-item';
+import Highlight from '@tiptap/extension-highlight';
+import { Color } from '@tiptap/extension-color'
 
 //pages
 import './Page.css'
 import './App.css';
 
 //icons
-import { FaCaretLeft } from "react-icons/fa";
-import { FaCaretRight } from "react-icons/fa6";
 import {LuHeading1, LuHeading2, LuHeading3, LuListOrdered, LuList, LuTextCursor,
-        LuFoldVertical, LuAlignCenter, LuAlignRight, LuAlignLeft, LuCopy, LuDelete, LuListChecks} from "react-icons/lu";
-import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrCatalogOption, GrMore } from "react-icons/gr";
+        LuFoldVertical, LuAlignCenter, LuAlignRight, LuAlignLeft, LuCopy, LuDelete, LuListChecks, LuBold, LuItalic, LuUnderline, LuStrikethrough} from "react-icons/lu";
+import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrSearch, GrMore } from "react-icons/gr";
 
-//styles
-const IconStyle={borderRadius:'4px', padding:'4px', width:'18px', height:'18px'}
 const ipcRenderer = window.require("electron").ipcRenderer;
 
-
-export function SelectContentPopUp({close, leftDom, topDom}){
+export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, setUnderline, setStrike}){
   const popupRef = useRef(null);
   const [position, setPosition] = useState({ x: leftDom, y: topDom });
 
@@ -33,6 +31,7 @@ export function SelectContentPopUp({close, leftDom, topDom}){
       let newX = position.x;
       let newY = position.y;
 
+    
       if(left + width > innerWidth) {}
       if(left < 0) {newX = 10}
 
@@ -53,56 +52,80 @@ export function SelectContentPopUp({close, leftDom, topDom}){
   return(
     <div className='backgroundPopUp'>
       <div className='backgroundPopUpClose' onClick={close}></div>
-       <div className='popUpX' ref={popupRef}
-       style={{left: position.x, top: position.y}}>
-          <button className='popUpBtnX'>
-            <p className='popUpPX' style={{fontWeight:800}}> B</p>
+       <div className='popUp' ref={popupRef}
+       style={{left: position.x, top: position.y, width: '120px', padding:'2px', maxHeight:'238px'}}>
+
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setBold}>
+            <LuBold className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'> Bold</p>
           </button>
-          <button className='popUpBtnX'>
-            <p className='popUpPX' style={{fontStyle:'italic'}}>i</p>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setItalic}>
+            <LuItalic className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'> Italic</p>
           </button>
-          <button className='popUpBtnX'>
-            <p className='popUpPX' style={{textDecoration:'underline'}}> U</p>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setUnderline}>
+            <LuUnderline className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'> Underline</p>
           </button>
-          <button className='popUpBtnX'>
-            <p className='popUpPX' style={{textDecoration:'line-through'}}> S</p>
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setStrike}>
+            <LuStrikethrough className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'> Strike</p>
           </button>
-          <div className='divider'></div>
-          <button className='popUpBtnX'>
-            <LuAlignLeft className='popUpIconX' strokeWidth={2}/>
+
+          <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
+
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuAlignLeft className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Left</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuAlignCenter className='popUpIconX' strokeWidth={2}/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuAlignCenter className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Center</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuAlignRight className='popUpIconX' strokeWidth={2}/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuAlignRight className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Right</p>
           </button>
-          <div className='divider'></div>
-          <button className='popUpBtnX'>
-            <LuCopy className='popUpIconX' strokeWidth={2}/>
+
+          <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
+
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuCopy className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} color='green' strokeWidth={2}/>
+            <p className='popUpP'> Copy</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuDelete className='popUpIconX' strokeWidth={2}/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuDelete className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} color='red' strokeWidth={2}/>
+            <p className='popUpP'> Delete</p>
           </button>
-          <div className='divider'></div>
-          <button className='popUpBtnX'>
-            <LuList className='popUpIconX'/>
+
+          <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
+
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuList className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Bullet list</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuListOrdered className='popUpIconX'/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuListOrdered className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Number list</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuListChecks className='popUpIconX'/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuListChecks className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Check list</p>
           </button>
-          <div className='divider'></div>
-          <button className='popUpBtnX'>
-            <LuHeading1 className='popUpIconX' strokeWidth={2}/>
+
+          <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
+
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuHeading1 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Heading 1</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuHeading2 className='popUpIconX' strokeWidth={2}/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuHeading2 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Heading 2</p>
           </button>
-          <button className='popUpBtnX'>
-            <LuHeading3 className='popUpIconX' strokeWidth={2}/>
+          <button className='popUpBtn' style={{height:'28px'}}>
+            <LuHeading3 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Heading 3</p>
           </button>
        </div>
     </div>
@@ -139,37 +162,37 @@ export function NewContentPopUp({close, leftDom, topDom}){
     <div className='backgroundPopUp'>
       <div className='backgroundPopUpClose' onClick={close}></div>
        <div className='popUp' ref={popupRef}
-       style={{left: position.x, top: position.y}}>
-          <button className='popUpBtn'>
-            <LuTextCursor className='popUpIcon' strokeWidth={1}/>
+       style={{left: position.x, top: position.y, width: '170px', padding:'4px', maxHeight:'250px'}}>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuTextCursor className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Text</strong><br></br>Basic text</p>
           </button>
-          <button className='popUpBtn'>
-            <LuHeading1 className='popUpIcon' strokeWidth={1}/>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuHeading1 className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Header 1</strong><br></br>Title</p>
           </button>
-          <button className='popUpBtn'>
-            <LuHeading2 className='popUpIcon' strokeWidth={1}/>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuHeading2 className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Header 2</strong><br></br>Subtitle</p>
           </button>
-          <button className='popUpBtn'>
-            <LuHeading3 className='popUpIcon' strokeWidth={1}/>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuHeading3 className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Header 3</strong><br></br>Large text</p>
           </button>
-          <button className='popUpBtn'>
-            <LuList className='popUpIcon' strokeWidth={1}/>
-            <p className='popUpP'><strong>Ordered List</strong><br></br>Dot-point list</p>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuList className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
+            <p className='popUpP'><strong>Bullet List</strong><br></br>Dot-point list</p>
           </button>
-          <button className='popUpBtn'>
-            <LuListOrdered className='popUpIcon' strokeWidth={1}/>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuListOrdered className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Number List</strong><br></br>Integer list</p>
           </button>
-          <button className='popUpBtn'>
-            <LuListChecks className='popUpIcon' strokeWidth={1}/>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuListChecks className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Check List</strong><br></br>Checkbox list</p>
           </button>
-          <button className='popUpBtn'>
-            <LuFoldVertical className='popUpIcon' strokeWidth={1}/>
+          <button className='popUpBtn' style={{height: '50px'}}>
+            <LuFoldVertical className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Divider</strong><br></br>Border line</p>
           </button>
       </div>
@@ -206,6 +229,9 @@ export default function Page({openPage}) {
     extensions: [
       StarterKit,
       Underline,
+      Color,
+      TaskItem,
+      Highlight.configure({ multicolor: true }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -258,9 +284,62 @@ export default function Page({openPage}) {
     const { $to } = selection;
     editor.commands.focus($to.end())
     editor.chain().insertContentAt($to.end(), {type: "paragraph"}).focus($to.end()).run()
-    updateSelection()
     setNewContentDisplay(true)
+    updateSelection()
   }
+
+  //node commands
+  const setBold=()=>{
+    editor.chain().focus().toggleBold().run()
+  }
+  const setItalic=()=>{
+    editor.chain().focus().toggleItalic().run()
+  }
+  const setUnderline=()=>{
+    editor.chain().focus().toggleUnderline().run()
+  }
+  const setStrike=()=>{
+    editor.chain().focus().toggleStrike().run()
+  }
+  const setAlignLeft=()=>{
+    editor.chain().focus().setTextAlign('left').run()
+  }
+  const setAlignCenter=()=>{
+    editor.chain().focus().setTextAlign('center').run()
+  }
+  const setAlignRight=()=>{
+    editor.chain().focus().setTextAlign('right').run()
+  }
+  const setHighlightColor=(colorChoice)=>{
+    editor.chain().focus().toggleHighlight({ color: colorChoice }).run()
+  }
+  const setColor=(colorChoice)=>{
+    editor.chain().focus().setColor(colorChoice).run()
+  }
+
+  //block commands
+  const setParagraph=()=>{
+    editor.chain().focus().setParagraph().run()
+  }
+  const setHeader1=()=>{
+    editor.chain().focus().toggleHeading({ level: 1 }).run()
+  }
+  const setHeader2=()=>{
+    editor.chain().focus().toggleHeading({ level: 2 }).run()
+  }
+  const setHeader3=()=>{
+    editor.chain().focus().toggleHeading({ level: 3 }).run()
+  }
+  const setNumberList=()=>{
+    editor.chain().focus().toggleOrderedList().run()
+  }
+  const setOrderList=()=>{
+    editor.chain().focus().toggleBulletList().run()
+  }
+  const setCheckList=()=>{
+    editor.chain().focus().toggleTaskList().run()
+  }
+
 
   if (!editor) {
     return null
@@ -269,17 +348,16 @@ export default function Page({openPage}) {
   return (
     <div className='Page'>
       {newContentDisplay ? <NewContentPopUp close={()=>{setNewContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>: null}
-      {selectContentDisplay ? <SelectContentPopUp close={()=>{setSelectContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>: null}
+      {selectContentDisplay ? <SelectContentPopUp close={()=>{setSelectContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}
+      setBold={()=>{setBold()}} setItalic={()=>{setItalic()}} setUnderline={()=>{setUnderline()}} setStrike={()=>{setStrike()}}
+      />: null}
         <div className='PageInterface'>
           <div className='PageHeader'>
             <div className='PageHeader-left'>
               <div></div>
               <button className='headerBtn'
               onClick={openPage}>
-                <GrCatalogOption size={16}/>
-              </button>
-              <button className='headerBtn'>
-                Save
+                <GrSearch size={18}/>
               </button>
             </div>
             <div className='PageHeader-right'>
@@ -306,119 +384,8 @@ export default function Page({openPage}) {
         {
         editor && <BubbleMenu className="floating-menu" tippyOptions={{ duration: 500, delay: 1000 }} editor={editor}>
           {hoveringNode.active ?
-            <div className='editorMenu'>
-            <button
-                style={{minWidth:'25px', fontWeight:'bold', borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px'}}
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                className={editor.isActive('bold') ? 'is-active' : 'hello'}>
-              B
-            </button>
-          
-            <button
-                style={{minWidth:'25px', fontStyle:'italic'}}
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={editor.isActive('italic') ? 'is-active' : ''}>
-              i
-            </button>
-
-            <button
-                style={{minWidth:'25px', textDecoration:'underline'}}
-                onClick={() => editor.chain().focus().toggleUnderline().run()}
-                className={editor.isActive('underline') ? 'is-active' : ''}>
-              U
-            </button>
-
-            <button
-                style={{minWidth:'25px', textDecoration:'line-through', borderRight:'solid 1px rgba(0,0,0,.06)'}}
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                className={editor.isActive('strike') ? 'is-active' : ''}>
-              S
-            </button>
-
-            <div style={{width:WidthText, display:'flex', alignItems:'center', transition:'.2s', borderRight:'solid 1px rgba(0,0,0,.06)'}}
-            >
-              <button     
-                style={{minWidth:'65px', letterSpacing:'.25px'}}
-                onClick={()=>{handleWidthText()}}>
-              Text {WidthText==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
-              </button>
-            {WidthText==='170px' ?
-            <>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
-              <LuHeading1 style={IconStyle} strokeWidth={1.5}/>
-            </button>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-              <LuHeading2 style={IconStyle} strokeWidth={1.5}/>
-            </button>
-            <button 
-                style={{minWidth:'35px'}}
-                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-              <LuHeading3 style={IconStyle} strokeWidth={1.5}/>
-            </button>
-            </>
-            :  null}
-            </div>
-            
-            <div style={{width:WidthList, borderRight:'solid 1px rgba(0,0,0,.06)', display:'flex', alignItems:'center', transition:'.2s'}}
-            >
-              <button     
-                style={{minWidth:'65px', letterSpacing:'.25px'}}
-                onClick={()=>{handleWidthList()}}>
-              List {WidthList==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
-              </button>
-            {WidthList==='170px' ?
-              <>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().toggleBulletList().run()}>
-                <LuList style={IconStyle} strokeWidth={1.5}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-                <LuListOrdered style={IconStyle} strokeWidth={1.5}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                <LuFoldVertical style={IconStyle} strokeWidth={1.5}/>
-              </button>
-              </>
-              :  null}
-            </div>
-            
-            <div style={{width:WidthAlign, display:'flex', alignItems:'center', transition:'.2s', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
-            >
-              <button     
-                style={{minWidth:'65px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px', letterSpacing:'.25px'}}
-                onClick={()=>{handleWidthAlign()}}>
-              Align {WidthAlign==='170px' ? <FaCaretLeft size={12}/> : <FaCaretRight size={12}/>}
-              </button>
-            {WidthAlign==='170px' ?
-              <>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().setTextAlign('left').run()}>
-                <LuAlignLeft style={IconStyle} strokeWidth={1.5}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px'}}
-                  onClick={() => editor.chain().focus().setTextAlign('center').run()}>
-                <LuAlignCenter style={IconStyle} strokeWidth={1.5}/>
-              </button>
-              <button 
-                  style={{minWidth:'35px', borderTopRightRadius:'4px', borderBottomRightRadius:'4px'}}
-                  onClick={() => editor.chain().focus().setTextAlign('right').run()}>
-                <LuAlignRight style={IconStyle} strokeWidth={1.5}/>
-              </button>
-              </>
-              :  null}
-            </div>
-          </div> : null}
+            <div></div>
+            : null}
         </BubbleMenu>
         }
 
@@ -434,20 +401,6 @@ export default function Page({openPage}) {
         : null }
       
         <EditorContent editor={editor}/>
-          
-        <div className='PageBottom'>
-          <div></div>
-          <div className="character-count" onMouseEnter={()=>setCharacterHover(false)} onMouseLeave={()=>setCharacterHover(true)}>
-              {characterHover ?
-              <div>
-              {editor.storage.characterCount.words()} Words
-              </div> :
-              <div>
-              {editor.storage.characterCount.characters()} Characters
-              </div>
-            }
-          </div>
-        </div>
         </div>
     </div>
     )

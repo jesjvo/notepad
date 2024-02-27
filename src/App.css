@@ -25,7 +25,6 @@ transition: .25s;
 }
 
 button{
-    transition: .2s;
     cursor: pointer;
     -webkit-app-region: no-drag;
 }
