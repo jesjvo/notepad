@@ -24,7 +24,7 @@ import { GrAdd, GrDrag, GrPrevious, GrNext, GrBookmark, GrSearch, GrMore } from 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
 export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, setUnderline, setStrike, setAlignLeft, setAlignCenter, setAlignRight,
-                                    setOrderedList, setBulletList, setCheckList, setHeader1, setHeader2, setHeader3}){
+                                    setOrderedList, setBulletList, setCheckList, setHeader1, setHeader2, setHeader3, setParagraph}){
   const popupRef = useRef(null);
   const [position, setPosition] = useState({ x: leftDom, y: topDom });
 
@@ -119,6 +119,10 @@ export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, 
 
           <div className='divider-x' style={{marginTop:'3px', marginBottom:'3px', alignSelf:'center'}}></div>
 
+          <button className='popUpBtn' style={{height:'28px'}} onClick={setParagraph}>
+            <LuTextCursor className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
+            <p className='popUpP'>Text</p>
+          </button>
           <button className='popUpBtn' style={{height:'28px'}} onClick={setHeader1}>
             <LuHeading1 className='popUpIcon' style={{width: '15px', height: '15px', padding: '2px'}} strokeWidth={2}/>
             <p className='popUpP'>Heading 1</p>
@@ -137,7 +141,7 @@ export function SelectContentPopUp({close, leftDom, topDom, setBold, setItalic, 
 }
 
 
-export function NewContentPopUp({close, leftDom, topDom}){
+export function NewContentPopUp({close, leftDom, topDom, setOrderedList, setBulletList, setCheckList, setParagraph, setHeader1, setHeader2, setHeader3, setDivider}){
   const popupRef = useRef(null);
   const [position, setPosition] = useState({ x: leftDom, y: topDom });
 
@@ -167,35 +171,35 @@ export function NewContentPopUp({close, leftDom, topDom}){
       <div className='backgroundPopUpClose' onClick={close}></div>
        <div className='popUp' ref={popupRef}
        style={{left: position.x, top: position.y, width: '170px', padding:'4px', maxHeight:'250px'}}>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setParagraph}>
             <LuTextCursor className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Text</strong><br></br>Basic text</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setHeader1}>
             <LuHeading1 className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Header 1</strong><br></br>Title</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setHeader2}>
             <LuHeading2 className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Header 2</strong><br></br>Subtitle</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setHeader3}>
             <LuHeading3 className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Header 3</strong><br></br>Large text</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setBulletList}>
             <LuList className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Bullet List</strong><br></br>Dot-point list</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setOrderedList}>
             <LuListOrdered className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Ordered List</strong><br></br>Integer list</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setCheckList}>
             <LuListChecks className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Check List</strong><br></br>Checkbox list</p>
           </button>
-          <button className='popUpBtn' style={{height: '50px'}}>
+          <button className='popUpBtn' style={{height: '50px'}} onClick={setDivider}>
             <LuFoldVertical className='popUpIcon' style={{width: '35px', height: '35px', padding: '2px'}} strokeWidth={1}/>
             <p className='popUpP'><strong>Divider</strong><br></br>Border line</p>
           </button>
@@ -356,7 +360,13 @@ export default function Page({openPage}) {
   const setCheckList=()=>{
     editor.commands.toggleTaskList()
   }
-
+  const setDivider=()=>{
+    editor.chain().focus().setHorizontalRule().run()
+    const { selection }= editor.state
+    const { $to } = selection;
+    editor.commands.focus($to.end())
+    editor.chain().insertContentAt($to.end(), {type: "paragraph"}).focus($to.end()).run()
+  }
 
   if (!editor) {
     return null
@@ -364,11 +374,14 @@ export default function Page({openPage}) {
 
   return (
     <div className='Page'>
-      {newContentDisplay ? <NewContentPopUp close={()=>{setNewContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}/>: null}
+      {newContentDisplay ? <NewContentPopUp close={()=>{setNewContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}
+      setBulletList={()=>{setBulletList()}} setOrderedList={()=>{setOrderedList()}} setCheckList={()=>{setCheckList()}} setHeader1={()=>{setHeader1()}}
+      setHeader2={()=>{setHeader2()}} setHeader3={()=>{setHeader3()}} setDivider={()=>{setDivider()}} setParagraph={()=>{setParagraph()}}/>: null}
+
       {selectContentDisplay ? <SelectContentPopUp close={()=>{setSelectContentDisplay(false)}} leftDom={hoveringNode.left} topDom={hoveringNode.top}
       setBold={()=>{setBold()}} setItalic={()=>{setItalic()}} setUnderline={()=>{setUnderline()}} setStrike={()=>{setStrike()}} setAlignLeft={()=>{setAlignLeft()}}
       setAlignCenter={()=>{setAlignCenter()}} setAlignRight={()=>{setAlignRight()}} setBulletList={()=>{setBulletList()}} setOrderedList={()=>{setOrderedList()}}
-      setCheckList={()=>{setCheckList()}} setHeader1={()=>{setHeader1()}} setHeader2={()=>{setHeader2()}} setHeader3={()=>{setHeader3()}}
+      setCheckList={()=>{setCheckList()}} setHeader1={()=>{setHeader1()}} setHeader2={()=>{setHeader2()}} setHeader3={()=>{setHeader3()}} setParagraph={()=>{setParagraph()}}
       />: null}
         <div className='PageInterface'>
           <div className='PageHeader'>

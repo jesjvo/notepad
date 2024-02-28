@@ -71,7 +71,7 @@
   display: flex; flex-direction: row; align-items: center;
 }
 .popUpBtn:hover{
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.07);
 }
 
 .popUpIcon{
@@ -154,10 +154,10 @@
         border: solid .5px rgba(0, 0, 0, 0.1);
       }
       .is-italic{
-        font-family: 'Lyon-Text'; font-size: large;
+        
       }
       .is-bold{
-
+        
       }
 }
 
@@ -173,34 +173,6 @@
   color: rgb(0, 140, 255) !important;
 }
 
-.menuEditor button{
-    border: none; padding: 10px;
-}
-
-.editorMenu{
-    background-color: white;
-    width: fit-content; height: 28px;
-    margin-left: 25px; border-radius: 4px;
-    box-shadow:
-      0 0px 1px hsl(0deg 0% 0% / 0.06),
-      0 0px 2px hsl(0deg 0% 0% / 0.035),
-      0 2px 4px hsl(0deg 0% 0% / 0.045),
-      0 4px 8px hsl(0deg 0% 0% / 0.055),
-      0 8px 16px 2px hsl(0deg 0% 0% / 0.065)
-    ;
-    display: flex; flex-direction: row;
-}
-
-.editorMenu button{
-    color: rgba(0, 0, 0, 0.9);
-    background-color: transparent;
-    height: 28px;
-    border: none;
-
-}.editorMenu button:hover{
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
 .selectContentBtn{
   color: rgba(0, 0, 0, 0.3);
   background-color: transparent;
@@ -209,7 +181,7 @@
   border: none;
   transition: .2s
 }.selectContentBtn:hover{
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.07);
 }
 
 .headerBtn{
@@ -219,5 +191,5 @@
   border-radius: 4px; border: none;
   font-size: 14px;
 }.headerBtn:hover{
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.07);
 }
