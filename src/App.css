@@ -6,25 +6,14 @@ height: 100%; width: 100%;
 margin: 0;  padding: 0;
 border: none;
 overflow: hidden;
-
-transition: .25s;
 }
 
 ::selection {
     background: rgba(77, 175, 255, 0.35) !important;
   }
 
-#Light{
-    filter: invert(0);
-    transition: .25s;
-}
-
-#Dark{
-    filter: invert(.75);
-    transition: .25s;
-}
-
 button{
+    transition: .1s;
     cursor: pointer;
     -webkit-app-region: no-drag;
 }
@@ -33,12 +22,11 @@ button{
     height: 100%; width: 100%;
     background-color: rgb(255, 255, 255);
 
-    display: flex; flex-direction: row; gap: 0;
+    display: flex;
 }
 
 .Content{
     height: 100%; width: 100%;
-    background-color: rgba(0, 0, 0, 0);
 
-    display: flex; gap: 0;
+    display: flex;
 }
