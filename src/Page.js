@@ -13,6 +13,7 @@ import History from '@tiptap/extension-history'
 import Paragraph from './Extension/Paragraph'
 import Title from './Extension/Title'
 import Subtitle from './Extension/Subtitle'
+import LargeText from './Extension/LargeText'
 
 //node attributes
 import Bold from '@tiptap/extension-bold'
@@ -27,10 +28,11 @@ import Highlight from '@tiptap/extension-highlight'
 import './Page.css'
 
 //icons
-import { GrBookmark } from "react-icons/gr";
+import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoDownload, GoKebabHorizontal, GoRepoPush } from "react-icons/go";
+import { FaSave } from "react-icons/fa";
+import { GrPrevious, GrNext, GrMore, GrCatalogOption, GrSave } from "react-icons/gr";
 import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
-import { MdOutlineArrowBackIos, MdOutlineArrowForwardIos } from "react-icons/md";
-import { GripVertical, Plus, TextCursor, Heading1, Heading2, List, ListOrdered } from 'lucide-react';
+import { GripVertical, Plus, TextCursor, Heading1, Heading2, List, ListOrdered, Save } from 'lucide-react';
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
@@ -40,7 +42,7 @@ export function NodeList({
 
   setItalic, setBold, setUnderline, setStrike,
 
-  setTitle, setSubtitle, setText, setOrderedList, setBulletList,
+  setTitle, setSubtitle, setLargeText, setText, setOrderedList, setBulletList,
 
   colorGrey, colorFillGrey,
   colorRed, colorFillRed,
@@ -61,13 +63,13 @@ export function NodeList({
   const [showBlockChange, setBlockChange] = useState({active:false});
 
   const handleColor=()=>{
-    if(showColor.active===false){
+    if(!showColor.active){
       setColor({active:true}); setBlockChange({active:false})}
     else{setColor({active:false})}
   }
 
   const handleBlockChange=()=>{
-    if(showBlockChange.active===false){
+    if(!showBlockChange.active){
       setBlockChange({active:true}); setColor({active:false})}
     else{setBlockChange({active:false})}
   }
@@ -124,13 +126,12 @@ export function NodeList({
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><TextCursor size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Text</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading1 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 1</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 2</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 3</p></button>
 
         <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setBulletList}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setOrderedList}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
-
-
       </div>
 
       : null
@@ -162,15 +163,14 @@ export function NodeList({
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillBlue}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 100, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillPurple}><p className='p-listcolor' style={{backgroundColor:'rgb(120, 80, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillViolet}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 80 , 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
-    
-
       </div>
       : null
     }
     <div className='div-listbox' ref={ref}
     style={{position:'relative', zIndex:1, left: nodeLeft, top: listTop.top, width:'fit-content', height:'27px', flexDirection:'row'}}>
 
-      <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleBlockChange()}}>Text <TbChevronDown size={8}/></button>
+      <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleBlockChange()}}>Text <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
+
       <div className='divider-y'></div>
 
       <button className='btn-list' style={{height: '27px', minWidth:'22px', fontWeight:800, fontSize:'.7em'}} onClick={setBold}>B</button>
@@ -179,7 +179,8 @@ export function NodeList({
       <button className='btn-list' style={{height: '27px', minWidth:'21px', fontWeight:400, textDecoration:'line-through', fontSize:'.7em'}} onClick={setStrike}>S</button>
       <div className='divider-y'></div>
 
-      <button className='btn-list' style={{height: '27px', minWidth:'40px', fontSize:'.8em'}} onClick={()=>{handleColor()}}>A <TbChevronDown size={8}/></button>
+      <button className='btn-list' style={{height: '27px', minWidth:'40px', fontSize:'.8em'}} onClick={()=>{handleColor()}}>A <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
+
       <div className='divider-y'></div>
 
       <button className='btn-list' style={{height: '27px', minWidth:'fit-content'}}><TbCopy size={14}/></button>
@@ -193,7 +194,8 @@ export function NodeList({
 export default function Page() {
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
-
+  const [fileName, setFileName] = useState({fileOpen:false, fileName:'Untitled'})
+  const [isFavorite, setFavorite] = useState({isFavorite:false})
 
   const editor = useEditor({
     onSelectionUpdate(){
@@ -201,16 +203,13 @@ export default function Page() {
     },
     onUpdate(){
       updateSelection()
+      ipcRenderer.send("message", editor.getHTML())
     },
 
     extensions: [
-      Document, Text, ListItem, TextStyle, Color, History,
-      HardBreak.configure({
-
-      }),
+      Document, Text, ListItem, TextStyle, Color, History, HardBreak,
+      Paragraph, Title, Subtitle, LargeText,
       Highlight.configure({ multicolor: true }),
-      Paragraph.configure({
-      }),
       BulletList.configure({
         HTMLAttributes: {
           class: 'is-bulletlist',
@@ -220,10 +219,6 @@ export default function Page() {
         HTMLAttributes: {
           class: 'is-orderedlist',
         },
-      }),
-      Title.configure({
-      }),
-      Subtitle.configure({
       }),
       Underline.configure({
         HTMLAttributes: {
@@ -300,6 +295,12 @@ export default function Page() {
     setSelectedNode({active:true})
   }
 
+  const handleFavorite=()=>{
+    if(!isFavorite.isFavorite){
+      setFavorite({isFavorite:true})}
+    else{setFavorite({isFavorite:false})}
+  }
+
   if (!editor) {
     return null
   }
@@ -316,6 +317,7 @@ export default function Page() {
       setText={()=>{editor.chain().focus().setParagraph().run()}}
       setTitle={()=>{editor.chain().focus().setTitle().run()}}
       setSubtitle={()=>{editor.chain().focus().setSubtitle().run()}}
+      setLargeText={()=>{editor.chain().focus().setLargeText().run()}}
       setOrderedList={()=>{editor.chain().focus().toggleOrderedList().run()}}
       setBulletList={()=>{editor.chain().focus().toggleBulletList().run()}}
 
@@ -334,14 +336,22 @@ export default function Page() {
         <div className='PageInterface'>
           <div className='PageHeader'>
             <div className='PageHeader-left'>
-              
+              <div style={{marginLeft:'10px'}}></div>
+              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName.fileName}</button>
+
+              <div className='divider-y' style={{height:'50%'}}></div>
+
+              <button className='PageHeader-btn'><GoRepoPush size={14}/></button>
             </div>
             <div className='PageHeader-right'>
-              <button className='PageHeader-btn'><GrBookmark size={14}/></button>
-              <div className='divider-y' style={{height:'75%'}}></div>
-              <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><MdOutlineArrowBackIos size={14}/></button>
-              <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().redo().run()}}><MdOutlineArrowForwardIos size={14}/></button>
-              <div style={{marginRight:'2.5px'}}></div>
+              <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
+              <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
+
+              <div className='divider-y' style={{height:'50%'}}></div>
+
+              <button className='PageHeader-btn' onClick={()=>{handleFavorite()}}>{isFavorite.isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
+              <button className='PageHeader-btn'><GoKebabHorizontal size={14}/></button>
+              <div style={{marginRight:'10px'}}></div>
             </div>
           </div>
 
@@ -357,8 +367,22 @@ export default function Page() {
           </>
         : null}
       
-        <EditorContent editor={editor} className='Editor'/>
+        <EditorContent editor={editor} style={{fontFamily:'Publico Text'}} className='Editor'/>
         </div>
     </div>
     )
 }
+
+/* NEED TO BE DONE?
+
+- the 'more' button in editor opens tab in App.js, showing all features.
+  - will include folders button, serif/sans-serif button, favorite, word count, date of last updated, date of creation, author (if optional).
+  
+- the 'Untitled' button, used for fileNames, if clicked will show a tab in App.js of all the files in current folder.
+   - will include two sections, one is of all files, another is of just favorites.
+   - a search feature will need to be considered.
+   
+- get the 'favorite' button working, once fileNames is set up.
+- get the 'save' button working, again, once fileNames is set up.
+
+*/

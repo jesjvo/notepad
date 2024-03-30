@@ -1,19 +1,14 @@
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
 import React, {useState, useEffect, useRef} from 'react'
 
-const Paragraph = (props) => {
-    useEffect(() => {
-      //reset node attributes.
-      
-    }, []);
-
+const LargeText = (props) => {
     return (
     <>
-    <NodeViewWrapper className="paragraph" style={{padding:'5px 0 5px 0', fontSize: '.9em'}}>
+    <NodeViewWrapper className="largetext" style={{padding:'10px 0 10px 0', fontSize:'1.15em', fontWeight:800}}>
       <NodeViewContent className="content" />
     </NodeViewWrapper>
     </>
   );
 };
 
-export default Paragraph;
+export default LargeText;
