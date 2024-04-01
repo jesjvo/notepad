@@ -23,22 +23,21 @@ import Strike from '@tiptap/extension-strike'
 import Color from '@tiptap/extension-color'
 import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
+import CharacterCount from '@tiptap/extension-character-count'
 
 //css
-import './Page.css'
+import './Css/Page.css'
 
 //icons
-import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoDownload, GoKebabHorizontal, GoRepoPush } from "react-icons/go";
-import { FaSave } from "react-icons/fa";
-import { GrPrevious, GrNext, GrMore, GrCatalogOption, GrSave } from "react-icons/gr";
+import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoRepoPush } from "react-icons/go";
 import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
-import { GripVertical, Plus, TextCursor, Heading1, Heading2, List, ListOrdered, Save } from 'lucide-react';
+import { GripVertical, Plus, Heading1, Heading2, List, ListOrdered, Pilcrow } from 'lucide-react';
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
 export function NodeList({
   close, nodeLeft, nodeTop, nodeHeight,
-  colorDefault, colorFillDefault, clearFormatting,
+  colorDefault, colorFillDefault, clearFormatting, deleteSelection,
 
   setItalic, setBold, setUnderline, setStrike,
 
@@ -59,6 +58,7 @@ export function NodeList({
   const [colorTop, setColorTop] = useState({top:nodeTop+nodeHeight+30});
   const [blockChangeTop, setBlockChangeTop] = useState({top:nodeTop+nodeHeight+30});
 
+  const [opacity, setOpacity] = useState({opacity:0});
   const [showColor, setColor] = useState({active:false});
   const [showBlockChange, setBlockChange] = useState({active:false});
 
@@ -75,10 +75,11 @@ export function NodeList({
   }
 
   useEffect(() => {
+    setOpacity({opacity:1})
     updatePosition()
     const interval = setInterval(() => {
       updatePosition()
-    }, 200);
+    }, 250);
 
     return () => clearInterval(interval);
   } , []);
@@ -123,7 +124,7 @@ export function NodeList({
       <div className='div-listbox' ref={blockChangeRef}
       style={{position:'absolute', zIndex:2, left: nodeLeft-20, top: blockChangeTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
 
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><TextCursor size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Text</p></button>
+        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Pilcrow size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Text</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading1 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 1</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 2</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 3</p></button>
@@ -167,7 +168,7 @@ export function NodeList({
       : null
     }
     <div className='div-listbox' ref={ref}
-    style={{position:'relative', zIndex:1, left: nodeLeft, top: listTop.top, width:'fit-content', height:'27px', flexDirection:'row'}}>
+    style={{position:'relative', opacity:opacity.opacity, zIndex:1, left: nodeLeft, top: listTop.top, width:'fit-content', height:'27px', flexDirection:'row'}}>
 
       <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleBlockChange()}}>Text <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
 
@@ -184,18 +185,54 @@ export function NodeList({
       <div className='divider-y'></div>
 
       <button className='btn-list' style={{height: '27px', minWidth:'fit-content'}}><TbCopy size={14}/></button>
-      <button className='btn-list' style={{borderTopRightRadius:'4px', borderBottomRightRadius:'4px', height: '27px', minWidth:'fit-content'}}><TbTrash size={14}/></button>
+      <button className='btn-list' style={{borderTopRightRadius:'4px', borderBottomRightRadius:'4px', height: '27px', minWidth:'fit-content'}} onClick={deleteSelection}><TbTrash size={14}/></button>
     </div>
   </div>
   </>
   )
 }
 
-export default function Page() {
+export default function Page({menuClick, fontStyle}) {
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
+
   const [fileName, setFileName] = useState({fileOpen:false, fileName:'Untitled'})
   const [isFavorite, setFavorite] = useState({isFavorite:false})
+
+  const [editorDimensions, setEditorDimensions] = useState({})
+
+  const ref = useRef(null);
+
+  /*
+  useEffect(() => {
+    const interval = setInterval(() => {
+    EditorDimensions()
+    }, 500);
+    return () => clearInterval(interval);
+  } , []);
+
+  const EditorDimensions = () => {
+      try{
+          const { width } = ref.current.getBoundingClientRect()
+          const { innerHeight } = window;
+          ipcRenderer.send('message', width)
+          
+          width, if width is below <800,
+            set padding 100px, 100px,
+            set editor to width.
+
+          if(width<800){
+
+          }
+
+          if(width>800){
+
+          }
+          
+      }
+      catch{}
+  }
+  */
 
   const editor = useEditor({
     onSelectionUpdate(){
@@ -207,7 +244,7 @@ export default function Page() {
     },
 
     extensions: [
-      Document, Text, ListItem, TextStyle, Color, History, HardBreak,
+      Document, Text, ListItem, TextStyle, Color, History, HardBreak, CharacterCount,
       Paragraph, Title, Subtitle, LargeText,
       Highlight.configure({ multicolor: true }),
       BulletList.configure({
@@ -310,6 +347,7 @@ export default function Page() {
 
       {selectedNode.active ? <NodeList close={()=>{setSelectedNode({active:false}); const{$to}=editor.state.selection; editor.commands.focus($to.end())}}
       nodeLeft={hoveringNode.left} nodeTop={hoveringNode.top} nodeHeight={hoveringNode.height}
+      deleteSelection={()=>{editor.commands.deleteSelection()}}
 
       setBold={()=>{editor.chain().toggleBold().run()}} setItalic={()=>{editor.chain().toggleItalic().run()}}
       setUnderline={()=>{editor.chain().toggleUnderline().run()}} setStrike={()=>{editor.chain().toggleStrike().run()}}
@@ -350,7 +388,7 @@ export default function Page() {
               <div className='divider-y' style={{height:'50%'}}></div>
 
               <button className='PageHeader-btn' onClick={()=>{handleFavorite()}}>{isFavorite.isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
-              <button className='PageHeader-btn'><GoKebabHorizontal size={14}/></button>
+              <button className='PageHeader-btn' style={{zIndex:25}} onClick={menuClick}><GoKebabHorizontal size={14}/></button>
               <div style={{marginRight:'10px'}}></div>
             </div>
           </div>
@@ -367,7 +405,7 @@ export default function Page() {
           </>
         : null}
       
-        <EditorContent editor={editor} style={{fontFamily:'Publico Text'}} className='Editor'/>
+        <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={false} ref={ref} className='Editor'/>
         </div>
     </div>
     )
