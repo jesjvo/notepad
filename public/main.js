@@ -9,9 +9,9 @@ app.on("ready", () => {
     mainWindow = new BrowserWindow({
         frame:false,
         fullscreen:false,
-        minWidth: 520, minHeight: 500,
-        width:520,
-        height:500,
+        minWidth: 380, minHeight: 320,
+        width:380,
+        height:320,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,

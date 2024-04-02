@@ -30,9 +30,9 @@ import './Css/Page.css'
 
 //icons
 import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoRepoPush } from "react-icons/go";
-import { TbCopy, TbTrash, TbChevronDown, TbPlus } from "react-icons/tb";
-import { GripVertical, Plus, Heading1, Heading2, List, ListOrdered, Pilcrow } from 'lucide-react';
-
+import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
+import { List, ListOrdered } from 'lucide-react';
+import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
 
 const ipcRenderer = window.require("electron").ipcRenderer;
@@ -57,7 +57,7 @@ export function NodeList({
   const ref = useRef(null); const colorRef = useRef(null); const blockChangeRef = useRef(null);
 
   const [listTop, setListTop] = useState({top:nodeTop+nodeHeight});
-  const [colorTop, setColorTop] = useState({top:nodeTop+nodeHeight+30});
+  const [colorTop, setColorTop] = useState({top:nodeTop+nodeHeight+30, divHeight:'fit-content'});
   const [blockChangeTop, setBlockChangeTop] = useState({top:nodeTop+nodeHeight+30});
 
   const [opacity, setOpacity] = useState({opacity:0});
@@ -100,11 +100,18 @@ export function NodeList({
     try{
       const { height } = colorRef.current.getBoundingClientRect();
       let newTopHeight = colorTop.top
+      let divHeight = colorTop.divHeight
 
       if(newTopHeight + height + 10 > innerHeight){
-        newTopHeight = innerHeight - height - 10
+        if(height + 10 + 40 > innerHeight){
+          divHeight = innerHeight-50
+          newTopHeight = 40
+        }else{
+          divHeight = 'fit-content'
+          newTopHeight = innerHeight - height - 10
+        }
       }
-      setColorTop({top:newTopHeight});
+      setColorTop({top:newTopHeight, divHeight:divHeight});
     }catch{}
 
     try{
@@ -126,13 +133,15 @@ export function NodeList({
       <div className='div-listbox' ref={blockChangeRef}
       style={{position:'absolute', zIndex:2, left: nodeLeft-10, top: blockChangeTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
 
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange'><Pilcrow size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Text</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange'><Heading1 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 1</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange'><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 2</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange'><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 3</p></button>
+        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text size</p>
+        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Text</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange'><VscTextSize size={17} strokeWidth={.2} color='rgba(0,0,0,1)'/></p><p style={{fontSize:'.9em'}}>Title</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.8)'/></p><p style={{fontSize:'.9em'}}>Subtitle</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Large text</p></button>
 
         <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
+        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>List items</p>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setBulletList}><p className='p-listblockchange'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setOrderedList}><p className='p-listblockchange'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
       </div>
@@ -141,12 +150,13 @@ export function NodeList({
     }
     {showColor.active ?
       <div className='div-listbox' ref={colorRef}
-      style={{position:'absolute', zIndex:2, left: nodeLeft+120, top: colorTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
+      style={{position:'absolute', zIndex:2, left: nodeLeft+120, top: colorTop.top, height:colorTop.divHeight, width:'120px', padding:'2px', flexDirection:'column', overflowY:'scroll'}}>
 
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={clearFormatting}><p className='p-listcolor' style={{color:'#000000'}}>X</p><p style={{fontSize:'.9em'}}>Clear</p></button>
 
         <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
+        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text color</p>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorDefault}><p className='p-listcolor' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGrey}><p className='p-listcolor' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorRed}><p className='p-listcolor' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
@@ -158,6 +168,7 @@ export function NodeList({
 
         <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
+        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text background</p>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillDefault}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGrey}><p className='p-listcolor' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillRed}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
