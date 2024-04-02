@@ -9,7 +9,7 @@ const Paragraph = (props) => {
 
     return (
     <>
-    <NodeViewWrapper className="paragraph" style={{padding:'5px 0 5px 0', fontSize: '.9em'}}>
+    <NodeViewWrapper className="paragraph" style={{padding:'5px 0 5px 0', fontSize: '1em'}}>
       <NodeViewContent className="content" />
     </NodeViewWrapper>
     </>

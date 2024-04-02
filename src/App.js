@@ -11,7 +11,7 @@ class App extends React.Component {
     super();
     this.state = {
       menuOpen:false,
-      fontStyle:'Arial',
+      fontStyle:'Pt Sans',
     }
   }
   handleMenu(){
@@ -27,8 +27,9 @@ class App extends React.Component {
       <div className='App'>
 
         {this.state.menuOpen ?
-        <Menu setDefault={()=>{this.setState({fontStyle:'Arial'})}}
-        setSerif={()=>{this.setState({fontStyle:'Publico Text'})}} close={()=>{this.setState({menuOpen:false})}}>
+        <Menu setDefault={()=>{this.setState({fontStyle:'Pt Sans'})}}
+        setSerif={()=>{this.setState({fontStyle:'Pt Serif'})}}
+        setMono={()=>{this.setState({fontStyle:'Pt Mono'})}} close={()=>{this.setState({menuOpen:false})}}>
         </Menu>
          : null}
 

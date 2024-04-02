@@ -30,8 +30,10 @@ import './Css/Page.css'
 
 //icons
 import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoRepoPush } from "react-icons/go";
-import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
+import { TbCopy, TbTrash, TbChevronDown, TbPlus } from "react-icons/tb";
 import { GripVertical, Plus, Heading1, Heading2, List, ListOrdered, Pilcrow } from 'lucide-react';
+
+import { FiEdit3 } from "react-icons/fi";
 
 const ipcRenderer = window.require("electron").ipcRenderer;
 
@@ -122,17 +124,17 @@ export function NodeList({
     <div className='div-listclose' onClick={close}></div>
     {showBlockChange.active ?
       <div className='div-listbox' ref={blockChangeRef}
-      style={{position:'absolute', zIndex:2, left: nodeLeft-20, top: blockChangeTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
+      style={{position:'absolute', zIndex:2, left: nodeLeft-10, top: blockChangeTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
 
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Pilcrow size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Text</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading1 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 1</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 2</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 3</p></button>
+        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange'><Pilcrow size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Text</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange'><Heading1 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 1</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange'><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 2</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange'><Heading2 size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Heading 3</p></button>
 
-        <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
+        <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setBulletList}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setOrderedList}><p className='p-listblockchange' style={{color:'rgb(0, 0, 0)'}}><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setBulletList}><p className='p-listblockchange'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
+        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setOrderedList}><p className='p-listblockchange'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
       </div>
 
       : null
@@ -142,8 +144,8 @@ export function NodeList({
       style={{position:'absolute', zIndex:2, left: nodeLeft+120, top: colorTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
 
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={clearFormatting}><p className='p-listcolor' style={{color:'#000000'}}>X</p><p style={{fontSize:'.9em'}}>Clear</p></button>
-        
-        <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
+
+        <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorDefault}><p className='p-listcolor' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGrey}><p className='p-listcolor' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
@@ -154,7 +156,7 @@ export function NodeList({
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorPurple}><p className='p-listcolor' style={{color:'rgb(90, 80, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorViolet}><p className='p-listcolor' style={{color:'rgb(200, 80, 190)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
 
-        <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
+        <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillDefault}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGrey}><p className='p-listcolor' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
@@ -172,17 +174,12 @@ export function NodeList({
 
       <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleBlockChange()}}>Text <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
 
-      <div className='divider-y'></div>
-
       <button className='btn-list' style={{height: '27px', minWidth:'22px', fontWeight:800, fontSize:'.7em'}} onClick={setBold}>B</button>
       <button className='btn-list' style={{height: '27px', minWidth:'18px', fontWeight:400, fontStyle:'italic', fontSize:'.7em'}} onClick={setItalic}>i</button>
       <button className='btn-list' style={{height: '27px', minWidth:'21px', fontWeight:400, textDecoration:'underline', fontSize:'.7em'}} onClick={setUnderline}>U</button>
       <button className='btn-list' style={{height: '27px', minWidth:'21px', fontWeight:400, textDecoration:'line-through', fontSize:'.7em'}} onClick={setStrike}>S</button>
-      <div className='divider-y'></div>
 
       <button className='btn-list' style={{height: '27px', minWidth:'40px', fontSize:'.8em'}} onClick={()=>{handleColor()}}>A <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
-
-      <div className='divider-y'></div>
 
       <button className='btn-list' style={{height: '27px', minWidth:'fit-content'}}><TbCopy size={14}/></button>
       <button className='btn-list' style={{borderTopRightRadius:'4px', borderBottomRightRadius:'4px', height: '27px', minWidth:'fit-content'}} onClick={deleteSelection}><TbTrash size={14}/></button>
@@ -395,12 +392,12 @@ export default function Page({menuClick, fontStyle}) {
 
         {editor && hoveringNode.active ? 
           <>
-          <div style={{top:hoveringNode.top, left:hoveringNode.left-50, height:hoveringNode.height}} className='extension-div'>
-            <Plus className="extension-btn"
-            onClick={()=>{addNewBlock()}} size={15} strokeWidth={1.5}></Plus>
+          <div style={{top:hoveringNode.top, left:hoveringNode.left-45, height:hoveringNode.height}} className='extension-div'>
 
-          <GripVertical className="extension-btn"
-            onClick={()=>{selectNode()}} size={15} strokeWidth={1.5}></GripVertical>
+          <FiEdit3 className="extension-btn"
+            onClick={()=>{selectNode()}} size={'15px'} strokeWidth={1.5}></FiEdit3>
+
+          <div className='divider-y' style={{height:'75%'}}></div>
           </div>
           </>
         : null}

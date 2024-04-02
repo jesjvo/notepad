@@ -43,6 +43,8 @@
   box-shadow: 0 0px 1px hsl(0deg 0% 0% / 0.12),
   0 1px 4px hsl(0deg 0% 0% / 0.12),
   0 2px 8px hsl(0deg 0% 0% / 0.12);
+}.PageHeader-btn:active{
+  background-color: rgba(0, 0, 0, 0.1)
 }
 
 /*Editor*/
@@ -91,6 +93,7 @@
   position: absolute; z-index: 5;
   border: none;
 
+  gap: 5px;
   display: flex; flex-direction: row; align-items: center;
   transition: .2s;
 }
@@ -98,10 +101,12 @@
 .extension-btn{
   cursor: pointer;
   background-color: transparent; color: rgba(0, 0, 0, 0.3);
-  border: none; border-radius: 4px; padding: 2px;
+  border: none; border-radius: 4px; padding: 3px;
   transition: .1s;
 }.extension-btn:hover{
-  background-color: rgba(0, 0, 0, 0.06)
+  box-shadow: 0 0px 1px hsl(0deg 0% 0% / 0.12),
+  0 1px 4px hsl(0deg 0% 0% / 0.12),
+  0 2px 8px hsl(0deg 0% 0% / 0.12);
 }.extension-btn:active{
   background-color: rgba(0, 0, 0, 0.1)
 }
@@ -125,12 +130,11 @@
   background-color: white;
   border-radius: 4px;
   box-shadow:
-  0 0px 1px hsl(0deg 0% 0% / 0.05),
-  0 2px 4px hsl(0deg 0% 0% / 0.05),
-  0 4px 8px hsl(0deg 0% 0% / 0.05),
-  0 8px 16px hsl(0deg 0% 0% / 0.05),
-  0 16px 32px 10px hsl(0deg 0% 0% / 0.05);
-  border: solid .5px rgba(0, 0, 0, 0.05);
+  0 0px 1px hsl(0deg 0% 0% / 0.06),
+  0 2px 4px hsl(0deg 0% 0% / 0.06),
+  0 4px 8px hsl(0deg 0% 0% / 0.06),
+  0 8px 16px hsl(0deg 0% 0% / 0.06),
+  0 16px 32px 10px hsl(0deg 0% 0% / 0.06);
   display: flex;
 
   transition: .5s;
@@ -141,7 +145,7 @@
 }
 
 .btn-list{
-  background-color: transparent; color: rgba(0, 0, 0, .8);
+  background-color: transparent;
   border: none;
 }.btn-list:hover{
   background-color: rgba(0, 0, 0, 0.06)
@@ -163,7 +167,7 @@
 }
 
 .p-listcolor{
-  width:14px; height:14px;
+  width:14px; height:14px; 
   margin-left: 4px; margin-right: 8px;
   padding:2px; border-radius:4px; border: solid .5px rgba(0,0,0,.2);
 }
