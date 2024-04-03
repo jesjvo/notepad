@@ -47,6 +47,7 @@ export function NodeList({
 
   colorGrey, colorFillGrey,
   colorRed, colorFillRed,
+  colorBrown, colorFillBrown,
   colorOrange, colorFillOrange,
   colorGreen, colorFillGreen,
   colorBlue, colorFillBlue,
@@ -76,6 +77,14 @@ export function NodeList({
     else{setBlockChange({active:false})}
   }
 
+  const handleClose=()=>{
+    if(showBlockChange.active || showColor.active){
+      setBlockChange({active:false}); setColor({active:false})}
+    else{
+      close()
+    }
+  }
+
   useEffect(() => {
     setOpacity({opacity:1})
     updatePosition()
@@ -93,7 +102,10 @@ export function NodeList({
     let newTopHeight = listTop.top
 
     if(newTopHeight + height + 10 > innerHeight){
-      newTopHeight = innerHeight - (innerHeight - listTop.top) - height - nodeHeight - 10
+      newTopHeight = innerHeight - (innerHeight - listTop.top) - height - nodeHeight
+      if(newTopHeight<40){
+        newTopHeight=40
+      }
     }
     setListTop({top:newTopHeight});
 
@@ -102,7 +114,7 @@ export function NodeList({
       let newTopHeight = colorTop.top
       let divHeight = colorTop.divHeight
 
-      if(newTopHeight + height + 10 > innerHeight){
+      if(newTopHeight + height + 10 >= innerHeight){
         if(height + 10 + 40 > innerHeight){
           divHeight = innerHeight-50
           newTopHeight = 40
@@ -128,7 +140,7 @@ export function NodeList({
   return(
   <>
   <div className='div-list'>
-    <div className='div-listclose' onClick={close}></div>
+    <div className='div-listclose' onClick={()=>{handleClose()}}></div>
     {showBlockChange.active ?
       <div className='div-listbox' ref={blockChangeRef}
       style={{position:'absolute', zIndex:2, left: nodeLeft-10, top: blockChangeTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
@@ -160,6 +172,7 @@ export function NodeList({
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorDefault}><p className='p-listcolor' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGrey}><p className='p-listcolor' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorRed}><p className='p-listcolor' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
+        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorBrown}><p className='p-listcolor' style={{color:'rgb(125, 90, 70)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorOrange}><p className='p-listcolor' style={{color:'rgb(200, 120, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGreen}><p className='p-listcolor' style={{color:'rgb(90, 160, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorBlue}><p className='p-listcolor' style={{color:'rgb(60, 140, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
@@ -172,6 +185,7 @@ export function NodeList({
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillDefault}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGrey}><p className='p-listcolor' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillRed}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
+        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillBrown}><p className='p-listcolor' style={{backgroundColor:'rgba(130, 90, 75, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillOrange}><p className='p-listcolor' style={{backgroundColor:'rgb(255, 100, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGreen}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 210, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillBlue}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 100, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
@@ -224,10 +238,6 @@ export default function Page({menuClick, fontStyle}) {
           const { width } = ref.current.getBoundingClientRect()
           const { innerHeight } = window;
           ipcRenderer.send('message', width)
-          
-          width, if width is below <800,
-            set padding 100px, 100px,
-            set editor to width.
 
           if(width<800){
 
@@ -371,6 +381,7 @@ export default function Page({menuClick, fontStyle}) {
       colorDefault={()=>{editor.chain().focus().unsetColor().run()}} colorFillDefault={()=>{editor.chain().focus().unsetHighlight().run()}} /* default */
       colorGrey={()=>{editor.chain().focus().setColor('#969696').run()}} colorFillGrey={()=>{editor.chain().focus().toggleHighlight({ color: '#f0f0f0' }).run()}} /* grey */
       colorRed={()=>{editor.chain().focus().setColor('#c85050').run()}} colorFillRed={()=>{editor.chain().focus().toggleHighlight({ color: '#d200001a' }).run()}} /* red */
+      colorBrown={()=>{editor.chain().focus().setColor('#7d5a46').run()}} colorFillBrown={()=>{editor.chain().focus().toggleHighlight({ color: '#825a4b1a' }).run()}} /* brown */
       colorOrange={()=>{editor.chain().focus().setColor('#c87850').run()}} colorFillOrange={()=>{editor.chain().focus().toggleHighlight({ color: '#ff64001a' }).run()}} /* orange */
       colorGreen={()=>{editor.chain().focus().setColor('#5aa050').run()}} colorFillGreen={()=>{editor.chain().focus().toggleHighlight({ color: '#00d2001a' }).run()}} /* green */
       colorBlue={()=>{editor.chain().focus().setColor('#3c8cc8').run()}} colorFillBlue={()=>{editor.chain().focus().toggleHighlight({ color: '#0064d21a' }).run()}} /* blue */
