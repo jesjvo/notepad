@@ -424,7 +424,9 @@ export default function Page({menuClick, fontStyle}) {
           </>
         : null}
       
-        <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={false} ref={ref} className='Editor'/>
+        <div className='editor-center'>
+          <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={false} ref={ref} className='Editor'/>
+        </div>
         </div>
     </div>
     )

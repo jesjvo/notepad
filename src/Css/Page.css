@@ -9,6 +9,7 @@
 .PageInterface{
   width: 100%; height: 100%;
   display: flex; flex-direction: column;
+
 }
 
 .PageHeader{
@@ -49,10 +50,14 @@
 }
 
 /*Editor*/
+.editor-center{
+  width: 100vw; height: calc(100vh - 40px);
+
+  display: flex; flex-direction: column; align-items: center;
+}
 
 .tiptap{
-  padding: 0 100px 0 100px;
-  height: calc(100vh - 40px); width: calc(100vw - 200px);
+  height: calc(100vh - 40px); width: calc(100vw - 200px); max-width: 600px;
   overflow-y: scroll; outline: none;
   color: rgba(0, 0, 0, .8);
 }
