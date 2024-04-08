@@ -6,7 +6,7 @@ export default Node.create({
 
   name: "title",
   priority: 1000,
-  defaultOptions: {
+  addOptions: {
     HTMLAttributes: {
     }
   },

@@ -5,7 +5,7 @@ import Paragraph from "../Blocks/Paragraph";
 export default Node.create({
   name: "paragraph",
   priority: 1000,
-  defaultOptions: {
+  addOptions: {
     HTMLAttributes: {
     }
   },

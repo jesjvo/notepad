@@ -7,9 +7,7 @@ import { RiFontSans, RiFontSansSerif } from "react-icons/ri";
 import { TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbTrash, TbWorldUpload } from "react-icons/tb";
 import { IoWarningOutline, IoCheckmarkOutline } from "react-icons/io5";
 
-const ipcRenderer = window.require("electron").ipcRenderer;
-
-export default function Menu({close, setSerif, setDefault}){
+export default function Menu({close, setSerif, setDefault, characterCount}){
 
   const [display, setDisplay] = useState({opacity:0, height:'fit-content'})
   const [isSaved, setSave] = useState({saved:false})
@@ -49,14 +47,15 @@ export default function Menu({close, setSerif, setDefault}){
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>File Configuration</p>
             <button className='menu-settingbtn'><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
             <button className='menu-settingbtn'><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File</button>
-            <button className='menu-settingbtn'><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File {isSaved.saved ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
-            <button className='menu-settingbtn'><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File {isSaved.saved ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
+            <button className='menu-settingbtn'><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File {isSaved.saved || characterCount<=0 ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
+            <button className='menu-settingbtn'><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File {isSaved.saved || characterCount<=0 ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <button className='menu-settingbtn'><TbTrash size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Delete</button>
 
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
-            <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>File information</p>
+            <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>File Information</p>
+            <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
             <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Updated</button>
             <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created</button>
 
@@ -64,8 +63,8 @@ export default function Menu({close, setSerif, setDefault}){
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>
             <button className='menu-settingbtn'><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check</button>
             <button className='menu-settingbtn'><TbWorldUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Backups</button>
-            <button className='menu-settingbtn'><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh {isSaved.saved ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
-            <button className='menu-settingbtn'><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit {isSaved.saved ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
+            <button className='menu-settingbtn'><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh {isSaved.saved || characterCount<=0 ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
+            <button className='menu-settingbtn'><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit {isSaved.saved || characterCount<=0 ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
           </div>
         </div>
     </div>

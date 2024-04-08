@@ -12,8 +12,14 @@ class App extends React.Component {
     this.state = {
       menuOpen:false,
       fontStyle:'Pt Sans',
+      characterCount: null,
     }
+    this.handleCharacterCount = this.handleCharacterCount.bind(this);
   }
+  handleCharacterCount(characterCount){
+    this.setState({ characterCount });
+  }
+
   handleMenu(){
     if(!this.state.menuOpen){
       this.setState({menuOpen:true})
@@ -29,12 +35,13 @@ class App extends React.Component {
         {this.state.menuOpen ?
         <Menu setDefault={()=>{this.setState({fontStyle:'Pt Sans'})}}
         setSerif={()=>{this.setState({fontStyle:'Pt Serif'})}}
-        setMono={()=>{this.setState({fontStyle:'Pt Mono'})}} close={()=>{this.setState({menuOpen:false})}}>
+        setMono={()=>{this.setState({fontStyle:'Pt Mono'})}} close={()=>{this.setState({menuOpen:false})}}
+        characterCount={this.state.characterCount}>
         </Menu>
          : null}
 
         <div className='Content'>
-          <Page fontStyle={this.state.fontStyle} menuClick={()=>{this.handleMenu()}}></Page>
+          <Page onCharacterCount={this.handleCharacterCount} fontStyle={this.state.fontStyle} menuClick={()=>{this.handleMenu()}}></Page>
         </div>
       </div>
     )

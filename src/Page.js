@@ -35,8 +35,6 @@ import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
 
-const ipcRenderer = window.require("electron").ipcRenderer;
-
 export function NodeList({
   close, nodeLeft, nodeTop, nodeHeight,
   colorDefault, colorFillDefault, clearFormatting, deleteSelection,
@@ -87,13 +85,12 @@ export function NodeList({
 
   useEffect(() => {
     setOpacity({opacity:1})
-    updatePosition()
     const interval = setInterval(() => {
       updatePosition()
     }, 250);
 
     return () => clearInterval(interval);
-  } , []);
+  }, []);
 
   const updatePosition = () => {
     const { height } = ref.current.getBoundingClientRect()
@@ -214,43 +211,15 @@ export function NodeList({
   )
 }
 
-export default function Page({menuClick, fontStyle}) {
+export default function Page({menuClick, fontStyle, onCharacterCount}) {
+  
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
 
-  const [fileName, setFileName] = useState({fileOpen:false, fileName:'Untitled'})
+  const [fileName] = useState({fileOpen:false, fileName:'Untitled'})
   const [isFavorite, setFavorite] = useState({isFavorite:false})
 
-  const [editorDimensions, setEditorDimensions] = useState({})
-
   const ref = useRef(null);
-
-  /*
-  useEffect(() => {
-    const interval = setInterval(() => {
-    EditorDimensions()
-    }, 500);
-    return () => clearInterval(interval);
-  } , []);
-
-  const EditorDimensions = () => {
-      try{
-          const { width } = ref.current.getBoundingClientRect()
-          const { innerHeight } = window;
-          ipcRenderer.send('message', width)
-
-          if(width<800){
-
-          }
-
-          if(width>800){
-
-          }
-          
-      }
-      catch{}
-  }
-  */
 
   const editor = useEditor({
     onSelectionUpdate(){
@@ -258,7 +227,6 @@ export default function Page({menuClick, fontStyle}) {
     },
     onUpdate(){
       updateSelection()
-      ipcRenderer.send("message", editor.getHTML())
     },
 
     extensions: [
@@ -301,20 +269,18 @@ export default function Page({menuClick, fontStyle}) {
 
   const updateSelection=()=>{
     try {
-      const {$from, $to, from, to} = editor.state.selection
+      const {$from, from, to} = editor.state.selection
       if($from.parent.isBlock ){
         const node = editor.view.nodeDOM($from.before($from.depth))
         if(node){
           const rect = node.getBoundingClientRect(); 
-          
-          ipcRenderer.send('message', `Top : ${rect.top}, Left : ${rect.left}, Height : ${rect.height}, Width : ${rect.width}`)
 
           const text = editor.state.doc.textBetween(from, to, ' ').length
           if(text>=1){setSelectedNode({active:true})}
           else{setSelectedNode({active:false})}
-
-          let Left = rect.left; let Top = rect.top
-          let Height = rect.height; let Width = rect.width
+          
+          let Top = rect.top; let Left = rect.left;
+          let Width = rect.width; let Height = rect.height;
 
           if(editor.isActive('bulletList') || editor.isActive('orderedList')){Left-=15}
           
@@ -338,12 +304,6 @@ export default function Page({menuClick, fontStyle}) {
     }
   }
 
-  const addNewBlock=()=>{
-    const { $to } = editor.state.selection;
-    editor.commands.focus($to.end())
-    editor.chain().insertContentAt($to.end(), {type: "paragraph"}).focus($to.end()).run()
-  }
-
   const selectNode=()=>{
     const { $to } = editor.state.selection;
     editor.commands.setTextSelection({ from: $to.start(), to: $to.end()})
@@ -355,6 +315,13 @@ export default function Page({menuClick, fontStyle}) {
       setFavorite({isFavorite:true})}
     else{setFavorite({isFavorite:false})}
   }
+
+  const handleMenu=()=>{
+    onCharacterCount(editor.storage.characterCount.words())
+    menuClick()
+  }
+
+  
 
   if (!editor) {
     return null
@@ -407,7 +374,7 @@ export default function Page({menuClick, fontStyle}) {
               <div className='divider-y' style={{height:'50%'}}></div>
 
               <button className='PageHeader-btn' onClick={()=>{handleFavorite()}}>{isFavorite.isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
-              <button className='PageHeader-btn' style={{zIndex:25}} onClick={menuClick}><GoKebabHorizontal size={14}/></button>
+              <button className='PageHeader-btn' style={{zIndex:25}} onClick={handleMenu}><GoKebabHorizontal size={14}/></button>
               <div style={{marginRight:'10px'}}></div>
             </div>
           </div>
