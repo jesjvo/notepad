@@ -35,6 +35,15 @@ import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
 
+//global functions
+async function handleApplicationMessage(request, promise){
+  const { myApp } = window
+  if(request==='upload-file'){
+  const uploadFile = await myApp.uploadFile(promise);
+  }
+}
+
+//node list (editor node/block manipulation)
 export function NodeList({
   close, nodeLeft, nodeTop, nodeHeight,
   colorDefault, colorFillDefault, clearFormatting, deleteSelection,
@@ -165,7 +174,7 @@ export function NodeList({
 
         <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
-        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text color</p>
+        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Color</p>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorDefault}><p className='p-listcolor' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGrey}><p className='p-listcolor' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorRed}><p className='p-listcolor' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
@@ -178,7 +187,7 @@ export function NodeList({
 
         <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
 
-        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text background</p>
+        <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Background Color</p>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillDefault}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGrey}><p className='p-listcolor' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
         <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillRed}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
@@ -211,6 +220,7 @@ export function NodeList({
   )
 }
 
+//page (main editor)
 export default function Page({menuClick, fontStyle, onCharacterCount}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
@@ -320,9 +330,7 @@ export default function Page({menuClick, fontStyle, onCharacterCount}) {
     onCharacterCount(editor.storage.characterCount.words())
     menuClick()
   }
-
   
-
   if (!editor) {
     return null
   }
@@ -365,7 +373,7 @@ export default function Page({menuClick, fontStyle, onCharacterCount}) {
 
               <div className='divider-y' style={{height:'50%'}}></div>
 
-              <button className='PageHeader-btn'><GoRepoPush size={14}/></button>
+              <button className='PageHeader-btn'><GoRepoPush onClick={()=>{handleApplicationMessage('upload-file', JSON.stringify(editor.getJSON()))}} size={14}/></button>
             </div>
             <div className='PageHeader-right'>
               <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
@@ -400,9 +408,6 @@ export default function Page({menuClick, fontStyle, onCharacterCount}) {
 }
 
 /* NEED TO BE DONE?
-
-- the 'more' button in editor opens tab in App.js, showing all features.
-  - will include folders button, serif/sans-serif button, favorite, word count, date of last updated, date of creation, author (if optional).
   
 - the 'Untitled' button, used for fileNames, if clicked will show a tab in App.js of all the files in current folder.
    - will include two sections, one is of all files, another is of just favorites.

@@ -4,8 +4,6 @@ import './Css/App.css'
 import Page from './Page';
 import Menu from './Menu'
 
-//icons
-
 class App extends React.Component {
   constructor(){
     super();
@@ -31,7 +29,6 @@ class App extends React.Component {
   render(){
     return(
       <div className='App'>
-
         {this.state.menuOpen ?
         <Menu setDefault={()=>{this.setState({fontStyle:'Pt Sans'})}}
         setSerif={()=>{this.setState({fontStyle:'Pt Serif'})}}
