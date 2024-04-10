@@ -1,10 +1,10 @@
 {
-  "name": "notely",
-  "productName": "notely",
+  "name": "Notely",
+  "productName": "Notely",
   "version": "0.1.0",
   "private": true,
   "author": "Jes",
-  "description": "A simple text editor that allows basic formatting and storing files locally.",
+  "description": "",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -87,6 +87,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "electron": "^28.1.3",
     "electron-builder": "^24.9.1",
     "electron-is-dev": "^3.0.1"

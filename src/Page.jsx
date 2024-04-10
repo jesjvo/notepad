@@ -221,13 +221,10 @@ export function NodeList({
 }
 
 //page (main editor)
-export default function Page({menuClick, fontStyle, onCharacterCount}) {
+export default function Page({menuClick, fontStyle, onCharacterCount, activeFile, fileName, isFavorite, setFavorite}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
-
-  const [fileName] = useState({fileOpen:false, fileName:'Untitled'})
-  const [isFavorite, setFavorite] = useState({isFavorite:false})
 
   const ref = useRef(null);
 
@@ -320,12 +317,6 @@ export default function Page({menuClick, fontStyle, onCharacterCount}) {
     setSelectedNode({active:true})
   }
 
-  const handleFavorite=()=>{
-    if(!isFavorite.isFavorite){
-      setFavorite({isFavorite:true})}
-    else{setFavorite({isFavorite:false})}
-  }
-
   const handleMenu=()=>{
     onCharacterCount(editor.storage.characterCount.words())
     menuClick()
@@ -369,11 +360,11 @@ export default function Page({menuClick, fontStyle, onCharacterCount}) {
           <div className='PageHeader'>
             <div className='PageHeader-left'>
               <div style={{marginLeft:'10px'}}></div>
-              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName.fileName}</button>
+              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{activeFile===null ? "Untitled" : activeFile}</button>
 
               <div className='divider-y' style={{height:'50%'}}></div>
 
-              <button className='PageHeader-btn'><GoRepoPush onClick={()=>{handleApplicationMessage('upload-file', JSON.stringify(editor.getJSON()))}} size={14}/></button>
+              <button className='PageHeader-btn' onClick={()=>{handleApplicationMessage('upload-file', JSON.stringify(editor.getJSON(), null, 2))}}><GoRepoPush  size={14}/></button>
             </div>
             <div className='PageHeader-right'>
               <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
@@ -381,7 +372,7 @@ export default function Page({menuClick, fontStyle, onCharacterCount}) {
 
               <div className='divider-y' style={{height:'50%'}}></div>
 
-              <button className='PageHeader-btn' onClick={()=>{handleFavorite()}}>{isFavorite.isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
+              <button className='PageHeader-btn' onClick={setFavorite}>{isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
               <button className='PageHeader-btn' style={{zIndex:25}} onClick={handleMenu}><GoKebabHorizontal size={14}/></button>
               <div style={{marginRight:'10px'}}></div>
             </div>

@@ -11,9 +11,12 @@ class App extends React.Component {
       menuOpen:false,
       fontStyle:'Pt Sans',
       characterCount: null,
+      isFavorite:false,
+      activeFile:null,
     }
     this.handleCharacterCount = this.handleCharacterCount.bind(this);
   }
+
   handleCharacterCount(characterCount){
     this.setState({ characterCount });
   }
@@ -23,6 +26,14 @@ class App extends React.Component {
       this.setState({menuOpen:true})
     }else{
       this.setState({menuOpen:false})
+    }
+  }
+
+  setFavorite(){
+    if(!this.state.isFavorite){
+      this.setState({isFavorite:true})
+    }else{
+      this.setState({isFavorite:false})
     }
   }
 
@@ -38,7 +49,8 @@ class App extends React.Component {
          : null}
 
         <div className='Content'>
-          <Page onCharacterCount={this.handleCharacterCount} fontStyle={this.state.fontStyle} menuClick={()=>{this.handleMenu()}}></Page>
+          <Page onCharacterCount={this.handleCharacterCount} fontStyle={this.state.fontStyle} menuClick={()=>{this.handleMenu()}}
+          setFavorite={()=>{this.setFavorite()}} isFavorite={this.state.isFavorite} activeFile={this.state.activeFile}></Page>
         </div>
       </div>
     )

@@ -37,7 +37,7 @@
 /* content */
 
 .menu-fontdiv{
-    width: 200px; min-height: 50px;
+    width: 200px; min-height: 65px;
     background-color: transparent;
     border-radius: 4px;
 
@@ -48,7 +48,7 @@
 .menu-fontbtn{
     background-color: transparent;
     color: rgba(0, 0, 0, 0.6);
-    width: 90px; min-height: 50px;
+    width: 90px; min-height: 65px;
 
     box-shadow:0 0px 1px hsl(0deg 0% 0% / 0.06),
     0 1px 4px hsl(0deg 0% 0% / 0.06),
