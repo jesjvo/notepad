@@ -36,10 +36,10 @@ import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
 
 //global functions
-async function handleApplicationMessage(request, promise){
-  const { myApp } = window
+async function handleApplicationMessage(request, fileContent){
+  const { api } = window
   if(request==='upload-file'){
-  const uploadFile = await myApp.uploadFile(promise);
+      const uploadFile = await api.uploadFile(fileContent);
   }
 }
 
@@ -98,7 +98,7 @@ export function NodeList({
       updatePosition()
     }, 250);
 
-    return () => clearInterval(interval);
+    return () => {setOpacity({opacity:0}); clearInterval(interval);}
   }, []);
 
   const updatePosition = () => {
@@ -121,8 +121,8 @@ export function NodeList({
       let divHeight = colorTop.divHeight
 
       if(newTopHeight + height + 10 >= innerHeight){
-        if(height + 10 + 40 > innerHeight){
-          divHeight = innerHeight-50
+        if(height + 10 + 44 > innerHeight){
+          divHeight = innerHeight-54
           newTopHeight = 40
         }else{
           divHeight = 'fit-content'
@@ -221,7 +221,7 @@ export function NodeList({
 }
 
 //page (main editor)
-export default function Page({menuClick, fontStyle, onCharacterCount, activeFile, fileName, isFavorite, setFavorite}) {
+export default function Page({menuClick, onCharacterCount, fontStyle, fileName, isFavorite, setFavorite, spellCheck}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
@@ -355,12 +355,11 @@ export default function Page({menuClick, fontStyle, onCharacterCount, activeFile
       colorViolet={()=>{editor.chain().focus().setColor('#c850be').run()}} colorFillViolet={()=>{editor.chain().focus().toggleHighlight({ color: '#d250d21a' }).run()}} /* red */
       />
       : null}
-
         <div className='PageInterface'>
           <div className='PageHeader'>
             <div className='PageHeader-left'>
               <div style={{marginLeft:'10px'}}></div>
-              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{activeFile===null ? "Untitled" : activeFile}</button>
+              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName===null ? 'Untitled' : fileName}</button>
 
               <div className='divider-y' style={{height:'50%'}}></div>
 
@@ -391,7 +390,7 @@ export default function Page({menuClick, fontStyle, onCharacterCount, activeFile
         : null}
       
         <div className='editor-center'>
-          <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={false} ref={ref} className='Editor'/>
+          <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={spellCheck} ref={ref} className='Editor'/>
         </div>
         </div>
     </div>

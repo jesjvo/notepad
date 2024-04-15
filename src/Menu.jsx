@@ -4,25 +4,31 @@ import './Css/Menu.css'
 
 //icons
 import { RiFontSans, RiFontSansSerif } from "react-icons/ri";
-import { TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbTrash, TbWorldUpload } from "react-icons/tb";
+import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbTextCaption, TbTrash, TbWorldUpload } from "react-icons/tb";
 import { IoWarningOutline, IoCheckmarkOutline } from "react-icons/io5";
 
 //global functions
 async function handleApplicationMessage(request, promise){
-  const { myApp } = window
+  const { api } = window
+  
   if(request==='exit-application'){
-  const closeApplication = await myApp.exitApplication(promise);
+    await api.exitApplication(promise);
   }
+
   if(request==='refresh-application'){
-    const refreshApplication = await myApp.refreshApplication(promise);
-    }
+    await api.refreshApplication(promise);
+  }
+
+  if(request==='open-recovery'){
+    await api.openRecovery(promise);
+  }
 }
 
 //memu (editor settings)
 export default function Menu({close, setSerif, setDefault, characterCount}){
 
   const [display, setDisplay] = useState({opacity:0, height:'fit-content'})
-  const [isSaved, setSave] = useState({saved:false})
+  const [isSaved, setSave] = useState({saved:false}) //needs to be looked at and configured
   const ref = useRef(null);
 
   useEffect(() => {
@@ -38,7 +44,7 @@ export default function Menu({close, setSerif, setDefault, characterCount}){
     const { height } = ref.current.getBoundingClientRect()
     const { innerHeight } = window;
 
-  if(height + 50 >= innerHeight){
+  if(height + 60 >= innerHeight){
     setDisplay({height:innerHeight - 60})
   }else{
     setDisplay({height:'fit-content'})
@@ -67,14 +73,14 @@ export default function Menu({close, setSerif, setDefault, characterCount}){
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>File Information</p>
-            <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
+            <button className='menu-settingbtn'><TbTextCaption size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
             <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Updated</button>
-            <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created</button>
+            <button className='menu-settingbtn'><TbCalendar size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created</button>
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>
             <button className='menu-settingbtn'><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check</button>
-            <button className='menu-settingbtn'><TbWorldUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Recovery</button>
+            <button className='menu-settingbtn' onClick={()=>{handleApplicationMessage('open-recovery', true)}}><TbWorldUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Recovery</button>
             <button className='menu-settingbtn' onClick={()=>{handleApplicationMessage('refresh-application', true)}}><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh {isSaved.saved || characterCount<=0 ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
             <button className='menu-settingbtn' onClick={()=>{handleApplicationMessage('exit-application', true)}}><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit {isSaved.saved || characterCount<=0 ? <IoCheckmarkOutline style={{position:'absolute', right:'20px'}} size={17} color='green'/> : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
           </div>

@@ -32,7 +32,7 @@
   width: 50%; height: 35;
 
   gap: 5px;
-  display: flex; flex-direction: row; align-items: center; justify-content: end;
+  display: flex; flex-direction: row; align-items: center; justify-content: flex-end;
 }
 
 .PageHeader-btn{
@@ -164,7 +164,7 @@
 .btn-listcolor{
   background-color: transparent;
   border: none; border-radius: 4px;
-  display: flex; justify-content: start; align-items: center;
+  display: flex; justify-content: flex-start; align-items: center;
 }.btn-listcolor:hover{
   background-color: rgba(0, 0, 0, 0.06)
 }

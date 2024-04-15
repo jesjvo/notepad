@@ -1,46 +1,78 @@
-const { app, BrowserWindow, ipcMain  } = require('electron/main');
+const { app, BrowserWindow, ipcMain, shell, screen  } = require('electron/main');
 const fs = require('node:fs')
 const path = require('node:path')
 
-const folder = path.join(app.getPath('appData'), 'Notely')
-const Recovery = path.join(folder, 'Recovery')
-const Settings = path.join(folder, 'Settings')
+const folder = path.join(app.getPath('appData'), 'notely')
+const recovery = path.join(folder, 'Recovery')
+const settingPreferences = path.join(folder, 'SettingPreferences.json')
 
-const SettingPreference = path.join(Settings, 'SettingPreference.json')
-const FileDependent = path.join(Settings, 'FileDependent.json')
+var lastOpened = null //current last opened
 
-//updated upon closing application & refreshing.
-const settingStructure=
+//setting structure (handles last opened file and all file paths initiated)
+const settingStructure =
 { 
-  activeFile:null,
-  lastOpened:null,
-  windowSize:null,
+  lastOpened:null, //the file path
+  files:{
+      path:null,
+    }
 }
 
-const fileStructure=
+//default file structure (handles null factored files, or -> default editor settings (unsaved file))
+const defaultFileStructure =
 {
-  path:[ //each opened/saved file includes <--
+  preferences:
     {
-      name:null,
+      name:'Untitled',
       isFavorite:false,
       date:{
         updatedLast:null,
-        creationDate:null,
+        createdDate:null,
       },
       fontStyle:'Pt Sans',
-    }
-  ]
+      spellCheck:true,
+    },
+  content:{
+    //content of editor
+  }
 }
 
-console.log('File Structure\n', JSON.stringify(FileDependentStructure, null, 2))
+const checkFolders=()=>{
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder), (err) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log('Directory :: Notely Created~');
+    };
+  }
+  if (!fs.existsSync(recovery)) {
+    fs.mkdirSync(recovery), (err) => {
+      if (err) {
+          console.log(err);
+      }
+      console.log('Directory :: Recovery Created~');
+    };
+  }
+  if (!fs.existsSync(settingPreferences)) {
+    fs.writeFileSync(settingPreferences, JSON.stringify(settingStructure, null, 2), (err) => {
+      if (err)
+        console.log(err);
+      else {
+        console.log("File :: Setting Preferences Created~");
+      }
+    });
+  }
+  const settingPreferencesResult = JSON.parse(fs.readFileSync(settingPreferences, 'utf8'));
+  lastOpened = settingPreferencesResult.lastOpened
+}
+
+checkFolders()
 
 let mainWindow;
 app.on("ready", () => {
     mainWindow = new BrowserWindow({
         frame:false,
         minWidth: 380, minHeight: 320,
-        width:380,
-        height:320,
         webPreferences: {
             nodeIntegration:false,
             contextIsolation:true,
@@ -53,9 +85,8 @@ app.on("ready", () => {
         }
     );
 
-    //mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools() //temporary
     mainWindow.loadURL('http://localhost:3000') //temporary
-
 
     console.log(`\nExit [CMD + C]\n`, '\n__dirname', __dirname, '\n__filename', __filename, '\n__appPath', app.getAppPath(), '\n__appData', app.getPath('appData'))
     console.log('\nPreload File Located : ', path.join(__dirname, 'preload.js'))
@@ -89,49 +120,27 @@ ipcMain.handle('refresh-application', (event, refreshCode) => {
   }
 })
 
-//Handle receiving files (for files list)
-/*
-  1. 
-*/
-
-//Handle receiving file information (for menu with active file)
-/*
-  1. current file's -> path (for rename), creation date, last updated, 
-*/
-
-//Handle open file
-/*
-  1. electron opens 'open file'
-  2. the file selected is analysed (.json)
-  3. if correct, replaces current file or untitled
-  4. inserting content and changing current file to file selected
-*/
-
-//Handle new file
-/*
-  1. clear text editor
-  2. clear current file, change to ('untitled')
-*/
-
-//Handle uploading files
-/*
- 1. check if file is "a file" or "untitled" (if file is in list of files or isn't)
- 2. a) if file "is file" -> continue
- 2. b) else is file "untitled" -> create new file (with electron save file)
- 3. save content into "file"
-*/
-ipcMain.handle('upload-to-file', (event, content) => {
-  const file = path.join(__dirname, 'File.json')
-  fs.writeFileSync(file, content, err => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(`\nSystem- Successfull File Written ::\n-> {\n`,content,'\n} <-\n')
-    }
-  });
+//Open Recovery
+ipcMain.handle('open-recovery', (event, openCode) => {
+  if(openCode){
+    shell.openPath(recovery)
+  }
 })
-/*
 
-File Management ---> AppData Path
+//Saving File
+ipcMain.handle('upload-to-file', (event, fileContent) => {
+  console.log(fileContent)
+  //working -> to upload to file.
+})
 
-*/
+//Opening Application
+ipcMain.handle('open-application', (event, openingCode) => {
+  if(openingCode){
+    if(fs.existsSync(lastOpened)) {
+      const lastOpenedResult = JSON.parse(fs.readFileSync(lastOpened, 'utf8'));
+      return lastOpenedResult
+    }else{
+      return defaultFileStructure
+    }
+  }
+})
