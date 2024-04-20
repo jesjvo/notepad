@@ -1,0 +1,26 @@
+{
+  "preferences": {
+    "name": "True",
+    "isFavorite": true,
+    "date": {
+      "updatedLast": null,
+      "createdDate": null
+    },
+    "fontStyle": "Pt Sans",
+    "spellCheck": true,
+    "content": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "asd"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

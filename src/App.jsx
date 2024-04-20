@@ -4,8 +4,20 @@ import './Css/App.css'
 import Page from './Page';
 import Menu from './Menu'
 
-async function handleApplicationMessage(request, openingCode){
+async function handleApplicationMessage(request, openingCode, promise){
   const { api } = window
+
+  if(request==='upload-file'){
+    const uploadFile = await api.uploadFile(openingCode, promise);
+  }
+
+  if(request==='change-font'){
+    await api.changeFont(openingCode, promise);
+  }
+
+  if(request==='change-favorite'){
+    await api.changeFavorite(openingCode, promise);
+  }
   
   if(request==='open-application'){
     const result = await api.openApplication(openingCode);
@@ -20,37 +32,40 @@ class App extends React.Component {
       menuOpen:false,
       characterCount: null,
 
-      preferences: //loaded in through 'component did mount'
-        {
-          name:null,
-          isFavorite:false,
-          date:{
-            updatedLast:null,
-            createdDate:null,
-          },
-          fontStyle:'Pt Sans',
-          spellCheck:true,
+      preferences:
+      {
+        name:'Untitled',
+        isFavorite:false,
+        date:{
+          updatedLast:null,
+          createdDate:null,
         },
+        fontStyle:'Pt Sans',
+        spellCheck:true,  
+      },
+
     }
     this.handleCharacterCount = this.handleCharacterCount.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
   }
 
   componentDidMount(){
-    //receive data from opening application
-
-    //first get 'last opened file'
-    //and pass it through the --> filePreferencesResult
     const filePreferencesResult = handleApplicationMessage('open-application', true)
-    filePreferencesResult.then(function(result) {
-    console.log(result)
-      
-      // result includes --> name, isFavorite, updatedLast, createdDate, fontStyle, spellCheck, content
-      // then updating states using the information,
-  });
+
+    filePreferencesResult.then(function(preferences) {
+      return preferences
+
+    }).then((preferences) => {
+      this.setState(preferences)
+    })
   }
 
   handleCharacterCount(characterCount){
     this.setState({ characterCount });
+  }
+
+  handleUpdate(fileContent){
+    handleApplicationMessage('upload-file', true, fileContent)
   }
 
   handleMenu(){
@@ -62,26 +77,27 @@ class App extends React.Component {
   }
 
   setSerif(){
-    var setSerif=this.state.preferences; setSerif.fontStyle='Pt Serif'
-    this.setState({setSerif})
-    //send 'update preferences' via ipc
+    var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'
+    handleApplicationMessage('change-font', true, 'Pt Serif')
+    this.setState({preferences})
   }
 
   setDefault(){
-    var setDefault=this.state.preferences; setDefault.fontStyle='Pt Sans'
-    this.setState({setDefault})
-    //send 'update preferences' via ipc
+    var preferences=this.state.preferences; preferences.fontStyle='Pt Sans'
+    handleApplicationMessage('change-font', true, 'Pt Sans')
+    this.setState({preferences})
   }
 
   setFavorite(){
     if(!this.state.preferences.isFavorite){
-      var isFav=this.state.preferences; isFav.isFavorite=true
-      this.setState({isFav})
+      var preferences=this.state.preferences; preferences.isFavorite=true
+      handleApplicationMessage('change-favorite', true, true)
+      this.setState({preferences})
     }else{
-      isFav=this.state.preferences; isFav.isFavorite=false
-      this.setState({isFav})
+      preferences=this.state.preferences; preferences.isFavorite=false
+      handleApplicationMessage('change-favorite', true, false)
+      this.setState({preferences})
     }
-    //send 'update preferences' via ipc
   }
 
   render(){
@@ -89,7 +105,6 @@ class App extends React.Component {
       <div className='App'>
         {this.state.menuOpen ?
         <Menu
-        setMono={()=>{this.setState({fontStyle:'Pt Mono'})}}
         close={()=>{this.setState({menuOpen:false})}} characterCount={this.state.characterCount}
         
         //configure file preferences
@@ -105,6 +120,7 @@ class App extends React.Component {
 
         <div className='Content'>
           <Page onCharacterCount={this.handleCharacterCount} menuClick={()=>{this.handleMenu()}}
+                onHandleUpdate={this.handleUpdate}
 
           //configure file preferences
           setFavorite={()=>{this.setFavorite()}}

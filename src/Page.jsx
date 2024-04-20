@@ -35,14 +35,6 @@ import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
 
-//global functions
-async function handleApplicationMessage(request, fileContent){
-  const { api } = window
-  if(request==='upload-file'){
-      const uploadFile = await api.uploadFile(fileContent);
-  }
-}
-
 //node list (editor node/block manipulation)
 export function NodeList({
   close, nodeLeft, nodeTop, nodeHeight,
@@ -221,7 +213,7 @@ export function NodeList({
 }
 
 //page (main editor)
-export default function Page({menuClick, onCharacterCount, fontStyle, fileName, isFavorite, setFavorite, spellCheck}) {
+export default function Page({menuClick, onCharacterCount, fontStyle, fileName, isFavorite, setFavorite, spellCheck, onHandleUpdate}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
@@ -321,6 +313,10 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
     onCharacterCount(editor.storage.characterCount.words())
     menuClick()
   }
+
+  const handleUpload=()=>{
+    onHandleUpdate(editor.getJSON())
+  }
   
   if (!editor) {
     return null
@@ -359,11 +355,11 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
           <div className='PageHeader'>
             <div className='PageHeader-left'>
               <div style={{marginLeft:'10px'}}></div>
-              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName===null ? 'Untitled' : fileName}</button>
+              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName}</button>
 
               <div className='divider-y' style={{height:'50%'}}></div>
 
-              <button className='PageHeader-btn' onClick={()=>{handleApplicationMessage('upload-file', JSON.stringify(editor.getJSON(), null, 2))}}><GoRepoPush  size={14}/></button>
+              <button className='PageHeader-btn' onClick={handleUpload}><GoRepoPush  size={14}/></button>
             </div>
             <div className='PageHeader-right'>
               <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>

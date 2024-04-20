@@ -8,7 +8,6 @@ const settingPreferences = path.join(folder, 'SettingPreferences.json')
 
 var lastOpened = null //current last opened
 
-//setting structure (handles last opened file and all file paths initiated)
 const settingStructure =
 { 
   lastOpened:null, //the file path
@@ -17,53 +16,42 @@ const settingStructure =
     }
 }
 
-//default file structure (handles null factored files, or -> default editor settings (unsaved file))
 const defaultFileStructure =
 {
   preferences:
     {
-      name:'Untitled',
+      name:"Untitled",
       isFavorite:false,
       date:{
         updatedLast:null,
-        createdDate:null,
+        createdDate:null
       },
-      fontStyle:'Pt Sans',
+      fontStyle:"Pt Sans",
       spellCheck:true,
-    },
-  content:{
-    //content of editor
+      content:{
+      //content of editor
+    }
   }
 }
 
 const checkFolders=()=>{
   if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder), (err) => {
-        if (err) {
-            console.log(err);
-        }
-        console.log('Directory :: Notely Created~');
-    };
+    fs.mkdirSync(folder)
+    console.log('Notely Folder Created~');
   }
   if (!fs.existsSync(recovery)) {
-    fs.mkdirSync(recovery), (err) => {
-      if (err) {
-          console.log(err);
-      }
-      console.log('Directory :: Recovery Created~');
-    };
+    fs.mkdirSync(recovery)
+    console.log('Recovery Folder Created');
   }
   if (!fs.existsSync(settingPreferences)) {
-    fs.writeFileSync(settingPreferences, JSON.stringify(settingStructure, null, 2), (err) => {
-      if (err)
-        console.log(err);
-      else {
-        console.log("File :: Setting Preferences Created~");
-      }
-    });
+    fs.writeFileSync(settingPreferences, JSON.stringify(settingStructure, null, 2))
+    console.log('Setting File Created');
   }
+}
+
+const checkLastOpened=()=>{
   const settingPreferencesResult = JSON.parse(fs.readFileSync(settingPreferences, 'utf8'));
-  lastOpened = settingPreferencesResult.lastOpened
+  return settingPreferencesResult.lastOpened
 }
 
 checkFolders()
@@ -88,8 +76,7 @@ app.on("ready", () => {
     mainWindow.webContents.openDevTools() //temporary
     mainWindow.loadURL('http://localhost:3000') //temporary
 
-    console.log(`\nExit [CMD + C]\n`, '\n__dirname', __dirname, '\n__filename', __filename, '\n__appPath', app.getAppPath(), '\n__appData', app.getPath('appData'))
-    console.log('\nPreload File Located : ', path.join(__dirname, 'preload.js'))
+    console.log('\n__dirname', __dirname, '\n__filename', __filename, '\n__appPath', app.getAppPath(), '\n__appData', app.getPath('appData'))
 });
 
 //Security Risk Prvention
@@ -127,20 +114,87 @@ ipcMain.handle('open-recovery', (event, openCode) => {
   }
 })
 
-//Saving File
-ipcMain.handle('upload-to-file', (event, fileContent) => {
-  console.log(fileContent)
-  //working -> to upload to file.
+//saving file content
+ipcMain.handle('upload-to-file', (event, openCode, fileContent) => {
+
+  if(openCode){
+  //gets lastOpened
+  lastOpened=checkLastOpened()
+
+  if(fs.existsSync(lastOpened)) {
+    const updatingFile = JSON.parse(fs.readFileSync(lastOpened, 'utf8'))
+    updatingFile.preferences.content = fileContent
+
+    fs.writeFile(lastOpened, JSON.stringify(updatingFile, null, 2), function writeJSON(err) {
+      if (err) return console.log(err);
+      console.log('File Content Written');
+    });
+  }else{
+
+    //make new saveable file -> change lastOpened (in file) and here, then upload the file Content to it.
+    
+  }
+  }
 })
 
-//Opening Application
+//changing font
+ipcMain.handle('change-font', (event, openCode, fontStyle) => {
+  if(openCode){
+  //gets lastOpened
+  lastOpened=checkLastOpened()
+
+  if(fs.existsSync(lastOpened)) {
+    const updatingFile = JSON.parse(fs.readFileSync(lastOpened, 'utf8'))
+    updatingFile.preferences.fontStyle = fontStyle
+
+    fs.writeFile(lastOpened, JSON.stringify(updatingFile, null, 2), function writeJSON(err) {
+      if (err) return console.log(err);
+      console.log('Changed Font to : ' , fontStyle);
+    });
+
+  }else{
+    //if no file exists
+  }
+  }
+})
+
+//changing favorite
+ipcMain.handle('change-favorite', (event, openCode, isFavorite) => {
+  if(openCode){
+  //gets lastOpened
+  lastOpened=checkLastOpened()
+
+  if(fs.existsSync(lastOpened)) {
+    const updatingFile = JSON.parse(fs.readFileSync(lastOpened, 'utf8'))
+    updatingFile.preferences.isFavorite = isFavorite
+
+    fs.writeFile(lastOpened, JSON.stringify(updatingFile, null, 2), function writeJSON(err) {
+      if (err) return console.log(err);
+      console.log('Changed Favorite to : ' , isFavorite);
+    });
+
+  }else{
+    //if no file exists
+  }
+  }
+})
+  
+//on opening application
 ipcMain.handle('open-application', (event, openingCode) => {
   if(openingCode){
+    
+    //gets lastOpened
+    lastOpened=checkLastOpened()
+
     if(fs.existsSync(lastOpened)) {
+
       const lastOpenedResult = JSON.parse(fs.readFileSync(lastOpened, 'utf8'));
       return lastOpenedResult
+
     }else{
+
       return defaultFileStructure
+
     }
   }
 })
