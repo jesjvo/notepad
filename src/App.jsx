@@ -4,11 +4,11 @@ import './Css/App.css'
 import Page from './Page';
 import Menu from './Menu'
 
-async function handleApplicationMessage(request, openingCode, promise){
+async function handleApplicationMessage(request, openingCode, promise, preferences){
   const { api } = window
 
   if(request==='upload-file'){
-    const uploadFile = await api.uploadFile(openingCode, promise);
+    const uploadFile = await api.uploadFile(openingCode, promise, preferences);
   }
 
   if(request==='change-font'){
@@ -34,6 +34,7 @@ class App extends React.Component {
 
       preferences:
       {
+        isNewFile:true,
         name:'Untitled',
         isFavorite:false,
         date:{
@@ -65,7 +66,15 @@ class App extends React.Component {
   }
 
   handleUpdate(fileContent){
-    handleApplicationMessage('upload-file', true, fileContent)
+    if(this.state.preferences.isNewFile){
+      //if it is a new file, then it will send preferences made (for a new saved file)
+      var preferences=this.state.preferences; preferences.isNewFile=false
+      this.setState({preferences})
+      handleApplicationMessage('upload-file', true, fileContent, this.state.preferences)
+    }else{
+      //if not a new file, it only needs to upload file content
+      handleApplicationMessage('upload-file', true, fileContent)
+    }
   }
 
   handleMenu(){
@@ -78,25 +87,25 @@ class App extends React.Component {
 
   setSerif(){
     var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'
-    handleApplicationMessage('change-font', true, 'Pt Serif')
     this.setState({preferences})
+    handleApplicationMessage('change-font', true, 'Pt Serif')
   }
 
   setDefault(){
     var preferences=this.state.preferences; preferences.fontStyle='Pt Sans'
-    handleApplicationMessage('change-font', true, 'Pt Sans')
     this.setState({preferences})
+    handleApplicationMessage('change-font', true, 'Pt Sans')
   }
 
   setFavorite(){
     if(!this.state.preferences.isFavorite){
       var preferences=this.state.preferences; preferences.isFavorite=true
-      handleApplicationMessage('change-favorite', true, true)
       this.setState({preferences})
+      handleApplicationMessage('change-favorite', true, true)
     }else{
       preferences=this.state.preferences; preferences.isFavorite=false
-      handleApplicationMessage('change-favorite', true, false)
       this.setState({preferences})
+      handleApplicationMessage('change-favorite', true, false)
     }
   }
 

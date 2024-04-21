@@ -20,6 +20,7 @@ const defaultFileStructure =
 {
   preferences:
     {
+      isNewFile:true,
       name:"Untitled",
       isFavorite:false,
       date:{
@@ -28,9 +29,9 @@ const defaultFileStructure =
       },
       fontStyle:"Pt Sans",
       spellCheck:true,
-      content:{
-      //content of editor
-    }
+  },
+  content:{
+    //content of editor
   }
 }
 
@@ -115,7 +116,7 @@ ipcMain.handle('open-recovery', (event, openCode) => {
 })
 
 //saving file content
-ipcMain.handle('upload-to-file', (event, openCode, fileContent) => {
+ipcMain.handle('upload-to-file', (event, openCode, fileContent, preferences) => {
 
   if(openCode){
   //gets lastOpened
@@ -123,7 +124,7 @@ ipcMain.handle('upload-to-file', (event, openCode, fileContent) => {
 
   if(fs.existsSync(lastOpened)) {
     const updatingFile = JSON.parse(fs.readFileSync(lastOpened, 'utf8'))
-    updatingFile.preferences.content = fileContent
+    updatingFile.content = fileContent
 
     fs.writeFile(lastOpened, JSON.stringify(updatingFile, null, 2), function writeJSON(err) {
       if (err) return console.log(err);
@@ -132,6 +133,23 @@ ipcMain.handle('upload-to-file', (event, openCode, fileContent) => {
   }else{
 
     //make new saveable file -> change lastOpened (in file) and here, then upload the file Content to it.
+
+    //make user select new file
+    //create file
+    //create own const event such that
+    
+    const newFileStructure=
+    {
+      preferences:JSON.parse(JSON.stringify(preferences, null, 2)),
+      content:JSON.parse(JSON.stringify(fileContent, null, 2))
+    }
+
+    //upload to the created new file
+
+    //update lastOpened file with new created file
+
+    //DONE FILE MANAGEMENT...
+    
     
   }
   }
@@ -178,6 +196,11 @@ ipcMain.handle('change-favorite', (event, openCode, isFavorite) => {
   }
   }
 })
+
+//changing name ------------------------------------------------------------------------------------
+
+
+//changing spellcheck ------------------------------------------------------------------------------------
   
 //on opening application
 ipcMain.handle('open-application', (event, openingCode) => {
