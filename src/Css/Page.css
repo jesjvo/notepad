@@ -106,9 +106,9 @@
 }
 
 .extension-btn{
-  cursor: pointer;
+  cursor: pointer; margin-right: 2px;
   background-color: transparent; color: rgba(0, 0, 0, 0.3);
-  border: none; border-radius: 4px; padding: 3px;
+  border: none; border-radius: 4px; padding: 4px;
   transition: .1s;
 }.extension-btn:hover{
   background-color: rgba(0, 0, 0, 0.05);

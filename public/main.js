@@ -16,7 +16,7 @@ const settingStructure =
     }
 }
 
-const defaultFileStructure =
+const defaultPreferences =
 {
   preferences:
     {
@@ -29,9 +29,6 @@ const defaultFileStructure =
       },
       fontStyle:"Pt Sans",
       spellCheck:true,
-  },
-  content:{
-    //content of editor
   }
 }
 
@@ -147,9 +144,6 @@ ipcMain.handle('upload-to-file', (event, openCode, fileContent, preferences) => 
     //upload to the created new file
 
     //update lastOpened file with new created file
-
-    //DONE FILE MANAGEMENT...
-    
     
   }
   }
@@ -199,7 +193,6 @@ ipcMain.handle('change-favorite', (event, openCode, isFavorite) => {
 
 //changing name ------------------------------------------------------------------------------------
 
-
 //changing spellcheck ------------------------------------------------------------------------------------
   
 //on opening application
@@ -216,7 +209,7 @@ ipcMain.handle('open-application', (event, openingCode) => {
 
     }else{
 
-      return defaultFileStructure
+      return defaultPreferences
 
     }
   }

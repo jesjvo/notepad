@@ -86,6 +86,7 @@ class App extends React.Component {
   }
 
   setSerif(){
+    console.log(this.state)
     var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'
     this.setState({preferences})
     handleApplicationMessage('change-font', true, 'Pt Serif')

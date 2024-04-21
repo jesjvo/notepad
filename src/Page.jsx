@@ -113,8 +113,8 @@ export function NodeList({
       let divHeight = colorTop.divHeight
 
       if(newTopHeight + height + 10 >= innerHeight){
-        if(height + 10 + 44 > innerHeight){
-          divHeight = innerHeight-54
+        if(height + 10 + 40 > innerHeight){
+          divHeight = innerHeight-50
           newTopHeight = 40
         }else{
           divHeight = 'fit-content'
@@ -219,6 +219,7 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
   const [selectedNode, setSelectedNode] = useState({active:false})
 
   const ref = useRef(null);
+  
 
   const editor = useEditor({
     onSelectionUpdate(){
@@ -380,7 +381,7 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
           <FiEdit3 className="extension-btn"
             onClick={()=>{selectNode()}} size={'15px'} strokeWidth={1.5}></FiEdit3>
 
-          <div className='divider-y' style={{height:'75%'}}></div>
+          <div className='divider-y' style={{height:'100%'}}></div>
           </div>
           </>
         : null}
@@ -392,14 +393,3 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
     </div>
     )
 }
-
-/* NEED TO BE DONE?
-  
-- the 'Untitled' button, used for fileNames, if clicked will show a tab in App.js of all the files in current folder.
-   - will include two sections, one is of all files, another is of just favorites.
-   - a search feature will need to be considered.
-   
-- get the 'favorite' button working, once fileNames is set up.
-- get the 'save' button working, again, once fileNames is set up.
-
-*/

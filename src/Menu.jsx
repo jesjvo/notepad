@@ -35,7 +35,7 @@ export default function Menu({close, setSerif, setDefault, characterCount}){
       setDisplay({opacity:1})
       const interval = setInterval(() => {
         updatePosition()
-      }, 500);
+      }, 250);
 
       return () => clearInterval(interval);
   } , []);
@@ -44,8 +44,8 @@ export default function Menu({close, setSerif, setDefault, characterCount}){
     const { height } = ref.current.getBoundingClientRect()
     const { innerHeight } = window;
 
-  if(height + 60 >= innerHeight){
-    setDisplay({height:innerHeight - 60})
+  if(height + 55 >= innerHeight){
+    setDisplay({height:innerHeight - 55})
   }else{
     setDisplay({height:'fit-content'})
   }
