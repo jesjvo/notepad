@@ -9,6 +9,7 @@ import ListItem from '@tiptap/extension-list-item'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import History from '@tiptap/extension-history'
+
 //custom
 import Paragraph from './Extension/Paragraph'
 import Title from './Extension/Title'
@@ -29,11 +30,13 @@ import CharacterCount from '@tiptap/extension-character-count'
 import './Css/Page.css'
 
 //icons
-import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoRepoPush } from "react-icons/go";
+import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoPerson, GoPersonAdd, GoPersonFill, GoRepoPush } from "react-icons/go";
 import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
 import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
+import { IoWarningOutline, IoCheckmarkOutline } from "react-icons/io5";
+
 
 //node list (editor node/block manipulation)
 export function NodeList({
@@ -128,8 +131,8 @@ export function NodeList({
       const { height } = blockChangeRef.current.getBoundingClientRect();
       let newTopHeight = blockChangeTop.top
 
-      if(newTopHeight + height + 10 > innerHeight){
-        newTopHeight = innerHeight - height - 10
+      if(newTopHeight + height + 5 > innerHeight){
+        newTopHeight = innerHeight - height - 5
       }
       setBlockChangeTop({top:newTopHeight});
     }catch{}
@@ -212,16 +215,31 @@ export function NodeList({
   )
 }
 
+//api send
+async function getData(){
+  const result = await window.api.getData();
+  return result
+}
+
 //page (main editor)
-export default function Page({menuClick, onCharacterCount, fontStyle, fileName, isFavorite, setFavorite, spellCheck, onHandleUpdate}) {
+export default function Page({menuClick, fontStyle, author, fileName, isFavorite, setFavorite, spellCheck, saveData, setPreferences}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [selectedNode, setSelectedNode] = useState({active:false})
 
   const ref = useRef(null);
-  
 
   const editor = useEditor({
+    onBeforeCreate({editor}){
+      const result = getData() // result[0] -> preferences, result[1] -> content
+      result.then(function(result) {return result}).then((result) => {
+
+      setPreferences(result[0]) //set preferences
+      editor.commands.setContent(result[1]) //set content
+
+      console.log(result[0], result[1])
+      })
+    },
     onSelectionUpdate(){
       updateSelection()
     },
@@ -310,28 +328,17 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
     setSelectedNode({active:true})
   }
 
-  const handleMenu=()=>{
-    onCharacterCount(editor.storage.characterCount.words())
-    menuClick()
-  }
-
-  const handleUpload=()=>{
-    onHandleUpdate(editor.getJSON())
-  }
-  
-  if (!editor) {
-    return null
-  }
+  if(!editor){return null}
 
   return (
     <div className='Page'>
-
       {selectedNode.active ? <NodeList close={()=>{setSelectedNode({active:false}); const{$to}=editor.state.selection; editor.commands.focus($to.end())}}
-      nodeLeft={hoveringNode.left} nodeTop={hoveringNode.top} nodeHeight={hoveringNode.height}
-      deleteSelection={()=>{editor.commands.deleteSelection()}}
+      nodeLeft={hoveringNode.left} nodeTop={hoveringNode.top} nodeHeight={hoveringNode.height} deleteSelection={()=>{editor.commands.deleteSelection()}}
 
-      setBold={()=>{editor.chain().toggleBold().run()}} setItalic={()=>{editor.chain().toggleItalic().run()}}
-      setUnderline={()=>{editor.chain().toggleUnderline().run()}} setStrike={()=>{editor.chain().toggleStrike().run()}}
+      setBold={()=>{editor.chain().toggleBold().run()}}
+      setItalic={()=>{editor.chain().toggleItalic().run()}}
+      setUnderline={()=>{editor.chain().toggleUnderline().run()}}
+      setStrike={()=>{editor.chain().toggleStrike().run()}}
 
       setText={()=>{editor.chain().focus().setParagraph().run()}}
       setTitle={()=>{editor.chain().focus().setTitle().run()}}
@@ -351,45 +358,39 @@ export default function Page({menuClick, onCharacterCount, fontStyle, fileName, 
       colorPurple={()=>{editor.chain().focus().setColor('#5a50c8').run()}} colorFillPurple={()=>{editor.chain().focus().toggleHighlight({ color: '#7850d21a' }).run()}} /* purple */
       colorViolet={()=>{editor.chain().focus().setColor('#c850be').run()}} colorFillViolet={()=>{editor.chain().focus().toggleHighlight({ color: '#d250d21a' }).run()}} /* red */
       />
-      : null}
-        <div className='PageInterface'>
-          <div className='PageHeader'>
-            <div className='PageHeader-left'>
-              <div style={{marginLeft:'10px'}}></div>
-              <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName}</button>
+      :null}
 
-              <div className='divider-y' style={{height:'50%'}}></div>
-
-              <button className='PageHeader-btn' onClick={handleUpload}><GoRepoPush  size={14}/></button>
-            </div>
-            <div className='PageHeader-right'>
-              <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
-              <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
-
-              <div className='divider-y' style={{height:'50%'}}></div>
-
-              <button className='PageHeader-btn' onClick={setFavorite}>{isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
-              <button className='PageHeader-btn' style={{zIndex:25}} onClick={handleMenu}><GoKebabHorizontal size={14}/></button>
-              <div style={{marginRight:'10px'}}></div>
-            </div>
+      <div className='PageInterface'>
+        <div className='PageHeader'>
+          <div className='PageHeader-left'>
+            <div style={{marginLeft:'4px'}}></div>
+            <button className='PageHeader-btn' style={{display:'flex', flexDirection:'row', alignItems:'center'}}><GoPerson size={14}/>{author===null ? null : <div style={{marginLeft:'8px', letterSpacing:'.25px'}}>{author}</div>}</button>
+            <div className='divider-y' style={{height:'50%'}}></div>
+            <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName}</button>
+            <div className='divider-y' style={{height:'50%'}}></div>
+            <button className='PageHeader-btn' onClick={()=>{saveData(editor.getJSON())}}><GoRepoPush  size={14}/></button>
           </div>
+          <div className='PageHeader-right'>
+            <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
+            <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
+            <div className='divider-y' style={{height:'50%'}}></div>
+            <button className='PageHeader-btn' onClick={setFavorite}>{isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
+            <button className='PageHeader-btn' style={{zIndex:25}} onClick={()=>{menuClick(editor.storage.characterCount.words())}}><GoKebabHorizontal size={14}/></button>
+            <div style={{marginRight:'4px'}}></div>
+          </div>
+        </div>
 
         {editor && hoveringNode.active ? 
-          <>
           <div style={{top:hoveringNode.top, left:hoveringNode.left-45, height:hoveringNode.height}} className='extension-div'>
-
-          <FiEdit3 className="extension-btn"
-            onClick={()=>{selectNode()}} size={'15px'} strokeWidth={1.5}></FiEdit3>
-
-          <div className='divider-y' style={{height:'100%'}}></div>
+            <FiEdit3 className="extension-btn" onClick={()=>{selectNode()}} size={'15px'} strokeWidth={1.5}/>
+            <div className='divider-y' style={{height:'100%'}}></div>
           </div>
-          </>
-        : null}
+        :null}
       
         <div className='editor-center'>
           <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={spellCheck} ref={ref} className='Editor'/>
         </div>
-        </div>
+      </div>
     </div>
     )
 }
