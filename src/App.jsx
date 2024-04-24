@@ -33,12 +33,14 @@ class App extends React.Component {
     this.handleMenu = this.handleMenu.bind(this);
     this.handleSaveData = this.handleSaveData.bind(this);
     this.setPreferences = this.setPreferences.bind(this);
+    this.setAuthor = this.setAuthor.bind(this);
+
   }
 
   handleMenu(characterCount){this.setState({ characterCount, menuOpen:true })} //opens menu & updates characterCount
   handleSaveData(content){saveData(this.state.preferences, content)} //sends api to main-process, 'save-data'
   setPreferences(preferences){this.setState(preferences)} //on editor-ready, Page.jsx sends 'setPreferences' -> changing this.state.preferences
-
+  setAuthor(author){var preferences=this.state.preferences; preferences.author=author; this.setState({preferences})} //in Page.jsx, when changed author -> sends 'setAuthor' -> changing author preferences
 
   setSerif(){
     var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'; this.setState({preferences})
@@ -83,6 +85,7 @@ class App extends React.Component {
           //configure file preferences/content/functions
           setFavorite={()=>{this.setFavorite()}}
           saveData={this.handleSaveData}
+          setAuthor={this.setAuthor}
           setPreferences={this.setPreferences}
           menuClick={this.handleMenu}
           

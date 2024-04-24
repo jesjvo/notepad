@@ -30,12 +30,11 @@ import CharacterCount from '@tiptap/extension-character-count'
 import './Css/Page.css'
 
 //icons
-import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoPerson, GoPersonAdd, GoPersonFill, GoRepoPush } from "react-icons/go";
+import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoPerson, GoRepoPush } from "react-icons/go";
 import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
 import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
-import { IoWarningOutline, IoCheckmarkOutline } from "react-icons/io5";
 
 
 //node list (editor node/block manipulation)
@@ -215,6 +214,26 @@ export function NodeList({
   )
 }
 
+//div element to change author
+export function ChangeAuthor({close, submitAuthor}){
+  const [opacity, setOpacity] = useState({opacity:0});
+  const [input, setInput] = useState('');
+
+  useEffect(() => {
+    setOpacity({opacity:1})
+  }, [])
+
+  return(
+    <div className='author'>
+      <div className='author-closediv' onClick={close}/>
+      <div className='author-div' style={{opacity:opacity.opacity}}>
+        <input className='author-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author name'></input>
+        <button className='author-submit' onClick={()=>{submitAuthor(input)}}>Set</button>
+      </div>
+    </div>
+  )
+}
+
 //api send
 async function getData(){
   const result = await window.api.getData();
@@ -222,10 +241,11 @@ async function getData(){
 }
 
 //page (main editor)
-export default function Page({menuClick, fontStyle, author, fileName, isFavorite, setFavorite, spellCheck, saveData, setPreferences}) {
+export default function Page({menuClick, fontStyle, author, fileName, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
-  const [selectedNode, setSelectedNode] = useState({active:false})
+  const [nodeList, setNodeList] = useState(false)
+  const [authorActive, setAuthorActive] = useState(false)
 
   const ref = useRef(null);
 
@@ -240,112 +260,61 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
       console.log(result[0], result[1])
       })
     },
-    onSelectionUpdate(){
-      updateSelection()
-    },
-    onUpdate(){
-      updateSelection()
-    },
-
+    onSelectionUpdate(){updateNodePosition()}, //updates edit position
+    onUpdate(){updateNodePosition()},
     extensions: [
-      Document, Text, ListItem, TextStyle, Color, History, HardBreak, CharacterCount,
-      Paragraph, Title, Subtitle, LargeText,
+      Document, Text, ListItem, TextStyle, Color, History, HardBreak, CharacterCount, Paragraph, Title, Subtitle, LargeText,
       Highlight.configure({ multicolor: true }),
-      BulletList.configure({
-        HTMLAttributes: {
-          class: 'is-bulletlist',
-        },
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: 'is-orderedlist',
-        },
-      }),
-      Underline.configure({
-        HTMLAttributes: {
-          class: 'is-underline',
-        },
-      }),
-      Bold.configure({
-        HTMLAttributes: {
-          class: 'is-bold',
-        },
-      }),
-      Italic.configure({
-        HTMLAttributes: {
-          class: 'is-italic',
-        },
-      }),
-      Strike.configure({
-        HTMLAttributes: {
-          class: 'is-strike',
-        },
-      }),
+      BulletList.configure({HTMLAttributes: {class: 'is-bulletlist'}}),
+      OrderedList.configure({HTMLAttributes: {class: 'is-orderedlist'}}),
+      Underline.configure({HTMLAttributes: {class: 'is-underline'}}),
+      Bold.configure({HTMLAttributes: {class: 'is-bold'}}),
+      Italic.configure({HTMLAttributes: {class: 'is-italic'}}),
+      Strike.configure({HTMLAttributes: {class: 'is-strike',}}),
       ],
     }
   )
 
-  const updateSelection=()=>{
+  function updateNodePosition(){
     try {
       const {$from, from, to} = editor.state.selection
-      if($from.parent.isBlock ){
-        const node = editor.view.nodeDOM($from.before($from.depth))
-        if(node){
-          const rect = node.getBoundingClientRect(); 
+      if($from.parent.isBlock){
+        const nodeDom = editor.view.nodeDOM($from.before($from.depth))
+        if(nodeDom){
+          const rect = nodeDom.getBoundingClientRect(); 
+          let top = rect.top; let left = rect.left; let height = rect.height;
 
-          const text = editor.state.doc.textBetween(from, to, ' ').length
-          if(text>=1){setSelectedNode({active:true})}
-          else{setSelectedNode({active:false})}
-          
-          let Top = rect.top; let Left = rect.left;
-          let Width = rect.width; let Height = rect.height;
+          editor.state.doc.textBetween(from, to, ' ').length>=1 ? setNodeList(true) : setNodeList(false); //if text selection is above 1 -> show nodeList
 
-          if(editor.isActive('bulletList') || editor.isActive('orderedList')){Left-=15}
+          editor.isActive('bulletList') || editor.isActive('orderedList') ? left-=15 : left+=0 //if bullet list/ordered list is active -> push to right
           
-          setHoveringNode({active:true,
-            left:Left,
-            top:Top,
-            height:Height,
-            width:Width
-          })
+          setHoveringNode({active:true, left:left, top:top, height:height})
         }
-    }
+      }
     }
      catch (error) {
-      setHoveringNode({
-        active: false,
-        left:null,
-        top:null,
-        height:null,
-        width:null
-      });
+      setHoveringNode({active: false, left:null, top:null, height:null});
     }
   }
 
-  const selectNode=()=>{
-    const { $to } = editor.state.selection;
-    editor.commands.setTextSelection({ from: $to.start(), to: $to.end()})
-    setSelectedNode({active:true})
-  }
+  function selectNode(){editor.commands.setTextSelection({ from: editor.state.selection.$to.start(), to: editor.state.selection.$to.end()}); setNodeList(true)} //if press edit button -> select whole current node & show nodeList
 
-  if(!editor){return null}
+  function handleAuthorChange(author) {setAuthor(author)} //send 'setAuthor' to App.jsx, to change author preferences
+
+  if(!editor){return null} //if editor not ready -> return
 
   return (
     <div className='Page'>
-      {selectedNode.active ? <NodeList close={()=>{setSelectedNode({active:false}); const{$to}=editor.state.selection; editor.commands.focus($to.end())}}
-      nodeLeft={hoveringNode.left} nodeTop={hoveringNode.top} nodeHeight={hoveringNode.height} deleteSelection={()=>{editor.commands.deleteSelection()}}
+      {nodeList ? <NodeList
+      close={()=>{setNodeList(false); editor.commands.focus(editor.state.selection.$to.end())}} deleteSelection={()=>{editor.commands.deleteSelection()}}
+      nodeLeft={hoveringNode.left} nodeTop={hoveringNode.top} nodeHeight={hoveringNode.height}
 
-      setBold={()=>{editor.chain().toggleBold().run()}}
-      setItalic={()=>{editor.chain().toggleItalic().run()}}
-      setUnderline={()=>{editor.chain().toggleUnderline().run()}}
-      setStrike={()=>{editor.chain().toggleStrike().run()}}
+      setBold={()=>{editor.chain().toggleBold().run()}} setItalic={()=>{editor.chain().toggleItalic().run()}}
+      setUnderline={()=>{editor.chain().toggleUnderline().run()}} setStrike={()=>{editor.chain().toggleStrike().run()}}
 
-      setText={()=>{editor.chain().focus().setParagraph().run()}}
-      setTitle={()=>{editor.chain().focus().setTitle().run()}}
-      setSubtitle={()=>{editor.chain().focus().setSubtitle().run()}}
-      setLargeText={()=>{editor.chain().focus().setLargeText().run()}}
-      setOrderedList={()=>{editor.chain().focus().toggleOrderedList().run()}}
-      setBulletList={()=>{editor.chain().focus().toggleBulletList().run()}}
+      setText={()=>{editor.chain().focus().setParagraph().run()}} setTitle={()=>{editor.chain().focus().setTitle().run()}}
+      setSubtitle={()=>{editor.chain().focus().setSubtitle().run()}} setLargeText={()=>{editor.chain().focus().setLargeText().run()}}
+      setOrderedList={()=>{editor.chain().focus().toggleOrderedList().run()}} etBulletList={()=>{editor.chain().focus().toggleBulletList().run()}}
 
       clearFormatting={()=>{editor.chain().focus().unsetColor().run(); editor.chain().focus().unsetHighlight().run();}}
       colorDefault={()=>{editor.chain().focus().unsetColor().run()}} colorFillDefault={()=>{editor.chain().focus().unsetHighlight().run()}} /* default */
@@ -360,13 +329,15 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
       />
       :null}
 
+      {authorActive ? <ChangeAuthor close={()=>{setAuthorActive(false)}} submitAuthor={handleAuthorChange}/> : null}
+
       <div className='PageInterface'>
         <div className='PageHeader'>
           <div className='PageHeader-left'>
             <div style={{marginLeft:'4px'}}></div>
-            <button className='PageHeader-btn' style={{display:'flex', flexDirection:'row', alignItems:'center'}}><GoPerson size={14}/>{author===null ? null : <div style={{marginLeft:'8px', letterSpacing:'.25px'}}>{author}</div>}</button>
+            <button className='PageHeader-btn' style={{display:'flex', flexDirection:'row', alignItems:'center'}} onClick={()=>{setAuthorActive(true)}}><GoPerson size={14}/>{author===null ? null : <div style={{marginLeft:'8px', letterSpacing:'.25px'}}>{author}</div>}</button>
             <div className='divider-y' style={{height:'50%'}}></div>
-            <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.6)', letterSpacing:'.25px'}}>{fileName}</button>
+            <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.4)', letterSpacing:'.25px'}}>{fileName}</button>
             <div className='divider-y' style={{height:'50%'}}></div>
             <button className='PageHeader-btn' onClick={()=>{saveData(editor.getJSON())}}><GoRepoPush  size={14}/></button>
           </div>
@@ -392,5 +363,5 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
         </div>
       </div>
     </div>
-    )
+  )
 }

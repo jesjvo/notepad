@@ -99,7 +99,6 @@ ipcMain.handle('save-data', (event, preferences, content) => {
   }
 })
 
-
 //on opening application
 ipcMain.handle('get-data', (event) => {
   const lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8'))).lastOpened;

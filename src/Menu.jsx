@@ -3,10 +3,8 @@ import './Css/Menu.css'
 
 //icons
 import { RiFontSans, RiFontSansSerif } from "react-icons/ri";
-import { TbCalendar, TbClipboard, TbClipboardCheck, TbClipboardOff, TbClipboardX, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbTextCaption, TbTrash, TbWorldUpload } from "react-icons/tb";
-import { IoWarningOutline, IoCheckmarkOutline, IoCloseOutline } from "react-icons/io5";
-import { ToggleLeft, ToggleRight } from 'lucide-react';
-import { MdOutlineToggleOff } from 'react-icons/md';
+import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbTextCaption, TbTrash, TbWorldUpload } from "react-icons/tb";
+import { IoWarningOutline } from "react-icons/io5";
 
 //api send
 async function handleApplicationMessage(request){
@@ -44,19 +42,19 @@ export default function Menu({close, setSerif, setDefault, toggleSpellCheck, spe
     const { height } = ref.current.getBoundingClientRect()
     const { innerHeight } = window;
 
-  if(height + 55 >= innerHeight){
-    setDisplay({height:innerHeight - 55})}
+  if(height + 50 >= innerHeight){
+    setDisplay({height:innerHeight - 50})}
   else{setDisplay({height:'fit-content'})}}
 
   return(
-    <div  className='menu'>
+    <div className='menu'>
         <div onClick={close} className='div-menuclose' />
         <div style={{opacity:display.opacity, height:display.height, overflowY:'scroll'}} ref={ref} className='div-menu'>
           <div className='menu-fontdiv'>
             <button className='menu-fontbtn' onClick={setDefault}><RiFontSans size={20} color='black' style={{marginBottom:'5px'}}/>Default</button>
             <button className='menu-fontbtn' onClick={setSerif}><RiFontSansSerif size={20} color='black' style={{marginBottom:'5px'}}/>Serif</button>
           </div>
-          <div className='divider-x' style={{marginTop:'5px'}}/>
+          <div className='divider-x' style={{marginTop:'4px'}}/>
           <div className='menu-settingdiv'>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>File Configuration</p>
             <button className='menu-settingbtn'><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
@@ -71,7 +69,7 @@ export default function Menu({close, setSerif, setDefault, toggleSpellCheck, spe
             <button className='menu-settingbtn'><TbTextCaption size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
             <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Updated</button>
             <button className='menu-settingbtn'><TbCalendar size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created</button>
-            <button className='menu-settingbtn' onClick={toggleSpellCheck}><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check{spellCheck ? <IoCheckmarkOutline style={{position:'absolute', right:'20px', color:'green'}} size={17}/> : <IoCloseOutline style={{position:'absolute', right:'20px', color:'red'}} size={17}/>}</button>
+            <button className='menu-settingbtn' onClick={toggleSpellCheck}><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check</button>
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>
