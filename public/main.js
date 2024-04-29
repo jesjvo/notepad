@@ -1,12 +1,10 @@
-const { app, BrowserWindow, ipcMain, shell  } = require('electron/main');
+const { app, BrowserWindow, ipcMain, shell, dialog  } = require('electron/main');
 const fs = require('node:fs')
 const path = require('node:path')
 
 const folder = path.join(app.getPath('appData'), 'notely')
 const recovery = path.join(folder, 'Recovery')
 const settingPreferences = path.join(folder, 'SettingPreferences.json')
-var lastOpened = null //current last opened
-
 const settingStructure =
 { 
   lastOpened:null, //the file path
@@ -86,26 +84,49 @@ ipcMain.handle('open-recovery', (event) => {
 
 //on save data
 ipcMain.handle('save-data', (event, preferences, content) => {
-  const lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8'))).lastOpened;
-  const file={preferences:preferences, content:content}
+  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let file={preferences:preferences, content:content}
 
   console.log(file)
 
-  if(fs.existsSync(lastOpened)) {
+  if(fs.existsSync(lastOpened.lastOpened)) {
     //save current file
-    fs.writeFileSync(lastOpened, JSON.stringify(file, null, 2))
+    fs.writeFileSync(lastOpened.lastOpened, JSON.stringify(file, null, 2))
+    let date = fs.statSync(lastOpened.lastOpened).mtime
+    date = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+    return [date, 'Current File Saved']
   }else{
-    //save new file
+    //save new file (filedialog)
+    let newFile = dialog.showSaveDialogSync(mainWindow,{
+      properties: ['openFile', 'openDirectory'],
+      filters: [
+        { name: 'Notely', extensions: ['json'] },
+      ]
+    })
+    //writing new file
+    if(newFile){
+      fs.writeFileSync(newFile, JSON.stringify(file, null, 2))
+      //updating lastOpened
+      lastOpened.lastOpened = newFile
+      fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2))
+
+      let date = fs.statSync(lastOpened.lastOpened).mtime
+      date = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+      
+      return [date, 'New File Saved']
+    }else{
+      return [false, 'No File Saved']
+    }
   }
 })
 
 //on opening application
 ipcMain.handle('get-data', (event) => {
-  const lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8'))).lastOpened;
+  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  if(fs.existsSync(lastOpened)) {
-    const file = JSON.parse(fs.readFileSync(lastOpened, 'utf8'));
-    const preferences = {preferences:file.preferences}; const content = file.content;
+  if(fs.existsSync(lastOpened.lastOpened)) {
+    let file = JSON.parse(fs.readFileSync(lastOpened.lastOpened, 'utf8'));
+    let preferences = {preferences:file.preferences}; const content = file.content;
     return [preferences, content]
   }else{
     return [null, null]

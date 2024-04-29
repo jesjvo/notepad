@@ -24,8 +24,8 @@ async function handleApplicationMessage(request){
 }
 
 //memu (editor settings)
-export default function Menu({close, setSerif, setDefault, toggleSpellCheck, spellCheck, characterCount}){
-
+export default function Menu({close, setSerif, setDefault, toggleSpellCheck, characterCount}){
+  
   const [display, setDisplay] = useState({opacity:0, height:'fit-content'})
   const ref = useRef(null);
 
@@ -61,14 +61,11 @@ export default function Menu({close, setSerif, setDefault, toggleSpellCheck, spe
             <button className='menu-settingbtn'><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File{characterCount<=0 ? null : <IoWarningOutline style={{position:'absolute', right:'20px'}} size={17} color='orange'/>}</button>
             <button className='menu-settingbtn'><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File</button>
             <button className='menu-settingbtn'><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File</button>
-            <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <button className='menu-settingbtn'><TbTrash size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Delete</button>
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>File Information</p>
             <button className='menu-settingbtn'><TbTextCaption size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
-            <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Updated</button>
-            <button className='menu-settingbtn'><TbCalendar size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created</button>
             <button className='menu-settingbtn' onClick={toggleSpellCheck}><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check</button>
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>

@@ -5,7 +5,8 @@ import Menu from './Menu'
 
 //api send
 async function saveData(preferences, content){
-  await window.api.saveData(preferences, content);
+  const result = await window.api.saveData(preferences, content);
+  console.log(result)
 }
 
 //application interface (main)
@@ -22,13 +23,9 @@ class App extends React.Component {
         name:"Untitled",
         author:null,
         isFavorite:false,
-        date:{
-          updatedLast:null,
-          createdDate:null,
-        },
         fontStyle:'Pt Sans',
-        spellCheck:true,  
-      },
+        spellCheck:true
+      }
     }
     this.handleMenu = this.handleMenu.bind(this);
     this.handleSaveData = this.handleSaveData.bind(this);
@@ -72,10 +69,8 @@ class App extends React.Component {
         toggleSpellCheck={()=>{this.toggleSpellCheck()}} //toggle spell check using PrevState
         close={()=>{this.setState({menuOpen:false})}}
 
-        //file preferences being passed to Menu.jsx
-        lastUpdated={this.state.preferences.date.updatedLast}
+        //file preferences being passed to Menu.jsx=
         spellCheck={this.state.preferences.spellCheck}
-        createdDate={this.state.preferences.date.createdDate}
         characterCount={this.state.characterCount}
         ></Menu>
          : null}

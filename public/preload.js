@@ -14,7 +14,8 @@ contextBridge.exposeInMainWorld("api", {
       },
 
       saveData : (preferences, content) => {
-        ipcRenderer.invoke('save-data', preferences, content)
+        const result = ipcRenderer.invoke('save-data', preferences, content)
+        return result
       },
 
       getData : () => {

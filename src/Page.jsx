@@ -36,7 +36,6 @@ import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
 
-
 //node list (editor node/block manipulation)
 export function NodeList({
   close, nodeLeft, nodeTop, nodeHeight,
@@ -130,8 +129,8 @@ export function NodeList({
       const { height } = blockChangeRef.current.getBoundingClientRect();
       let newTopHeight = blockChangeTop.top
 
-      if(newTopHeight + height + 5 > innerHeight){
-        newTopHeight = innerHeight - height - 5
+      if(newTopHeight + height + 10 > innerHeight){
+        newTopHeight = innerHeight - height - 10
       }
       setBlockChangeTop({top:newTopHeight});
     }catch{}
@@ -157,7 +156,6 @@ export function NodeList({
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setBulletList}><p className='p-listblockchange'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
         <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setOrderedList}><p className='p-listblockchange'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
       </div>
-
       : null
     }
     {showColor.active ?
@@ -228,7 +226,7 @@ export function ChangeAuthor({close, submitAuthor}){
       <div className='author-closediv' onClick={close}/>
       <div className='author-div' style={{opacity:opacity.opacity}}>
         <input className='author-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author name'></input>
-        <button className='author-submit' onClick={()=>{submitAuthor(input)}}>Set</button>
+        <button className='author-submit' onClick={()=>{submitAuthor(input); close()}}>Set</button>
       </div>
     </div>
   )
@@ -299,7 +297,7 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
 
   function selectNode(){editor.commands.setTextSelection({ from: editor.state.selection.$to.start(), to: editor.state.selection.$to.end()}); setNodeList(true)} //if press edit button -> select whole current node & show nodeList
 
-  function handleAuthorChange(author) {setAuthor(author)} //send 'setAuthor' to App.jsx, to change author preferences
+  function handleAuthorChange(author){setAuthor(author)} //send 'setAuthor' to App.jsx, to change author preferences
 
   if(!editor){return null} //if editor not ready -> return
 
@@ -314,7 +312,7 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
 
       setText={()=>{editor.chain().focus().setParagraph().run()}} setTitle={()=>{editor.chain().focus().setTitle().run()}}
       setSubtitle={()=>{editor.chain().focus().setSubtitle().run()}} setLargeText={()=>{editor.chain().focus().setLargeText().run()}}
-      setOrderedList={()=>{editor.chain().focus().toggleOrderedList().run()}} etBulletList={()=>{editor.chain().focus().toggleBulletList().run()}}
+      setOrderedList={()=>{editor.chain().focus().toggleOrderedList().run()}} setBulletList={()=>{editor.chain().focus().toggleBulletList().run()}}
 
       clearFormatting={()=>{editor.chain().focus().unsetColor().run(); editor.chain().focus().unsetHighlight().run();}}
       colorDefault={()=>{editor.chain().focus().unsetColor().run()}} colorFillDefault={()=>{editor.chain().focus().unsetHighlight().run()}} /* default */
@@ -337,7 +335,7 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
             <div style={{marginLeft:'4px'}}></div>
             <button className='PageHeader-btn' style={{display:'flex', flexDirection:'row', alignItems:'center'}} onClick={()=>{setAuthorActive(true)}}><GoPerson size={14}/>{author===null ? null : <div style={{marginLeft:'8px', letterSpacing:'.25px'}}>{author}</div>}</button>
             <div className='divider-y' style={{height:'50%'}}></div>
-            <button className='PageHeader-btn' style={{color:'rgba(0,0,0,.4)', letterSpacing:'.25px'}}>{fileName}</button>
+            <button className='PageHeader-btn' style={{letterSpacing:'.25px', color:'rgba(0,0,0,.6)'}}>{fileName}</button>
             <div className='divider-y' style={{height:'50%'}}></div>
             <button className='PageHeader-btn' onClick={()=>{saveData(editor.getJSON())}}><GoRepoPush  size={14}/></button>
           </div>
@@ -353,7 +351,7 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
 
         {editor && hoveringNode.active ? 
           <div style={{top:hoveringNode.top, left:hoveringNode.left-45, height:hoveringNode.height}} className='extension-div'>
-            <FiEdit3 className="extension-btn" onClick={()=>{selectNode()}} size={'15px'} strokeWidth={1.5}/>
+            <FiEdit3 className="extension-btn" onClick={()=>{selectNode()}} size={'15px'}/>
             <div className='divider-y' style={{height:'100%'}}></div>
           </div>
         :null}
