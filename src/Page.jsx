@@ -129,8 +129,8 @@ export function NodeList({
       const { height } = blockChangeRef.current.getBoundingClientRect();
       let newTopHeight = blockChangeTop.top
 
-      if(newTopHeight + height + 10 > innerHeight){
-        newTopHeight = innerHeight - height - 10
+      if(newTopHeight + height + 5 > innerHeight){
+        newTopHeight = innerHeight - height - 5
       }
       setBlockChangeTop({top:newTopHeight});
     }catch{}
@@ -226,6 +226,7 @@ export function ChangeAuthor({close, submitAuthor}){
       <div className='author-closediv' onClick={close}/>
       <div className='author-div' style={{opacity:opacity.opacity}}>
         <input className='author-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author name'></input>
+        <button className='author-clear' onClick={()=>{submitAuthor(null); close()}}>Clear</button>
         <button className='author-submit' onClick={()=>{submitAuthor(input); close()}}>Set</button>
       </div>
     </div>

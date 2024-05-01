@@ -5,8 +5,7 @@ import Menu from './Menu'
 
 //api send
 async function saveData(preferences, content){
-  const result = await window.api.saveData(preferences, content);
-  console.log(result)
+  await window.api.saveData(preferences, content);
 }
 
 //application interface (main)
@@ -24,7 +23,8 @@ class App extends React.Component {
         author:null,
         isFavorite:false,
         fontStyle:'Pt Sans',
-        spellCheck:true
+        spellCheck:true,
+        autoSave:false
       }
     }
     this.handleMenu = this.handleMenu.bind(this);
@@ -43,6 +43,10 @@ class App extends React.Component {
     var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'; this.setState({preferences})
   }
 
+  setMono(){
+    var preferences=this.state.preferences; preferences.fontStyle='Pt Mono'; this.setState({preferences})
+  }
+
   setDefault(){
     var preferences=this.state.preferences; preferences.fontStyle='Pt Sans'; this.setState({preferences})
   }
@@ -52,10 +56,14 @@ class App extends React.Component {
     console.log(this.state.preferences.spellCheck)
   }
 
+  toggleAutoSave(){
+    var preferences=this.state.preferences; preferences.autoSave=!preferences.autoSave; this.setState({preferences})
+    console.log(this.state.preferences.autoSave)
+  }
+
   setFavorite(){
-    if(!this.state.preferences.isFavorite){
-    var preferences=this.state.preferences; preferences.isFavorite=true; this.setState({preferences})}
-    else{preferences=this.state.preferences; preferences.isFavorite=false; this.setState({preferences})}
+    var preferences=this.state.preferences; preferences.isFavorite=!preferences.isFavorite; this.setState({preferences})
+    console.log(this.state.preferences.isFavorite)
   }
 
   render(){
@@ -65,12 +73,15 @@ class App extends React.Component {
         <Menu
         //configure file preferences
         setDefault={()=>{this.setDefault()}}
+        setMono={()=>{this.setMono()}}
         setSerif={()=>{this.setSerif()}}
         toggleSpellCheck={()=>{this.toggleSpellCheck()}} //toggle spell check using PrevState
+        toggleAutoSave={()=>{this.toggleAutoSave()}}
         close={()=>{this.setState({menuOpen:false})}}
 
-        //file preferences being passed to Menu.jsx=
+        //file preferences being passed to Menu.jsx
         spellCheck={this.state.preferences.spellCheck}
+        autoSave={this.state.preferences.autoSave}
         characterCount={this.state.characterCount}
         ></Menu>
          : null}

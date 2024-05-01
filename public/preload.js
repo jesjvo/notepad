@@ -13,15 +13,17 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.invoke("open-recovery")
       },
 
-      saveData : (preferences, content) => {
-        const result = ipcRenderer.invoke('save-data', preferences, content)
+      openMenu : () => {
+        const result = ipcRenderer.invoke('get-menu-dates')
         return result
+      },
+
+      saveData : (preferences, content) => {
+        ipcRenderer.invoke('save-data', preferences, content)
       },
 
       getData : () => {
         const result = ipcRenderer.invoke('get-data')
         return result
-      },
-
-
+      }
   });
