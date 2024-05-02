@@ -31,7 +31,6 @@ class App extends React.Component {
     this.handleSaveData = this.handleSaveData.bind(this);
     this.setPreferences = this.setPreferences.bind(this);
     this.setAuthor = this.setAuthor.bind(this);
-
   }
 
   handleMenu(characterCount){this.setState({ characterCount, menuOpen:true })} //opens menu & updates characterCount

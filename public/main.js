@@ -80,16 +80,42 @@ ipcMain.handle('refresh-application', (event) => {
 //Open Recovery
 ipcMain.handle('open-recovery', (event) => {
   shell.openPath(recovery)
+  //might replace with open file -> so they can recover the file directly, the previous file will be asked to be 'saved'.
 })
 
-//on open menu (gather dates)
-ipcMain.handle('get-menu-dates', (event) => {
+ipcMain.handle('delete-file', (event) => {
   let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+
+  if(fs.existsSync(lastOpened.lastOpened)){ //checks file exists
+    fs.unlinkSync(lastOpened.lastOpened) //deletes file
+  }
+
+  lastOpened.lastOpened = null
+  fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2)) //change last opened to null
+  mainWindow.webContents.reloadIgnoringCache() //refresh application
+})
+
+ipcMain.handle('new-file', (event) => {
+  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+
+  if(fs.existsSync(lastOpened.lastOpened)){ //checks file exists
+    // return with 'do you want to save before'
+  }
+
+  // make lastopened null, refresh application
+
+})
+
+//on open menu (gather data)
+ipcMain.handle('get-menu-info', (event) => {
+  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+
   if(fs.existsSync(lastOpened.lastOpened)){
+    //get the stats of current file
     let date = fs.statSync(lastOpened.lastOpened)
-    modifiedDate = `${date.mtime.getDate()}/${date.mtime.getMonth()}/${date.mtime.getFullYear()}`;
-    createdDate = `${date.birthtime.getDate()}/${date.birthtime.getMonth()}/${date.birthtime.getFullYear()}`;
-    return [true, modifiedDate, createdDate]
+    modifiedDate = `${date.mtime.getDate()}/${date.mtime.getMonth()}/${date.mtime.getFullYear()}`; //get modified date
+    createdDate = `${date.birthtime.getDate()}/${date.birthtime.getMonth()}/${date.birthtime.getFullYear()}`; //get created date
+    return [true, modifiedDate, createdDate] //return [if file, modified date, created date]
   }else{
     return [false, null, null]
   }
@@ -100,13 +126,9 @@ ipcMain.handle('save-data', (event, preferences, content) => {
   let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
   let file={preferences:preferences, content:content}
 
-  console.log(file)
-
   if(fs.existsSync(lastOpened.lastOpened)) {
     //save current file
     fs.writeFileSync(lastOpened.lastOpened, JSON.stringify(file, null, 2))
-
-    //need to save a copy to recovery folder
   }else{
     //save new file (filedialog)
     let newFile = dialog.showSaveDialogSync(mainWindow,{
@@ -122,8 +144,6 @@ ipcMain.handle('save-data', (event, preferences, content) => {
       //updating lastOpened
       lastOpened.lastOpened = newFile
       fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2))
-
-      //need to save a copy to recovery folder
     }
   }
 })
@@ -140,3 +160,7 @@ ipcMain.handle('get-data', (event) => {
     return [null, null]
   }
 })
+
+//current problems ;
+
+// how do i get editor.JSON() from menu?... can i maybe pass this through when i press menu button...?

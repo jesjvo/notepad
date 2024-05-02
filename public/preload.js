@@ -13,8 +13,16 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.invoke("open-recovery")
       },
 
+      deleteFile : () => {
+        ipcRenderer.invoke('delete-file')
+      },
+
+      newFile : () => {
+        ipcRenderer.invoke('new-file')
+      },
+
       openMenu : () => {
-        const result = ipcRenderer.invoke('get-menu-dates')
+        const result = ipcRenderer.invoke('get-menu-info')
         return result
       },
 
