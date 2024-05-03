@@ -12,6 +12,6 @@ npm i
 npm run note
 ```
 
-### INDEPT-EXPLANATION ###
+### INDEPTH-EXPLANATION ###
 File management consists of _delete file, open file, new file, save file, rename file_<br/>
 Editor features consist of _name of file, isFavorite, fontStyle, author, spellCheck, autosave, date created, date modified_<br/>
