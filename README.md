@@ -1,6 +1,10 @@
 ### STATUS OF NOTELY ###
-__STATUS__ : _editor;_ **working**<br/>
-__STATUS__ : _file management (json files);_ **working**<br/>
+__STATUS: *WORKING*__ : _editor;_<br/>
+__STATUS: *WORKING*__ : _file management (json files);_ <br/>
+
+### WORKING ON ###
+__STATUS: *DEVELOPING*__ : _file list display (file management/ui);_ **working**<br/>
+
 
 ### RUN NOTELY ###
 ```
