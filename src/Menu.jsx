@@ -58,7 +58,7 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
 
     const result = handleApplicationMessage('get-menu-info') // result[0] -> is file, result[1] -> modifiedDate, result[2] -> createdDate
     result.then(function(result) {return result}).then((result) => {
-      if(result[0]){
+      if(result[0]){ //if is file
         setModifiedDate(result[1]); setCreatedDate(result[2]); setCurrentFile(true);
       }
     })
@@ -93,15 +93,15 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
             </>
           }
           <div className='menu-fontdiv'>
-            <button className='menu-fontbtn' onClick={setDefault}><RiFontSans size={20} color='black' style={{marginBottom:'4px'}}/>Default</button>
-            <button className='menu-fontbtn' onClick={setSerif}><RiFontSansSerif size={20} color='black' style={{marginBottom:'4px'}}/>Serif</button>
-            <button className='menu-fontbtn' onClick={setMono}><RiFontMono size={20} color='black' style={{marginBottom:'4px'}}/>Mono</button>
+            <button className='menu-fontbtn' onClick={setDefault}><RiFontSans size={24} color='black' style={{marginBottom:'4px'}}/>Default</button>
+            <button className='menu-fontbtn' onClick={setSerif}><RiFontSansSerif size={24} color='black' style={{marginBottom:'4px'}}/>Serif</button>
+            <button className='menu-fontbtn' onClick={setMono}><RiFontMono size={24} color='black' style={{marginBottom:'4px'}}/>Mono</button>
           </div>
           <div className='divider-x'/>
           <div className='menu-settingdiv'>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}>File Configuration{isCurrentFile ? null : <IoWarningOutline style={{marginLeft:'5px'}} size={12} color='rgb(200, 120, 80)'/>}</p>
             <button className='menu-settingbtn' disabled={isCurrentFile ? false : true}><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
-            <button className='menu-settingbtn' onClick={()=>{saveData(tempContent);}}><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File</button>
+            <button className='menu-settingbtn' onClick={()=>{saveData(tempContent); close();}}><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File</button>
             <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; newFile()}}><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File</button>
             <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; openFile()}}><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File</button>
             <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={()=>{deleteFile()}}><TbTrash size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Delete</button>

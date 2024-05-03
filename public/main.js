@@ -178,5 +178,5 @@ ipcMain.handle('get-data', (event) => {
 
 //current problems ;
 
-// how to autosave?
 // where and when to create recovery files. -> (maybe when save button is clicked)
+// close menu open saving file (in menu)
