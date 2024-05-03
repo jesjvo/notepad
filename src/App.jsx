@@ -13,18 +13,19 @@ class App extends React.Component {
   constructor(){
     super();
     this.state = {
-      menuOpen:false,
-      characterCount: null,
+      menuOpen:false, // true or false of menu displaying
+      characterCount: null, // handles character count when menu opened
+      tempContent:null, // handles the content when opened menu
 
       //default
       preferences:
       {
-        name:"Untitled",
-        author:null,
-        isFavorite:false,
-        fontStyle:'Pt Sans',
-        spellCheck:true,
-        autoSave:false
+        name:"Untitled", //name of file
+        author:null, //author of file
+        isFavorite:false, //is file favorited
+        fontStyle:'Pt Sans', //font style of file
+        spellCheck:true, //spell check of editor
+        autoSave:false // autosaving of file
       }
     }
     this.handleMenu = this.handleMenu.bind(this);
@@ -33,7 +34,7 @@ class App extends React.Component {
     this.setAuthor = this.setAuthor.bind(this);
   }
 
-  handleMenu(characterCount){this.setState({ characterCount, menuOpen:true })} //opens menu & updates characterCount
+  handleMenu(characterCount, content){this.setState({ characterCount, tempContent:content, menuOpen:true })} //opens menu & updates characterCount
   handleSaveData(content){saveData(this.state.preferences, content)} //sends api to main-process, 'save-data'
   setPreferences(preferences){this.setState(preferences)} //on editor-ready, Page.jsx sends 'setPreferences' -> changing this.state.preferences
   setAuthor(author){var preferences=this.state.preferences; preferences.author=author; this.setState({preferences})} //in Page.jsx, when changed author -> sends 'setAuthor' -> changing author preferences
@@ -77,8 +78,10 @@ class App extends React.Component {
         toggleSpellCheck={()=>{this.toggleSpellCheck()}} //toggle spell check using PrevState
         toggleAutoSave={()=>{this.toggleAutoSave()}}
         close={()=>{this.setState({menuOpen:false})}}
+        saveData={this.handleSaveData}
 
         //file preferences being passed to Menu.jsx
+        tempContent={this.state.tempContent}
         spellCheck={this.state.preferences.spellCheck}
         autoSave={this.state.preferences.autoSave}
         characterCount={this.state.characterCount}

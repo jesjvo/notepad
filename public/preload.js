@@ -21,6 +21,10 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.invoke('new-file')
       },
 
+      openFile : () => {
+        ipcRenderer.invoke('open-file')
+      },
+
       openMenu : () => {
         const result = ipcRenderer.invoke('get-menu-info')
         return result

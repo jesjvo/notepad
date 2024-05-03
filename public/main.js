@@ -98,12 +98,27 @@ ipcMain.handle('delete-file', (event) => {
 ipcMain.handle('new-file', (event) => {
   let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  if(fs.existsSync(lastOpened.lastOpened)){ //checks file exists
-    // return with 'do you want to save before'
+  lastOpened.lastOpened = null
+  fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2)) //change last opened to null
+  mainWindow.webContents.reloadIgnoringCache() //refresh application
+})
+
+ipcMain.handle('open-file', (event) => {
+  //open file (with notely extension)
+  let openFile = dialog.showOpenDialogSync(mainWindow,{
+    properties: ['openFile', 'openDirectory'],
+    filters: [
+      { name: 'Notely extension', extensions: ['json'] },
+    ]
+  })
+  console.log(openFile[0])
+  //check if valid file selected
+  if(openFile[0]){
+    let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+    lastOpened.lastOpened = openFile[0]
+    fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2))
+    mainWindow.webContents.reloadIgnoringCache() //refresh application
   }
-
-  // make lastopened null, refresh application
-
 })
 
 //on open menu (gather data)
@@ -163,4 +178,5 @@ ipcMain.handle('get-data', (event) => {
 
 //current problems ;
 
-// how do i get editor.JSON() from menu?... can i maybe pass this through when i press menu button...?
+// how to autosave?
+// where and when to create recovery files. -> (maybe when save button is clicked)

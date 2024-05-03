@@ -13,7 +13,7 @@
 }
 
 .div-menu{
-    width: 200px;
+    width: 230px;
     background-color: white;
     top: 35px; right: 8px;
 
@@ -37,11 +37,11 @@
 /* content */
 
 .menu-fontdiv{
-    width: 200px; min-height: 50px;
+    width: 230px; min-height: 55px;
     background-color: transparent;
     border-radius: 4px;
 
-    gap: 7.5px;
+    gap: 15px;
     display: flex; flex-direction: row; align-items: center; justify-content: center;
 }
 

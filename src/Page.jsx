@@ -225,7 +225,7 @@ export function ChangeAuthor({close, submitAuthor}){
     <div className='author'>
       <div className='author-closediv' onClick={close}/>
       <div className='author-div' style={{opacity:opacity.opacity}}>
-        <input className='author-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author name'></input>
+        <input className='author-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author'></input>
         <button className='author-clear' onClick={()=>{submitAuthor(null); close()}}>Clear</button>
         <button className='author-submit' onClick={()=>{submitAuthor(input); close()}}>Set</button>
       </div>
@@ -345,7 +345,7 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
             <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
             <div className='divider-y' style={{height:'50%'}}></div>
             <button className='PageHeader-btn' onClick={setFavorite}>{isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
-            <button className='PageHeader-btn' style={{zIndex:25}} onClick={()=>{menuClick(editor.storage.characterCount.words())}}><GoKebabHorizontal size={14}/></button>
+            <button className='PageHeader-btn' style={{zIndex:25}} onClick={()=>{menuClick(editor.storage.characterCount.words(), editor.getJSON())}}><GoKebabHorizontal size={14}/></button>
             <div style={{marginRight:'4px'}}></div>
           </div>
         </div>
