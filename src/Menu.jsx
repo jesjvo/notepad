@@ -3,7 +3,7 @@ import './Css/Menu.css'
 
 //icons
 import { RiFontMono, RiFontSans, RiFontSansSerif } from "react-icons/ri";
-import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbReload, TbTextCaption, TbTrash, TbWorldUpload } from "react-icons/tb";
+import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbHeading, TbMoodCheck, TbRefresh, TbReload, TbTextCaption, TbTrash, TbUser, TbWorldUpload } from "react-icons/tb";
 import { IoWarningOutline } from "react-icons/io5";
 
 //api send
@@ -38,6 +38,12 @@ async function newFile(){
   await api.newFile();
 }
 
+async function renameFile(fileName){
+  const { api } = window;
+  await api.renameFile();
+}
+
+
 async function openFile(){
   const { api } = window;
   await api.openFile();
@@ -45,7 +51,7 @@ async function openFile(){
 
 
 //memu (editor settings)
-export default function Menu({close, setSerif, setDefault, setMono, saveData, toggleSpellCheck, spellCheck, toggleAutoSave, autoSave, characterCount, tempContent}){
+export default function Menu({close, setSerif, setDefault, setMono, saveData, toggleSpellCheck, spellCheck, author, name, toggleAutoSave, autoSave, characterCount, tempContent}){
   const [modifiedDate, setModifiedDate] = useState('Invalid')
   const [createdDate, setCreatedDate] = useState('Invalid')
   const [isCurrentFile, setCurrentFile] = useState(false)
@@ -108,9 +114,11 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}>File Information{isCurrentFile ? null : <IoWarningOutline style={{marginLeft:'5px'}} size={12} color='rgb(200, 120, 80)'/>}</p>
+            <button className='menu-settingbtn'><TbUser size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Author<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{author}</div></button>
+            <button className='menu-settingbtn'><TbTextCaption size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Title<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{name}</div></button>
             <button className='menu-settingbtn'><TbTextCaption size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
-            <button className='menu-settingbtn'><TbCalendar size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{modifiedDate}</div></button>
-            <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Modified<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{createdDate}</div></button>
+            <button className='menu-settingbtn'><TbCalendar size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{createdDate}</div></button>
+            <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Modified<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{modifiedDate}</div></button>
             <button className='menu-settingbtn' onClick={toggleSpellCheck}><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check{spellCheck ? <div style={{position:'absolute', right:'20px',  color:'rgb(90, 160, 80)'}}>On</div> : <div style={{position:'absolute', right:'20px', color:'rgb(200, 80, 80)'}}>Off</div>}</button>
             <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={toggleAutoSave}><TbReload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Autosave{autoSave ? <div style={{position:'absolute', right:'20px',  color:'rgb(90, 160, 80)'}}>On</div> : <div style={{position:'absolute', right:'20px', color:'rgb(200, 80, 80)'}}>Off</div>}</button>
 

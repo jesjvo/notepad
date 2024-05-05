@@ -24,14 +24,12 @@ button{
     -webkit-app-region: no-drag;
 }
 
-button:disabled:hover{
-    background-color: transparent;
+button:disabled{
+    background-color: white;
+    color: rgba(0,0,0,.2);
     cursor: default;
 }
-button:disabled:active{
-    background-color: transparent;
-    cursor: default;
-}
+
 
 .App{
     height: 100%; width: 100%;

@@ -32,12 +32,14 @@ class App extends React.Component {
     this.handleSaveData = this.handleSaveData.bind(this);
     this.setPreferences = this.setPreferences.bind(this);
     this.setAuthor = this.setAuthor.bind(this);
+    this.setName = this.setName.bind(this);
   }
 
   handleMenu(characterCount, content){this.setState({ characterCount, tempContent:content, menuOpen:true })} //opens menu & updates characterCount
   handleSaveData(content){saveData(this.state.preferences, content)} //sends api to main-process, 'save-data'
   setPreferences(preferences){this.setState(preferences)} //on editor-ready, Page.jsx sends 'setPreferences' -> changing this.state.preferences
   setAuthor(author){var preferences=this.state.preferences; preferences.author=author; this.setState({preferences})} //in Page.jsx, when changed author -> sends 'setAuthor' -> changing author preferences
+  setName(rename){var preferences=this.state.preferences; preferences.name=rename; this.setState({preferences})} //in Page.jsx, when changed rename -> sends 'setRename' -> changing name preferences
 
   setSerif(){
     var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'; this.setState({preferences})
@@ -81,6 +83,8 @@ class App extends React.Component {
         saveData={this.handleSaveData}
 
         //file preferences being passed to Menu.jsx
+        name={this.state.preferences.name}
+        author={this.state.preferences.author}
         tempContent={this.state.tempContent}
         spellCheck={this.state.preferences.spellCheck}
         autoSave={this.state.preferences.autoSave}
@@ -94,13 +98,14 @@ class App extends React.Component {
           setFavorite={()=>{this.setFavorite()}}
           saveData={this.handleSaveData}
           setAuthor={this.setAuthor}
+          setRename={this.setName}
           setPreferences={this.setPreferences}
           menuClick={this.handleMenu}
           
           //file preferences being passed to Page.jsx
           author={this.state.preferences.author}
           fontStyle={this.state.preferences.fontStyle}
-          fileName={this.state.preferences.name}
+          name={this.state.preferences.name}
           isFavorite={this.state.preferences.isFavorite}
           spellCheck={this.state.preferences.spellCheck}
           ></Page>

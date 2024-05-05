@@ -221,13 +221,63 @@ export function ChangeAuthor({close, submitAuthor}){
     setOpacity({opacity:1})
   }, [])
 
+  function checkAuthor(author){
+    if(author.length<1){
+      submitAuthor(null);
+    }else{
+      submitAuthor(input);
+    }
+    close()
+  }
+
   return(
-    <div className='author'>
-      <div className='author-closediv' onClick={close}/>
-      <div className='author-div' style={{opacity:opacity.opacity}}>
-        <input className='author-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author'></input>
-        <button className='author-clear' onClick={()=>{submitAuthor(null); close()}}>Clear</button>
-        <button className='author-submit' onClick={()=>{submitAuthor(input); close()}}>Set</button>
+    <div className='changeDiv'>
+      <div className='changeDiv-closediv' onClick={close}/>
+      <div className='changeDiv-div' style={{opacity:opacity.opacity}}>
+        <GoPerson style={{padding:'4px'}} size={14}/>
+        <input className='changeDiv-input' value={input} onChange={e => setInput(e.target.value)} placeholder='Author'></input>
+        <button className='changeDiv-submit' onClick={()=>{checkAuthor(input)}}>Set</button>
+      </div>
+    </div>
+  )
+}
+
+//div element to change name of file
+export function RenameFile({close, submiteRename, name}){
+  const [opacity, setOpacity] = useState({opacity:0});
+  const [input, setInput] = useState('');
+
+  function checkRename(rename){
+    let hasError = false
+    for (let i = 0; i < rename.length; i++) { //checks for invalid characters
+      var f=rename.split('')[i]
+      if(("[^\\/:\x22*?<>|]+").includes(f)){
+        hasError = true
+      }
+    }
+    if(!hasError){setInput(rename)} //if doesn't have invalid characters, allow input
+  }
+
+  function checkRename(rename){
+    if(rename.length<1){
+      return
+    }
+    submiteRename(rename) //make this a function ....
+    close()
+  }
+
+  useEffect(() => {
+    setOpacity({opacity:1})
+    setInput(name)
+  }, [])
+
+  return(
+    <div className='changeDiv'>
+      <div className='changeDiv-closediv' onClick={close}/>
+      <div className='changeDiv-div' style={{opacity:opacity.opacity}}>
+        <GoRepoPush style={{padding:'4px'}} size={14}/>
+        <input className='changeDiv-input' value={input} onChange={e => checkRename(e.target.value)} placeholder='Rename'></input>
+        <button className='changeDiv-submit' onClick={()=>{checkRename(input)}}>Set</button>
       </div>
     </div>
   )
@@ -240,11 +290,13 @@ async function getData(){
 }
 
 //page (main editor)
-export default function Page({menuClick, fontStyle, author, fileName, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor}) {
+export default function Page({menuClick, fontStyle, author, name, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor, setRename}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [nodeList, setNodeList] = useState(false)
   const [authorActive, setAuthorActive] = useState(false)
+  const [renameFileActive, setRenameFile] = useState(false)
+
 
   const ref = useRef(null);
 
@@ -299,6 +351,8 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
   function selectNode(){editor.commands.setTextSelection({ from: editor.state.selection.$to.start(), to: editor.state.selection.$to.end()}); setNodeList(true)} //if press edit button -> select whole current node & show nodeList
 
   function handleAuthorChange(author){setAuthor(author)} //send 'setAuthor' to App.jsx, to change author preferences
+  function handleRenameChange(rename){setRename(rename)} //send 'setRename' to App.jsx, to change author preferences
+
 
   if(!editor){return null} //if editor not ready -> return
 
@@ -328,6 +382,9 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
       />
       :null}
 
+      
+      {renameFileActive ? <RenameFile close={()=>{setRenameFile(false)}} submiteRename={handleRenameChange} name={name}/> : null}
+
       {authorActive ? <ChangeAuthor close={()=>{setAuthorActive(false)}} submitAuthor={handleAuthorChange}/> : null}
 
       <div className='PageInterface'>
@@ -336,7 +393,7 @@ export default function Page({menuClick, fontStyle, author, fileName, isFavorite
             <div style={{marginLeft:'4px'}}></div>
             <button className='PageHeader-btn' style={{display:'flex', flexDirection:'row', alignItems:'center'}} onClick={()=>{setAuthorActive(true)}}><GoPerson size={14}/>{author===null ? null : <div style={{marginLeft:'8px', letterSpacing:'.25px'}}>{author}</div>}</button>
             <div className='divider-y' style={{height:'50%'}}></div>
-            <button className='PageHeader-btn' style={{letterSpacing:'.25px', color:'rgba(0,0,0,.6)'}}>{fileName}</button>
+            <button className='PageHeader-btn' style={{letterSpacing:'.25px', color:'rgba(0,0,0,.6)'}} onClick={()=>{setRenameFile(true)}}>{name}</button>
             <div className='divider-y' style={{height:'50%'}}></div>
             <button className='PageHeader-btn' onClick={()=>{saveData(editor.getJSON())}}><GoRepoPush  size={14}/></button>
           </div>
