@@ -243,7 +243,7 @@ export function ChangeAuthor({close, submitAuthor}){
 }
 
 //div element to change name of file
-export function RenameFile({close, submiteRename, name}){
+export function RenameFile({close, submitRename, name}){
   const [opacity, setOpacity] = useState({opacity:0});
   const [input, setInput] = useState('');
 
@@ -258,11 +258,11 @@ export function RenameFile({close, submiteRename, name}){
     if(!hasError){setInput(rename)} //if doesn't have invalid characters, allow input
   }
 
-  function checkRename(rename){
+  function confirmRename(rename){
     if(rename.length<1){
       return
     }
-    submiteRename(rename) //make this a function ....
+    submitRename(rename) //make this a function ....
     close()
   }
 
@@ -277,7 +277,7 @@ export function RenameFile({close, submiteRename, name}){
       <div className='changeDiv-div' style={{opacity:opacity.opacity}}>
         <GoRepoPush style={{padding:'4px'}} size={14}/>
         <input className='changeDiv-input' value={input} onChange={e => checkRename(e.target.value)} placeholder='Rename'></input>
-        <button className='changeDiv-submit' onClick={()=>{checkRename(input)}}>Set</button>
+        <button className='changeDiv-submit' onClick={()=>{confirmRename(input)}}>Set</button>
       </div>
     </div>
   )
@@ -383,7 +383,7 @@ export default function Page({menuClick, fontStyle, author, name, isFavorite, se
       :null}
 
       
-      {renameFileActive ? <RenameFile close={()=>{setRenameFile(false)}} submiteRename={handleRenameChange} name={name}/> : null}
+      {renameFileActive ? <RenameFile close={()=>{setRenameFile(false)}} submitRename={handleRenameChange} name={name}/> : null}
 
       {authorActive ? <ChangeAuthor close={()=>{setAuthorActive(false)}} submitAuthor={handleAuthorChange}/> : null}
 
