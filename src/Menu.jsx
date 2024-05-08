@@ -3,8 +3,8 @@ import './Css/Menu.css'
 
 //icons
 import { RiFontMono, RiFontSans, RiFontSansSerif } from "react-icons/ri";
-import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbHeading, TbMoodCheck, TbRefresh, TbReload, TbTextCaption, TbTrash, TbUser, TbWorldUpload } from "react-icons/tb";
-import { IoWarningOutline } from "react-icons/io5";
+import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbReload, TbTextCaption, TbTrash, TbUser, TbWorldUpload } from "react-icons/tb";
+import { IoCheckmarkOutline, IoCloseOutline, IoWarningOutline } from "react-icons/io5";
 
 //api send
 async function handleApplicationMessage(request){
@@ -38,7 +38,7 @@ async function newFile(){
   await api.newFile();
 }
 
-async function renameFile(fileName){
+async function renameFile(){
   const { api } = window;
   await api.renameFile();
 }
@@ -106,7 +106,7 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
           <div className='divider-x'/>
           <div className='menu-settingdiv'>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}>File Configuration{isCurrentFile ? null : <IoWarningOutline style={{marginLeft:'5px'}} size={12} color='rgb(200, 120, 80)'/>}</p>
-            <button className='menu-settingbtn' disabled={isCurrentFile ? false : true}><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
+            <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={()=>{if(autoSave){saveData(tempContent)}; renameFile()}}><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
             <button className='menu-settingbtn' onClick={()=>{saveData(tempContent); close();}}><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File</button>
             <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; newFile()}}><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File</button>
             <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; openFile()}}><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File</button>
@@ -119,8 +119,8 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
             <button className='menu-settingbtn'><TbTextCaption size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Words<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{characterCount}</div></button>
             <button className='menu-settingbtn'><TbCalendar size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Created<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{createdDate}</div></button>
             <button className='menu-settingbtn'><TbClock size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Modified<div style={{position:'absolute', right:'20px', color:'rgba(0,0,0,0.4)'}}>{modifiedDate}</div></button>
-            <button className='menu-settingbtn' onClick={toggleSpellCheck}><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check{spellCheck ? <div style={{position:'absolute', right:'20px',  color:'rgb(90, 160, 80)'}}>On</div> : <div style={{position:'absolute', right:'20px', color:'rgb(200, 80, 80)'}}>Off</div>}</button>
-            <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={toggleAutoSave}><TbReload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Autosave{autoSave ? <div style={{position:'absolute', right:'20px',  color:'rgb(90, 160, 80)'}}>On</div> : <div style={{position:'absolute', right:'20px', color:'rgb(200, 80, 80)'}}>Off</div>}</button>
+            <button className='menu-settingbtn' onClick={toggleSpellCheck}><TbClipboardCheck size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Spell Check{spellCheck ? <IoCheckmarkOutline style={{position:'absolute', right:'20px', color:'rgb(90, 160, 80)'}} size={17}/> : <IoCloseOutline style={{position:'absolute', right:'20px', color:'rgb(200, 80, 80)'}} size={17}/>}</button>
+            <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={toggleAutoSave}><TbReload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Autosave{autoSave ? <IoCheckmarkOutline style={{position:'absolute', right:'20px', color:'rgb(90, 160, 80)'}} size={17}/> : <IoCloseOutline style={{position:'absolute', right:'20px', color:'rgb(200, 80, 80)'}} size={17}/>}</button>
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>

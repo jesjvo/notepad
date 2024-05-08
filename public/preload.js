@@ -21,8 +21,8 @@ contextBridge.exposeInMainWorld("api", {
         ipcRenderer.invoke('new-file')
       },
 
-      renameFile : (fileName) => {
-        ipcRenderer.invoke('rename-file', fileName)
+      renameFile : () => {
+        ipcRenderer.invoke('rename-file')
       },
 
       openFile : () => {

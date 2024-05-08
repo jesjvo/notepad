@@ -213,12 +213,13 @@ export function NodeList({
 }
 
 //div element to change author
-export function ChangeAuthor({close, submitAuthor}){
+export function ChangeAuthor({close, submitAuthor, author}){
   const [opacity, setOpacity] = useState({opacity:0});
   const [input, setInput] = useState('');
 
   useEffect(() => {
     setOpacity({opacity:1})
+    if(author!==null){setInput(author)}
   }, [])
 
   function checkAuthor(author){
@@ -385,7 +386,7 @@ export default function Page({menuClick, fontStyle, author, name, isFavorite, se
       
       {renameFileActive ? <RenameFile close={()=>{setRenameFile(false)}} submitRename={handleRenameChange} name={name}/> : null}
 
-      {authorActive ? <ChangeAuthor close={()=>{setAuthorActive(false)}} submitAuthor={handleAuthorChange}/> : null}
+      {authorActive ? <ChangeAuthor close={()=>{setAuthorActive(false)}} submitAuthor={handleAuthorChange} author={author}/> : null}
 
       <div className='PageInterface'>
         <div className='PageHeader'>

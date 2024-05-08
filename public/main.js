@@ -123,13 +123,23 @@ ipcMain.handle('open-file', (event) => {
 }
 })
 
-ipcMain.handle('rename-file', (event, fileName) => {
-  //open new file
+ipcMain.handle('rename-file', (event) => {
   let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  console.log(fileName)
+  let newFile = dialog.showSaveDialogSync(mainWindow,{
+    properties: ['openFile', 'openDirectory'],
+    filters: [
+      { name: 'Notely extension', extensions: ['json'] },
+    ]
+  })
+  if(newFile){
+    console.log(newFile)
 
-  //mainWindow.webContents.reloadIgnoringCache() //refresh application
+    fs.renameSync(lastOpened.lastOpened, newFile); //renames file
+
+    lastOpened.lastOpened = newFile;
+    fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2)); //changes lastOpened
+  }
 })
 
 //on open menu (gather data)
