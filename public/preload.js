@@ -34,6 +34,11 @@ contextBridge.exposeInMainWorld("api", {
         return result
       },
 
+      openInbox : () => {
+        const result = ipcRenderer.invoke('get-inbox-info')
+        return result
+      },
+
       saveData : (preferences, content) => {
         ipcRenderer.invoke('save-data', preferences, content)
       },

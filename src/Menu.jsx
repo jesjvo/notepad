@@ -55,24 +55,18 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
   const [modifiedDate, setModifiedDate] = useState('Invalid')
   const [createdDate, setCreatedDate] = useState('Invalid')
   const [isCurrentFile, setCurrentFile] = useState(false)
-  
+
   const [display, setDisplay] = useState({opacity:0, height:'fit-content'})
   const ref = useRef(null);
 
   useEffect(() => {
-    console.log(characterCount, tempContent)
-
     const result = handleApplicationMessage('get-menu-info') // result[0] -> is file, result[1] -> modifiedDate, result[2] -> createdDate
     result.then(function(result) {return result}).then((result) => {
       if(result[0]){ //if is file
         setModifiedDate(result[1]); setCreatedDate(result[2]); setCurrentFile(true);
       }
     })
-    
-    setDisplay({opacity:1})
-    const interval = setInterval(() => {
-      updatePosition()
-    }, 250);
+    setDisplay({opacity:1}); const interval = setInterval(() => {updatePosition()}, 250);
 
     return () => clearInterval(interval); 
   } , []);

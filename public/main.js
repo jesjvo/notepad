@@ -5,15 +5,18 @@ const path = require('node:path')
 const folder = path.join(app.getPath('appData'), 'notely')
 const recovery = path.join(folder, 'Recovery')
 const settingPreferences = path.join(folder, 'SettingPreferences.json')
+
 const settingStructure =
 { 
   lastOpened:null, //the file path
-  files:{
-      path:null,
-    }
+  filePaths:[
+    'Files',
+    'File 1',
+    'File 2',
+  ]
 }
 
-const checkFolders=()=>{
+function checkFolders(){
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
     console.log('Notely Folder Created~');
@@ -84,23 +87,23 @@ ipcMain.handle('open-recovery', (event) => {
 })
 
 ipcMain.handle('delete-file', (event) => {
-  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  if(fs.existsSync(lastOpened.lastOpened)){ //checks file exists
-    fs.unlinkSync(lastOpened.lastOpened) //deletes file
+  if(fs.existsSync(settingPrefParse.lastOpened)){ //checks file exists
+    fs.unlinkSync(settingPrefParse.lastOpened) //deletes file
   }
 
-  lastOpened.lastOpened = null
-  fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2)) //change last opened to null
+  settingPrefParse.lastOpened = null
+  fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)) //change last opened to null
   mainWindow.webContents.reloadIgnoringCache() //refresh application
 })
 
 ipcMain.handle('new-file', (event) => {
   //open new file
-  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  lastOpened.lastOpened = null
-  fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2)) //change last opened to null
+  settingPrefParse.lastOpened = null
+  fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)) //change last opened to null
   mainWindow.webContents.reloadIgnoringCache() //refresh application
 })
 
@@ -115,16 +118,16 @@ ipcMain.handle('open-file', (event) => {
   //check if valid file selected
   if(openFile){
     if(openFile[0]){
-    let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
-    lastOpened.lastOpened = openFile[0]
-    fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2))
+    let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+    settingPrefParse.lastOpened = openFile[0]
+    fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2))
     mainWindow.webContents.reloadIgnoringCache() //refresh application
   }
 }
 })
 
 ipcMain.handle('rename-file', (event) => {
-  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
   let newFile = dialog.showSaveDialogSync(mainWindow,{
     properties: ['openFile', 'openDirectory'],
@@ -135,36 +138,83 @@ ipcMain.handle('rename-file', (event) => {
   if(newFile){
     console.log(newFile)
 
-    fs.renameSync(lastOpened.lastOpened, newFile); //renames file
+    fs.renameSync(settingPrefParse.lastOpened, newFile); //renames file
 
-    lastOpened.lastOpened = newFile;
-    fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2)); //changes lastOpened
+    settingPrefParse.lastOpened = newFile;
+    fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)); //changes lastOpened
   }
 })
 
 //on open menu (gather data)
 ipcMain.handle('get-menu-info', (event) => {
-  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  if(fs.existsSync(lastOpened.lastOpened)){
+  if(fs.existsSync(settingPrefParse.lastOpened)){
     //get the stats of current file
-    let date = fs.statSync(lastOpened.lastOpened)
-    modifiedDate = `${date.mtime.getDate()}/${date.mtime.getMonth()}/${date.mtime.getFullYear()}`; //get modified date
-    createdDate = `${date.birthtime.getDate()}/${date.birthtime.getMonth()}/${date.birthtime.getFullYear()}`; //get created date
+    let date = fs.statSync(settingPrefParse.lastOpened)
+    let modifiedDate = `${date.mtime.getDate()}/${date.mtime.getMonth()}/${date.mtime.getFullYear()}`; //get modified date
+    let createdDate = `${date.birthtime.getDate()}/${date.birthtime.getMonth()}/${date.birthtime.getFullYear()}`; //get created date
     return [true, modifiedDate, createdDate] //return [if file, modified date, created date]
   }else{
     return [false, null, null]
   }
 })
 
+//on inbox menu (gather data)
+function gatherFiles(){
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  const filePaths = settingPrefParse.filePaths
+  let fileList = [] //array of files to return with information
+
+  console.log(filePaths)
+
+  for (let i = 0; i < filePaths.length; i++) { //loops through each file in array to get information and add to array.
+    if(fs.existsSync(filePaths[i])){
+      let file = (JSON.parse(fs.readFileSync(filePaths[i], 'utf8')));
+      let stats = fs.statSync(filePaths[i])
+
+      let filePackage = //format file information
+      {
+        sortDates:`${stats.mtime.getTime()}`,
+        fileAuthor:file.preferences.author,
+        fileName:file.preferences.name,
+        filePath:filePaths[i],
+        isFavorite:file.preferences.isFavorite,
+        date:{
+          modifiedDate:`${stats.mtime.getDate()}/${stats.mtime.getMonth()}/${stats.mtime.getFullYear()}`,
+          createdDate:`${stats.birthtime.getDate()}/${stats.birthtime.getMonth()}/${stats.birthtime.getFullYear()}`
+        }
+      }
+      fileList.push(filePackage) //push file to array
+    }else{
+      console.log('file not found', filePaths[i])
+      //remove file from settingPrefParse
+      settingPrefParse.filePaths.splice(i, 1)
+    }
+    if(fileList.length>0){
+      fileList.sort((a, b) => (b.sortDates) - (a.sortDates)) //sort files by date
+    }
+  }
+  fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)) //update setting file
+  for (let i = 0; i < fileList.length; i++) {
+    delete fileList[i].sortDates
+  }
+  return fileList
+}
+
+ipcMain.handle('get-inbox-info', (event) => {
+  const result = gatherFiles()
+  return result
+})
+
 //on save data
 ipcMain.handle('save-data', (event, preferences, content) => {
-  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
   let file={preferences:preferences, content:content}
 
-  if(fs.existsSync(lastOpened.lastOpened)) {
+  if(fs.existsSync(settingPrefParse.lastOpened)) {
     //save current file
-    fs.writeFileSync(lastOpened.lastOpened, JSON.stringify(file, null, 2))
+    fs.writeFileSync(settingPrefParse.lastOpened, JSON.stringify(file, null, 2))
   }else{
     //save new file (filedialog)
     let newFile = dialog.showSaveDialogSync(mainWindow,{
@@ -178,18 +228,18 @@ ipcMain.handle('save-data', (event, preferences, content) => {
       //writing new file
       fs.writeFileSync(newFile, JSON.stringify(file, null, 2))
       //updating lastOpened
-      lastOpened.lastOpened = newFile
-      fs.writeFileSync(settingPreferences, JSON.stringify(lastOpened, null, 2))
+      settingPrefParse.lastOpened = newFile
+      fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2))
     }
   }
 })
 
 //on opening application
 ipcMain.handle('get-data', (event) => {
-  let lastOpened = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
 
-  if(fs.existsSync(lastOpened.lastOpened)) {
-    let file = JSON.parse(fs.readFileSync(lastOpened.lastOpened, 'utf8'));
+  if(fs.existsSync(settingPrefParse.lastOpened)) {
+    let file = JSON.parse(fs.readFileSync(settingPrefParse.lastOpened, 'utf8'));
     let preferences = {preferences:file.preferences}; const content = file.content;
     return [preferences, content]
   }else{

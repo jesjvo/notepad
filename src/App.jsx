@@ -2,6 +2,7 @@ import React from 'react';
 import './Css/App.css'
 import Page from './Page';
 import Menu from './Menu'
+import Inbox from './Inbox'
 
 //api send
 async function saveData(preferences, content){
@@ -14,6 +15,7 @@ class App extends React.Component {
     super();
     this.state = {
       menuOpen:false, // true or false of menu displaying
+      inboxOpen:false, //true or false of inbox displaying
       characterCount: null, // handles character count when menu opened
       tempContent:null, // handles the content when opened menu
 
@@ -29,6 +31,7 @@ class App extends React.Component {
       }
     }
     this.handleMenu = this.handleMenu.bind(this);
+    this.handleInbox = this.handleInbox.bind(this);
     this.handleSaveData = this.handleSaveData.bind(this);
     this.setPreferences = this.setPreferences.bind(this);
     this.setAuthor = this.setAuthor.bind(this);
@@ -36,6 +39,7 @@ class App extends React.Component {
   }
 
   handleMenu(characterCount, content){this.setState({ characterCount, tempContent:content, menuOpen:true })} //opens menu & updates characterCount
+  handleInbox(){this.setState({ inboxOpen:true })} //opens menu & updates characterCount
   handleSaveData(content){saveData(this.state.preferences, content)} //sends api to main-process, 'save-data'
   setPreferences(preferences){this.setState(preferences)} //on editor-ready, Page.jsx sends 'setPreferences' -> changing this.state.preferences
   setAuthor(author){var preferences=this.state.preferences; preferences.author=author; this.setState({preferences})} //in Page.jsx, when changed author -> sends 'setAuthor' -> changing author preferences
@@ -92,6 +96,13 @@ class App extends React.Component {
         ></Menu>
          : null}
 
+        {this.state.inboxOpen ? 
+        <Inbox
+        close={()=>{this.setState({inboxOpen:false})}}
+        
+        ></Inbox>
+         : null}
+
         <div className='Content'>
           <Page
           //configure file preferences/content/functions
@@ -100,6 +111,7 @@ class App extends React.Component {
           setAuthor={this.setAuthor}
           setRename={this.setName}
           setPreferences={this.setPreferences}
+          inboxClick={this.handleInbox}
           menuClick={this.handleMenu}
           
           //file preferences being passed to Page.jsx

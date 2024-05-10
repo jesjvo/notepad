@@ -30,7 +30,7 @@ import CharacterCount from '@tiptap/extension-character-count'
 import './Css/Page.css'
 
 //icons
-import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoKebabHorizontal, GoPerson, GoRepoPush } from "react-icons/go";
+import { GoArchive, GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoFileDirectory, GoInbox, GoKebabHorizontal, GoMultiSelect, GoPerson, GoRepoPush } from "react-icons/go";
 import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
 import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
@@ -196,14 +196,11 @@ export function NodeList({
     style={{position:'relative', opacity:opacity.opacity, zIndex:1, left: nodeLeft, top: listTop.top, width:'fit-content', height:'27px', flexDirection:'row'}}>
 
       <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleBlockChange()}}>Text <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
-
       <button className='btn-list' style={{height: '27px', minWidth:'22px', fontWeight:800, fontSize:'.7em'}} onClick={setBold}>B</button>
       <button className='btn-list' style={{height: '27px', minWidth:'18px', fontWeight:400, fontStyle:'italic', fontSize:'.7em'}} onClick={setItalic}>i</button>
       <button className='btn-list' style={{height: '27px', minWidth:'21px', fontWeight:400, textDecoration:'underline', fontSize:'.7em'}} onClick={setUnderline}>U</button>
       <button className='btn-list' style={{height: '27px', minWidth:'21px', fontWeight:400, textDecoration:'line-through', fontSize:'.7em'}} onClick={setStrike}>S</button>
-
       <button className='btn-list' style={{height: '27px', minWidth:'40px', fontSize:'.8em'}} onClick={()=>{handleColor()}}>A <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
-
       <button className='btn-list' style={{height: '27px', minWidth:'fit-content'}}><TbCopy size={14}/></button>
       <button className='btn-list' style={{borderTopRightRadius:'4px', borderBottomRightRadius:'4px', height: '27px', minWidth:'fit-content'}} onClick={deleteSelection}><TbTrash size={14}/></button>
     </div>
@@ -223,11 +220,7 @@ export function ChangeAuthor({close, submitAuthor, author}){
   }, [])
 
   function checkAuthor(author){
-    if(author.length<1){
-      submitAuthor(null);
-    }else{
-      submitAuthor(input);
-    }
+    if(author.length<1){submitAuthor(null)}else{submitAuthor(input)}
     close()
   }
 
@@ -252,18 +245,14 @@ export function RenameFile({close, submitRename, name}){
     let hasError = false
     for (let i = 0; i < rename.length; i++) { //checks for invalid characters
       var f=rename.split('')[i]
-      if(("[^\\/:\x22*?<>|]+").includes(f)){
-        hasError = true
-      }
+      if(("[^\\/:\x22*?<>|]+").includes(f)){hasError = true}
     }
     if(!hasError){setInput(rename)} //if doesn't have invalid characters, allow input
   }
 
   function confirmRename(rename){
-    if(rename.length<1){
-      return
-    }
-    submitRename(rename) //make this a function ....
+    if(rename.length<1){return}
+    submitRename(rename)
     close()
   }
 
@@ -291,7 +280,7 @@ async function getData(){
 }
 
 //page (main editor)
-export default function Page({menuClick, fontStyle, author, name, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor, setRename}) {
+export default function Page({menuClick, inboxClick, fontStyle, author, name, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor, setRename}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [nodeList, setNodeList] = useState(false)
@@ -382,7 +371,6 @@ export default function Page({menuClick, fontStyle, author, name, isFavorite, se
       colorViolet={()=>{editor.chain().focus().setColor('#c850be').run()}} colorFillViolet={()=>{editor.chain().focus().toggleHighlight({ color: '#d250d21a' }).run()}} /* red */
       />
       :null}
-
       
       {renameFileActive ? <RenameFile close={()=>{setRenameFile(false)}} submitRename={handleRenameChange} name={name}/> : null}
 
@@ -402,6 +390,7 @@ export default function Page({menuClick, fontStyle, author, name, isFavorite, se
             <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
             <button className='PageHeader-btn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
             <div className='divider-y' style={{height:'50%'}}></div>
+            <button className='PageHeader-btn' style={{zIndex:25}} onClick={()=>{inboxClick()}}><GoInbox size={14}/></button>
             <button className='PageHeader-btn' onClick={setFavorite}>{isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
             <button className='PageHeader-btn' style={{zIndex:25}} onClick={()=>{menuClick(editor.storage.characterCount.words(), editor.getJSON())}}><GoKebabHorizontal size={14}/></button>
             <div style={{marginRight:'4px'}}></div>
