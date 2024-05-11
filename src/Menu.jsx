@@ -75,7 +75,7 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
     const { height } = ref.current.getBoundingClientRect()
     const { innerHeight } = window;
 
-    if(height + 50 >= innerHeight){setDisplay({height:innerHeight - 50})}
+    if(height + 35 + 8 + 10 >= innerHeight){setDisplay({height:innerHeight - 35 - 8 - 10})}
     else{setDisplay({height:'fit-content'})}
   }
 

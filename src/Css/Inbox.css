@@ -13,7 +13,7 @@
 }
 
 .div-inbox{
-    width: 230px;
+    min-width: 230px;
     background-color: white;
     top: 35px; right: 8px;
 
@@ -33,3 +33,11 @@
     position: absolute;
     transition:.2s
 }
+
+.div-inboxRecentFiles{
+    
+    display: flex; flex-direction: row;
+}
+
+/* inbox appearance */
+

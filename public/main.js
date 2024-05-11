@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron/main');
 const fs = require('node:fs')
-const path = require('node:path')
+const path = require('node:path');
+const { PassThrough } = require('node:stream');
 
 const folder = path.join(app.getPath('appData'), 'notely')
 const recovery = path.join(folder, 'Recovery')
@@ -93,6 +94,8 @@ ipcMain.handle('delete-file', (event) => {
     fs.unlinkSync(settingPrefParse.lastOpened) //deletes file
   }
 
+  //remove from inbox
+  if(settingPrefParse.filePaths.includes(settingPrefParse.lastOpened)){settingPrefParse.filePaths.splice(settingPrefParse.filePaths.indexOf(settingPrefParse.lastOpened), 1)} //remove from inbox
   settingPrefParse.lastOpened = null
   fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)) //change last opened to null
   mainWindow.webContents.reloadIgnoringCache() //refresh application
@@ -119,7 +122,13 @@ ipcMain.handle('open-file', (event) => {
   if(openFile){
     if(openFile[0]){
     let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+
+    //update last opened
     settingPrefParse.lastOpened = openFile[0]
+    //add to inbox
+    if(!settingPrefParse.filePaths.includes(openFile[0])){settingPrefParse.filePaths.push(openFile[0])}
+
+    //updates setting file
     fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2))
     mainWindow.webContents.reloadIgnoringCache() //refresh application
   }
@@ -140,8 +149,13 @@ ipcMain.handle('rename-file', (event) => {
 
     fs.renameSync(settingPrefParse.lastOpened, newFile); //renames file
 
+    //changes lastOpened
     settingPrefParse.lastOpened = newFile;
-    fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)); //changes lastOpened
+    //add to inbox
+    if(!settingPrefParse.filePaths.includes(newFile)){settingPrefParse.filePaths.push(newFile)}
+  
+    //updates setting file
+    fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2));
   }
 })
 
@@ -162,44 +176,46 @@ ipcMain.handle('get-menu-info', (event) => {
 
 //on inbox menu (gather data)
 function gatherFiles(){
-  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  const settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
   const filePaths = settingPrefParse.filePaths
-  let fileList = [] //array of files to return with information
 
   console.log(filePaths)
 
-  for (let i = 0; i < filePaths.length; i++) { //loops through each file in array to get information and add to array.
-    if(fs.existsSync(filePaths[i])){
-      let file = (JSON.parse(fs.readFileSync(filePaths[i], 'utf8')));
-      let stats = fs.statSync(filePaths[i])
+  const newFilePaths = [] //later used to update filePaths
+  const recentFiles = [] //array of files to return that are recently opened
+  const favoriteFiles = [] //array of files to return with favorited files
 
-      let filePackage = //format file information
-      {
-        sortDates:`${stats.mtime.getTime()}`,
-        fileAuthor:file.preferences.author,
-        fileName:file.preferences.name,
-        filePath:filePaths[i],
-        isFavorite:file.preferences.isFavorite,
+  for (let i = 0; i < filePaths.length; i++) {
+    if(fs.existsSync(filePaths[i])){
+      const filePreferences = (JSON.parse(fs.readFileSync(filePaths[i], 'utf8'))); //get file preferences
+      const fileStats = fs.statSync(filePaths[i]) //get file stats
+
+      let fileStructure={
+        recentId:`${fileStats.mtime.getTime()}`,
+
+        author:filePreferences.preferences.author, name:filePreferences.preferences.name,
+        path:filePaths[i], isFavorite:filePreferences.preferences.isFavorite,
         date:{
-          modifiedDate:`${stats.mtime.getDate()}/${stats.mtime.getMonth()}/${stats.mtime.getFullYear()}`,
-          createdDate:`${stats.birthtime.getDate()}/${stats.birthtime.getMonth()}/${stats.birthtime.getFullYear()}`
+          modifiedDate:`${fileStats.mtime.getDate()}/${fileStats.mtime.getMonth()}/${fileStats.mtime.getFullYear()}`,
+          createdDate:`${fileStats.birthtime.getDate()}/${fileStats.birthtime.getMonth()}/${fileStats.birthtime.getFullYear()}`
         }
       }
-      fileList.push(filePackage) //push file to array
-    }else{
-      console.log('file not found', filePaths[i])
-      //remove file from settingPrefParse
-      settingPrefParse.filePaths.splice(i, 1)
-    }
-    if(fileList.length>0){
-      fileList.sort((a, b) => (b.sortDates) - (a.sortDates)) //sort files by date
+
+      if(filePreferences.preferences.isFavorite){favoriteFiles.push(fileStructure)} //add to array if isFavorite
+      recentFiles.push(fileStructure)
+
+      newFilePaths.push(filePaths[i]) //add to newFilePaths if file exists
     }
   }
+
+  settingPrefParse.filePaths = newFilePaths;
   fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2)) //update setting file
-  for (let i = 0; i < fileList.length; i++) {
-    delete fileList[i].sortDates
+  if(recentFiles.length>0){
+    recentFiles.sort((a, b) => (b.recentId) - (a.recentId)) //sort files by date
+    favoriteFiles.sort((a, b) => (b.recentId) - (a.recentId)) //sort files by date
   }
-  return fileList
+
+  return [recentFiles, favoriteFiles]
 }
 
 ipcMain.handle('get-inbox-info', (event) => {
@@ -227,8 +243,13 @@ ipcMain.handle('save-data', (event, preferences, content) => {
     if(newFile){
       //writing new file
       fs.writeFileSync(newFile, JSON.stringify(file, null, 2))
+
       //updating lastOpened
       settingPrefParse.lastOpened = newFile
+      //add to inbox
+      if(!settingPrefParse.filePaths.includes(newFile)){settingPrefParse.filePaths.push(newFile)}
+
+      //update setting file
       fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2))
     }
   }

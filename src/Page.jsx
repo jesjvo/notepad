@@ -30,7 +30,7 @@ import CharacterCount from '@tiptap/extension-character-count'
 import './Css/Page.css'
 
 //icons
-import { GoArchive, GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoFileDirectory, GoInbox, GoKebabHorizontal, GoMultiSelect, GoPerson, GoRepoPush } from "react-icons/go";
+import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoInbox, GoKebabHorizontal, GoPerson, GoRepoPush } from "react-icons/go";
 import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
 import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
@@ -55,147 +55,140 @@ export function NodeList({
   colorViolet, colorFillViolet
   }){
 
-  const ref = useRef(null); const colorRef = useRef(null); const blockChangeRef = useRef(null);
-
-  const [listTop, setListTop] = useState({top:nodeTop+nodeHeight});
-  const [colorTop, setColorTop] = useState({top:nodeTop+nodeHeight+30, divHeight:'fit-content'});
-  const [blockChangeTop, setBlockChangeTop] = useState({top:nodeTop+nodeHeight+30});
-
+  const ref = useRef(null); const colorRef = useRef(null); const listRef = useRef(null);
+  const [hoveringDiv, setHoveringDiv] = useState({hoveringDivTop:nodeTop+nodeHeight, hoveringColorDivHeight:'fit-content',  hoveringColorDivTop:nodeTop+nodeHeight})
+  const [hoveringListDiv, setHoveringListDiv] = useState({hoveringListDivHeight:'fit-content', hoveringListDivTop:nodeTop+nodeHeight})
+  const [hoveringColorDiv, setHoveringColorDiv] = useState({hoveringColorDivHeight:'fit-content', hoveringColorDivTop:nodeTop+nodeHeight})
+  
   const [opacity, setOpacity] = useState({opacity:0});
-  const [showColor, setColor] = useState({active:false});
-  const [showBlockChange, setBlockChange] = useState({active:false});
+  const [showColor, setColor] = useState({active:false}); const [showList, setBlockChange] = useState({active:false}); //determines visibility of hovering div childs
 
-  const handleColor=()=>{
-    if(!showColor.active){
-      setColor({active:true}); setBlockChange({active:false})}
-    else{setColor({active:false})}
+  const handleColor=()=>{if(!showColor.active){setColor({active:true}); setBlockChange({active:false})}else{setColor({active:false})}
   }
 
-  const handleBlockChange=()=>{
-    if(!showBlockChange.active){
-      setBlockChange({active:true}); setColor({active:false})}
-    else{setBlockChange({active:false})}
+  const handleList=()=>{
+    if(!showList.active){setBlockChange({active:true}); setColor({active:false})}else{setBlockChange({active:false})}
   }
 
   const handleClose=()=>{
-    if(showBlockChange.active || showColor.active){
-      setBlockChange({active:false}); setColor({active:false})}
-    else{
-      close()
-    }
+    if(showList.active || showColor.active){setBlockChange({active:false}); setColor({active:false})}else{close()}
   }
 
   useEffect(() => {
-    setOpacity({opacity:1})
-    const interval = setInterval(() => {
-      updatePosition()
-    }, 250);
+    setOpacity({opacity:1}); const interval = setInterval(() => {repositionHoveringDiv()}, 250);
 
     return () => {setOpacity({opacity:0}); clearInterval(interval);}
   }, []);
 
-  const updatePosition = () => {
-    const { height } = ref.current.getBoundingClientRect()
+  function repositionHoveringDiv(){
     const { innerHeight } = window;
+    const hovering_div_height = ref.current.getBoundingClientRect().height;
+    //nodeTop is the marginTop of the current node (editor selection node), nodeHeight is the height of the current node (title, subtitle, etc..)
+    //these 2 added together gets you the marginTop just below the current node (used for hovering div)
+    //height variable is the height of 'hovering-div'.
+    //these 3 added together gets you the marginTop just below the 'hovering div' (used for hovering-list-div or hovering-color-div)
 
-    let newTopHeight = listTop.top
+    let hovering_div_top = nodeTop + nodeHeight; //placed below the current node
+    if(hovering_div_top + hovering_div_height > innerHeight){ //if the hovering-div height is out of the screen
 
-    if(newTopHeight + height + 10 > innerHeight){
-      newTopHeight = innerHeight - (innerHeight - listTop.top) - height - nodeHeight
-      if(newTopHeight<40){
-        newTopHeight=40
-      }
+      hovering_div_top = nodeTop - hovering_div_height; //it's repositioned just above the current node.
+      if(hovering_div_top<40){hovering_div_top=40} //this will prevent the hovering-div from going out of the screen.
     }
-    setListTop({top:newTopHeight});
+    setHoveringDiv({hoveringDivTop:hovering_div_top})
 
+    //firstly, color/list top & height can have 3 stages,
+    //1 div height and margin < innerHeight
+    //2: div height > windowHeight, so height will equal windowHeight - 40, marginTop will be 40, y-scroll is automatically done.
+    //3: div height < windowHeight, however, the margintop isn't able to be placed below hovering-div.
     try{
-      const { height } = colorRef.current.getBoundingClientRect();
-      let newTopHeight = colorTop.top
-      let divHeight = colorTop.divHeight
+      let hovering_color_div_height = colorRef.current.getBoundingClientRect().height;
+      let replacement_height = hoveringColorDiv.hoveringColorDivHeight
+      let hovering_color_div_top = hovering_div_top + hovering_div_height + 3 //placed below the hovering-div
 
-      if(newTopHeight + height + 10 >= innerHeight){
-        if(height + 10 + 40 > innerHeight){
-          divHeight = innerHeight-50
-          newTopHeight = 40
+      if(hovering_color_div_top + hovering_color_div_height + 14 > innerHeight){ //if the hovering-color-div height is out of the screen
+        if(hovering_color_div_height + 54 > innerHeight){ //if the hovering-color-div height is out of the screen
+          replacement_height = innerHeight - 54 //consider padding and margin
+          hovering_color_div_top = 40
         }else{
-          divHeight = 'fit-content'
-          newTopHeight = innerHeight - height - 10
+          hovering_color_div_top = innerHeight - hovering_color_div_height - 14 //consider padding and margin
+          replacement_height = 'fit-content' //repositioned along the bottom
         }
       }
-      setColorTop({top:newTopHeight, divHeight:divHeight});
-    }catch{}
-
+      setHoveringColorDiv({hoveringColorDivHeight:replacement_height, hoveringColorDivTop:hovering_color_div_top})
+    }catch{
+      //color div doesn't exist
+    }
     try{
-      const { height } = blockChangeRef.current.getBoundingClientRect();
-      let newTopHeight = blockChangeTop.top
+      let hovering_list_div_height = listRef.current.getBoundingClientRect().height;
+      let replacement_height = hoveringListDiv.hoveringListDivHeight
+      let hovering_list_div_top = hovering_div_top + hovering_div_height + 3 //placed below the hovering-div
 
-      if(newTopHeight + height + 5 > innerHeight){
-        newTopHeight = innerHeight - height - 5
+      if(hovering_list_div_top + hovering_list_div_height + 14 > innerHeight){ //if the hovering-color-div height is out of the screen=
+        if(hovering_list_div_height + 54 > innerHeight){ //if the hovering-color-div height is out of the screen
+          replacement_height = innerHeight - 54 //consider padding and margin
+          hovering_list_div_top = 40
+        }else{
+          hovering_list_div_top = innerHeight - hovering_list_div_height - 14 //consider padding and margin
+          replacement_height = 'fit-content' //repositioned along the bottom
+        }
       }
-      setBlockChangeTop({top:newTopHeight});
-    }catch{}
+      setHoveringListDiv({hoveringListDivHeight:replacement_height, hoveringListDivTop:hovering_list_div_top})
+    }catch{
+      //list div doesn't exist
+    }
   }
 
   return(
   <>
   <div className='div-list'>
     <div className='div-listclose' onClick={()=>{handleClose()}}></div>
-    {showBlockChange.active ?
-      <div className='div-listbox' ref={blockChangeRef}
-      style={{position:'absolute', zIndex:2, left: nodeLeft-10, top: blockChangeTop.top, height:'fit-content', width:'120px', padding:'2px', flexDirection:'column'}}>
-
+    {showList.active ?
+      <div className='div-listbox' ref={listRef}
+      style={{position:'absolute', zIndex:2, left: nodeLeft-10, top: hoveringListDiv.hoveringListDivTop, height:hoveringListDiv.hoveringListDivHeight, width:'120px', padding:'2px', flexDirection:'column'}}>
         <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text size</p>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={setText}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Text</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setTitle}><p className='p-listblockchange'><VscTextSize size={17} strokeWidth={.2} color='rgba(0,0,0,1)'/></p><p style={{fontSize:'.9em'}}>Title</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setSubtitle}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.8)'/></p><p style={{fontSize:'.9em'}}>Subtitle</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setLargeText}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Large text</p></button>
-
-        <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
-
+        <button className='btn-listcolor' onClick={setText}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Text</p></button>
+        <button className='btn-listcolor' onClick={setTitle}><p className='p-listblockchange'><VscTextSize size={17} strokeWidth={.2} color='rgba(0,0,0,1)'/></p><p style={{fontSize:'.9em'}}>Title</p></button>
+        <button className='btn-listcolor' onClick={setSubtitle}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.8)'/></p><p style={{fontSize:'.9em'}}>Subtitle</p></button>
+        <button className='btn-listcolor' onClick={setLargeText}><p className='p-listblockchange'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Large text</p></button>
+        <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
         <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>List items</p>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setBulletList}><p className='p-listblockchange'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
-        <button className='btn-listcolor' style={{height: '27px', minWidth:'120px'}} onClick={setOrderedList}><p className='p-listblockchange'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
+        <button className='btn-listcolor' onClick={setBulletList}><p className='p-listblockchange'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
+        <button className='btn-listcolor' onClick={setOrderedList}><p className='p-listblockchange'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
       </div>
       : null
     }
     {showColor.active ?
       <div className='div-listbox' ref={colorRef}
-      style={{position:'absolute', zIndex:2, left: nodeLeft+120, top: colorTop.top, height:colorTop.divHeight, width:'120px', padding:'2px', flexDirection:'column', overflowY:'scroll'}}>
-
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={clearFormatting}><p className='p-listcolor' style={{color:'#000000'}}>X</p><p style={{fontSize:'.9em'}}>Clear</p></button>
-
-        <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
-
+      style={{position:'absolute', zIndex:2, left: nodeLeft+120, top: hoveringColorDiv.hoveringColorDivTop, height: hoveringColorDiv.hoveringColorDivHeight, width:'120px', padding:'2px', flexDirection:'column'}}>
+        <button className='btn-listcolor' onClick={clearFormatting}><p className='p-listcolor' style={{color:'#000000'}}>X</p><p style={{fontSize:'.9em'}}>Clear</p></button>
+        <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
         <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Color</p>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorDefault}><p className='p-listcolor' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGrey}><p className='p-listcolor' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorRed}><p className='p-listcolor' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorBrown}><p className='p-listcolor' style={{color:'rgb(125, 90, 70)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorOrange}><p className='p-listcolor' style={{color:'rgb(200, 120, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorGreen}><p className='p-listcolor' style={{color:'rgb(90, 160, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorBlue}><p className='p-listcolor' style={{color:'rgb(60, 140, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorPurple}><p className='p-listcolor' style={{color:'rgb(90, 80, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorViolet}><p className='p-listcolor' style={{color:'rgb(200, 80, 190)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
-
-        <div className='divider-y' style={{marginTop:'4px', marginBottom:'4px'}}></div>
-
+        <button className='btn-listcolor' onClick={colorDefault}><p className='p-listcolor' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
+        <button className='btn-listcolor' onClick={colorGrey}><p className='p-listcolor' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
+        <button className='btn-listcolor' onClick={colorRed}><p className='p-listcolor' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
+        <button className='btn-listcolor' onClick={colorBrown}><p className='p-listcolor' style={{color:'rgb(125, 90, 70)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
+        <button className='btn-listcolor' onClick={colorOrange}><p className='p-listcolor' style={{color:'rgb(200, 120, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
+        <button className='btn-listcolor' onClick={colorGreen}><p className='p-listcolor' style={{color:'rgb(90, 160, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
+        <button className='btn-listcolor' onClick={colorBlue}><p className='p-listcolor' style={{color:'rgb(60, 140, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
+        <button className='btn-listcolor' onClick={colorPurple}><p className='p-listcolor' style={{color:'rgb(90, 80, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
+        <button className='btn-listcolor' onClick={colorViolet}><p className='p-listcolor' style={{color:'rgb(200, 80, 190)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
+        <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
         <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Background Color</p>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillDefault}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGrey}><p className='p-listcolor' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillRed}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillBrown}><p className='p-listcolor' style={{backgroundColor:'rgba(130, 90, 75, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillOrange}><p className='p-listcolor' style={{backgroundColor:'rgb(255, 100, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillGreen}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 210, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillBlue}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 100, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillPurple}><p className='p-listcolor' style={{backgroundColor:'rgb(120, 80, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
-        <button className='btn-listcolor' style={{height: '25px', minWidth:'120px'}} onClick={colorFillViolet}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 80 , 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
+        <button className='btn-listcolor' onClick={colorFillDefault}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
+        <button className='btn-listcolor' onClick={colorFillGrey}><p className='p-listcolor' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
+        <button className='btn-listcolor' onClick={colorFillRed}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
+        <button className='btn-listcolor' onClick={colorFillBrown}><p className='p-listcolor' style={{backgroundColor:'rgba(130, 90, 75, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
+        <button className='btn-listcolor' onClick={colorFillOrange}><p className='p-listcolor' style={{backgroundColor:'rgb(255, 100, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
+        <button className='btn-listcolor' onClick={colorFillGreen}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 210, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
+        <button className='btn-listcolor' onClick={colorFillBlue}><p className='p-listcolor' style={{backgroundColor:'rgb(0, 100, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
+        <button className='btn-listcolor' onClick={colorFillPurple}><p className='p-listcolor' style={{backgroundColor:'rgb(120, 80, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
+        <button className='btn-listcolor' onClick={colorFillViolet}><p className='p-listcolor' style={{backgroundColor:'rgb(210, 80 , 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
       </div>
       : null
     }
     <div className='div-listbox' ref={ref}
-    style={{position:'relative', opacity:opacity.opacity, zIndex:1, left: nodeLeft, top: listTop.top, width:'fit-content', height:'27px', flexDirection:'row'}}>
-
-      <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleBlockChange()}}>Text <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
+    style={{position:'absolute', opacity:opacity.opacity, zIndex:1, left: nodeLeft, top: hoveringDiv.hoveringDivTop, width:'fit-content', height:'27px', flexDirection:'row'}}>
+      <button className='btn-list' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', height: '27px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleList()}}>Text <TbChevronDown color='rgba(0,0,0,.6)' size={8}/></button>
       <button className='btn-list' style={{height: '27px', minWidth:'22px', fontWeight:800, fontSize:'.7em'}} onClick={setBold}>B</button>
       <button className='btn-list' style={{height: '27px', minWidth:'18px', fontWeight:400, fontStyle:'italic', fontSize:'.7em'}} onClick={setItalic}>i</button>
       <button className='btn-list' style={{height: '27px', minWidth:'21px', fontWeight:400, textDecoration:'underline', fontSize:'.7em'}} onClick={setUnderline}>U</button>

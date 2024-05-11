@@ -118,7 +118,7 @@
   border-radius: 4px;
   box-shadow: 0 0px 1px hsl(0deg 0% 0% / 0.06), 0 2px 4px hsl(0deg 0% 0% / 0.06), 0 4px 8px hsl(0deg 0% 0% / 0.06),
   0 8px 16px hsl(0deg 0% 0% / 0.06), 0 16px 32px 10px hsl(0deg 0% 0% / 0.06);
-  display: flex;
+  display: flex; overflow: hidden; overflow-y: scroll;
   transition: .5s;
 }
 
@@ -137,6 +137,7 @@
 
 /* color list */
 .btn-listcolor{
+  min-height: 25px; max-height: 25px;
   background-color: transparent;
   border: none; border-radius: 4px;
   display: flex; justify-content: flex-start; align-items: center;
