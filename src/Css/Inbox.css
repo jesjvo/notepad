@@ -1,9 +1,8 @@
-.inbox{
-    -webkit-app-region: no-drag !important;
-    z-index: 20;
-    height: 100vh;
-    width: 100vw;
+/* inbox structure */
 
+.inbox{
+    -webkit-app-region: no-drag !important; z-index: 20;
+    height: 100vh; width: 100vw;
     position: absolute;
 }
 
@@ -13,31 +12,39 @@
 }
 
 .div-inbox{
-    min-width: 230px;
+    min-width: 300px;
     background-color: white;
     top: 35px; right: 8px;
-
     padding: 4px; border-radius: 4px;
-    box-shadow:
-    0 0px 1px hsl(0deg 0% 0% / 0.06),
-    0 1px 4px hsl(0deg 0% 0% / 0.06),
-    0 2px 8px hsl(0deg 0% 0% / 0.06),
-    0 4px 16px hsl(0deg 0% 0% / 0.06),
-    0 16px 32px 10px hsl(0deg 0% 0% / 0.06);
+    box-shadow: 0 0px 1px hsl(0deg 0% 0% / 0.06), 0 1px 4px hsl(0deg 0% 0% / 0.06), 0 2px 8px hsl(0deg 0% 0% / 0.06), 0 4px 16px hsl(0deg 0% 0% / 0.06), 0 16px 32px 10px hsl(0deg 0% 0% / 0.06);
     border: solid .5px rgba(0, 0, 0, 0.06);
     overflow: hidden;
+    gap: 4px; display: flex; flex-direction: column;
+    position: absolute; transition:.2s
+}
 
-    gap: 4px;
+.div-inboxrecent{
+    gap: 2px;
     display: flex; flex-direction: column;
-
-    position: absolute;
-    transition:.2s
 }
 
-.div-inboxRecentFiles{
-    
-    display: flex; flex-direction: row;
+.div-inboxfavorite{
+    display: flex; flex-direction: column;
 }
 
-/* inbox appearance */
 
+/* file appearance */
+
+.inbox-recentbox{
+    width: 100%; height: 40px;
+    background-color: transparent;
+    border-radius: 4px; border: none;
+
+    display: flex; flex-direction: row; align-items: center;
+}
+.inbox-recentbox:hover{
+    background-color: rgba(0, 0, 0, 0.07)
+}
+.inbox-recentbox:active{
+    background-color: rgba(0, 0, 0, 0.14);
+}

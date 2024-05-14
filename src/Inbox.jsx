@@ -1,6 +1,9 @@
 import React, {useState, useEffect, useRef} from 'react'
 import './Css/Inbox.css'
 
+//icons
+import { TbBookmark, TbClock, TbTrash, TbUser } from 'react-icons/tb';
+
 //api
 async function handleApplicationMessage(request){
   const { api } = window
@@ -23,6 +26,8 @@ export default function Inbox({close}){
   useEffect(() => {
     const result = handleApplicationMessage('get-inbox-info') //array of files
     result.then(function(result) {return result}).then((result) => {
+
+      console.log(result)
 
       setRecentFiles(result[0])
       setFavoritedFiles(result[1])
@@ -48,31 +53,33 @@ export default function Inbox({close}){
     <div className='inbox'>
         <div onClick={close} className='div-inboxclose' />
         <div style={{opacity:display.opacity, height:display.height, width:display.width, overflowY:'scroll'}} ref={ref} className='div-inbox'>
-          <div>Recent Files</div>
-          <div className='div-inboxRecentFiles'>
+          <p style={{margin:'4px 0 2px 6px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}><TbClock size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Recent files</p>
+          <div className='divider-x'/>
+          <div className='div-inboxrecent'>
           {recentFiles.map((file, index) => {
-                    return (
-                      <div key={index}>
-                        <div>{file.name}</div>
-                        <div>{file.author}</div>
-                        <div>{file.date.modifiedDate}</div>
-                        <div>{file.date.createdDate}</div>
-                      </div>
+                    return ( //name, author, modifiedDate, createdDate
+                      <button key={index} className='inbox-recentbox'>
+                        <div style={{position:'absolute', left:'10px', textAlign:'left'}}>{file.name}<br/><div style={{fontSize:'.9em', color:'rgba(0,0,0,.6)', marginTop:'2px'}}>{file.path}</div></div>
+                        <div style={{position:'absolute', right:'15px', fontSize:'.9em', color:'rgba(0,0,0,.4)', display:'flex', alignItems:'center'}}>
+                          <TbClock size={15} strokeWidth={1.5} style={{marginRight:'2px'}}/>{file.date.modifiedDate}
+                        </div>
+                      </button>
                       )
                     }
                   )   
                 }
           </div>
-          <div>Favorited Files</div>
-          <div className='div-inboxFavoritedFiles'>
+          <p style={{margin:'8px 0 2px 6px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}><TbBookmark size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Favorite files</p>
+          <div className='divider-x'/>
+          <div className='div-inboxfavorite'>
           {favoritedFiles.map((file, index) => {
                     return (
-                      <div key={index}>
-                        <div>{file.name}</div>
-                        <div>{file.author}</div>
-                        <div>{file.date.modifiedDate}</div>
-                        <div>{file.date.createdDate}</div>
-                      </div>
+                        <button key={index} className='inbox-recentbox'>
+                        <div style={{position:'absolute', left:'10px', textAlign:'left'}}>{file.name}<br/><div style={{fontSize:'.9em', color:'rgba(0,0,0,.6)', marginTop:'2px'}}>{file.path}</div></div>
+                        <div style={{position:'absolute', right:'15px', fontSize:'.9em', color:'rgba(0,0,0,.4)', display:'flex', alignItems:'center'}}>
+                          <TbUser size={15} strokeWidth={1.5} style={{marginRight:'2px'}}/>{file.author}
+                        </div>
+                      </button>
                       )
                     }
                   )   

@@ -3,8 +3,7 @@ html, body, #root{
 -webkit-app-region: drag;
 height: 100%; width: 100%;
 
-margin: 0;  padding: 0;
-border: none;
+margin: 0;  padding: 0; border: none;
 overflow: hidden;
 }
 
@@ -17,29 +16,33 @@ button:focus {
 
 ::selection {
     background: rgba(77, 175, 255, 0.35) !important;
-  }
+}
 
 button{
-    cursor: pointer;
     -webkit-app-region: no-drag;
+    cursor: pointer;
 }
 
 button:disabled{
-    background-color: white;
-    color: rgba(0,0,0,.2);
+    background-color: white; color: rgba(0,0,0,.2);
     cursor: default;
 }
+button:disabled:hover{
+    background-color: transparent;
+}
 
+.tiptap::-webkit-scrollbar{
+    display: none;
+}
 
-.App{
+.app{
     height: 100%; width: 100%;
     background-color: rgb(255, 255, 255);
 
     display: flex;
 }
 
-.Content{
+.app-content{
     height: 100%; width: 100%;
-
     display: flex;
 }
