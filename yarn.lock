@@ -1377,6 +1377,21 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.56.0.tgz"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
+"@fontsource/pt-mono@^5.0.13":
+  version "5.0.13"
+  resolved "https://registry.npmjs.org/@fontsource/pt-mono/-/pt-mono-5.0.13.tgz"
+  integrity sha512-NtMGff1LXR1pBfUtQThxKconIbAKXMiYVNwSUREEgYpSYuV+N0KpBnvqeKUPgaWg+2i6Ht7orqn9CbqdIKQNIQ==
+
+"@fontsource/pt-sans@^5.0.13":
+  version "5.0.13"
+  resolved "https://registry.npmjs.org/@fontsource/pt-sans/-/pt-sans-5.0.13.tgz"
+  integrity sha512-wINZg2k2SFdBEYFt3N1LQJBQtlzqhq9t1TrZPB+ChWIkoA3UQCrpc1Go9I8xeL85vk/mqwaw6EJX5ce9rNF2sw==
+
+"@fontsource/pt-serif@^5.0.21":
+  version "5.0.21"
+  resolved "https://registry.npmjs.org/@fontsource/pt-serif/-/pt-serif-5.0.21.tgz"
+  integrity sha512-iYiluw2goKVdSdtskt+rNgYpEgmajKQyeTCPU8W4lj81jYAolfX8cnTjlY4d3tnZGcznhtYsjRrEya7+Baox9Q==
+
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"
   resolved "https://registry.npmjs.org/@hapi/hoek/-/hoek-9.3.0.tgz"

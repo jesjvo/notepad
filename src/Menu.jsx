@@ -7,75 +7,39 @@ import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport
 import { IoCheckmarkOutline, IoCloseOutline, IoWarningOutline } from "react-icons/io5";
 
 //api send
-async function handleApplicationMessage(request){
-  const { api } = window
-
-  if(request==='get-menu-info'){
-    const result = await api.openMenu();
-    return result
-  }
-  
-  if(request==='exit-application'){
-    await api.exitApplication();
-  }
-
-  if(request==='refresh-application'){
-    await api.refreshApplication();
-  }
-
-  if(request==='open-recovery'){
-    await api.openRecovery();
-  }
-}
-
-async function deleteFile(){
-  const { api } = window
-  await api.deleteFile();
-}
-
-async function newFile(){
-  const { api } = window;
-  await api.newFile();
-}
-
-async function renameFile(){
-  const { api } = window;
-  await api.renameFile();
-}
-
-
-async function openFile(){
-  const { api } = window;
-  await api.openFile();
-}
-
+async function openMenu(){const result =await window.api.openMenu(); return result} // result[0] -> is file, result[1] -> modifiedDate, result[2] -> createdDate
+async function exitApplication(){await window.api.exitApplication()} // closes application and saves data (if autosave)
+async function refreshApplication(){await window.api.refreshApplication()} // refreshes application and saves data (if autosave)
+async function deleteFile(){await window.api.deleteFile()} // deletes current file
+async function newFile(){await window.api.newFile()} // creates new file and saves data (if autosave)
+async function renameFile(){await window.api.renameFile()} // renames current file and saves data (regardless of autosave)
+async function openFile(){await window.api.openFile()} // opens current file and saves data (if autosave)
 
 //memu (editor settings)
 export default function Menu({close, setSerif, setDefault, setMono, saveData, toggleSpellCheck, spellCheck, author, name, toggleAutoSave, autoSave, characterCount, tempContent}){
-  const [modifiedDate, setModifiedDate] = useState('Invalid')
-  const [createdDate, setCreatedDate] = useState('Invalid')
-  const [isCurrentFile, setCurrentFile] = useState(false)
+  const [modifiedDate, setModifiedDate] = useState('Invalid') // last modified date
+  const [createdDate, setCreatedDate] = useState('Invalid') // creation date
+  const [isCurrentFile, setCurrentFile] = useState(false) // is current file
 
   const [display, setDisplay] = useState({opacity:0, height:'fit-content'})
   const ref = useRef(null);
 
   useEffect(() => {
-    const result = handleApplicationMessage('get-menu-info') // result[0] -> is file, result[1] -> modifiedDate, result[2] -> createdDate
+    const result = openMenu() // result[0] -> is file, result[1] -> modifiedDate, result[2] -> createdDate
     result.then(function(result) {return result}).then((result) => {
       if(result[0]){ //if is file
-        setModifiedDate(result[1]); setCreatedDate(result[2]); setCurrentFile(true);
+        setModifiedDate(result[1]); setCreatedDate(result[2]); setCurrentFile(true); // set modifiedDate and createdDate and setCurrentFile (from last opened file)
       }
     })
-    setDisplay({opacity:1}); const interval = setInterval(() => {updatePosition()}, 250);
+    setDisplay({opacity:1}); const interval = setInterval(() => {updatePosition()}, 250); // animation and updating position with a setInterval
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval); // when menu is closed clear the interval
   } , []);
 
   function updatePosition(){
-    const { height } = ref.current.getBoundingClientRect()
-    const { innerHeight } = window;
+    const { height } = ref.current.getBoundingClientRect(); const { innerHeight } = window; // getting height of menu container and window height
 
-    if(height + 35 + 8 + 10 >= innerHeight){setDisplay({height:innerHeight - 35 - 8 - 10})}
+    if(height + 35 + 8 + 10 >= innerHeight){setDisplay({height:innerHeight - 35 - 8 - 10})} // adjusting height
     else{setDisplay({height:'fit-content'})}
   }
 
@@ -100,7 +64,7 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
           <div className='divider-x'/>
           <div className='menu-settingdiv'>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}>File Configuration{isCurrentFile ? null : <IoWarningOutline style={{marginLeft:'5px'}} size={12} color='rgb(200, 120, 80)'/>}</p>
-            <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={()=>{if(autoSave){saveData(tempContent)}; renameFile()}}><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
+            <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={()=>{saveData(tempContent); renameFile()}}><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
             <button className='menu-settingbtn' onClick={()=>{saveData(tempContent); close();}}><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File</button>
             <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; newFile()}}><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File</button>
             <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; openFile()}}><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File</button>
@@ -118,9 +82,8 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>
-            <button className='menu-settingbtn' onClick={()=>{handleApplicationMessage('open-recovery')}}><TbWorldUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Recovery</button>
-            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; handleApplicationMessage('refresh-application')}}><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh</button>
-            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; handleApplicationMessage('exit-application')}}><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit</button>
+            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; exitApplication()}}><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh</button>
+            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; refreshApplication()}}><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit</button>
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 ## NOTELY ##
 <br/>
-
 - block-based editor with basic tools, (color, highlight, text-size, text-marks)<br/>
 - file management with JSON format, (delete, save, open, rename files)<br/>
 - clean-ui interface, (simple, understanding, minimalistic)<br/>
@@ -8,11 +7,9 @@
 
 ### What am I currently working on? ###
 <br/>
-
-- recovery files (automatically create backup files)
-- a div element (displays all recent, favorited and recovery files)
+- a div element (displays all recent, favorited and recovery files) [FINISHED]
 - proper functionality of autosaving
-- clean-up code
+- clean-up code [WORKING-ON]
 
 ### RUN NOTELY ###
 ```

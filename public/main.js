@@ -1,60 +1,42 @@
-const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron/main');
-const fs = require('node:fs')
-const path = require('node:path');
-const { PassThrough } = require('node:stream');
+const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron/main'); // electron
+const fs = require('node:fs') // file system
+const path = require('node:path'); // file path
 
-const folder = path.join(app.getPath('appData'), 'notely')
-const recovery = path.join(folder, 'Recovery')
-const settingPreferences = path.join(folder, 'SettingPreferences.json')
+const folder = path.join(app.getPath('appData'), 'notely') // notely folder
+const settingPreferences = path.join(folder, 'SettingPreferences.json') // setting file
 
 const settingStructure =
 { 
-  lastOpened:null, //the file path
+  lastOpened:null, // the last opened file path
   filePaths:[
-    'Files',
-    'File 1',
-    'File 2',
+    // file paths
   ]
 }
 
-function checkFolders(){
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder)
-    console.log('Notely Folder Created~');
-  }
-  if (!fs.existsSync(recovery)) {
-    fs.mkdirSync(recovery)
-    console.log('Recovery Folder Created');
-  }
-  if (!fs.existsSync(settingPreferences)) {
-    fs.writeFileSync(settingPreferences, JSON.stringify(settingStructure, null, 2))
-    console.log('Setting File Created');
-  }
+function checkFolders(){ // check if folders exist
+  if (!fs.existsSync(folder)) {fs.mkdirSync(folder)} // notely folder
+  if (!fs.existsSync(settingPreferences)) {fs.writeFileSync(settingPreferences, JSON.stringify(settingStructure, null, 2))} // setting file
 }
 
-checkFolders()
+checkFolders() // check if folders exist
 
 let mainWindow;
 app.on("ready", () => {
     mainWindow = new BrowserWindow({
-        frame:false,
-        minWidth: 380, minHeight: 320,
-        webPreferences: {
-            nodeIntegration:false,
-            contextIsolation:true,
+        frame:false, // remove title bar
+        minWidth: 380, minHeight: 320, // minimum size
+        webPreferences: { 
+            nodeIntegration:false, // disable node integration
+            contextIsolation:true, // context isolation
             sandbox:true,
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'preload.js'), // preload.js
             webSecurity:true,
             allowRunningInsecureContent: false,
             experimentalFeatures: false,
             }
         }
     );
-
-    mainWindow.webContents.openDevTools() //temporary
-    mainWindow.loadURL('http://localhost:3000') //temporary
-
-    console.log('\n__dirname', __dirname, '\n__filename', __filename, '\n__appPath', app.getAppPath(), '\n__appData', app.getPath('appData'))
+    mainWindow.loadURL('http://localhost:3000') // temporary url
 });
 
 //Security Risk Prvention
@@ -79,12 +61,6 @@ ipcMain.handle('exit-application', (event) => {
 //Refresh Application
 ipcMain.handle('refresh-application', (event) => {
   mainWindow.webContents.reloadIgnoringCache()
-})
-
-//Open Recovery
-ipcMain.handle('open-recovery', (event) => {
-  shell.openPath(recovery)
-  //might replace with open file -> so they can recover the file directly, the previous file will be asked to be 'saved'.
 })
 
 ipcMain.handle('delete-file', (event) => {
@@ -181,29 +157,30 @@ function gatherFiles(){
 
   console.log(filePaths)
 
+  let currentFile=null
+  if(fs.existsSync(settingPrefParse.lastOpened)){currentFile = settingPrefParse.lastOpened}
+
   const newFilePaths = [] //later used to update filePaths
-  const recentFiles = [] //array of files to return that are recently opened
-  const favoriteFiles = [] //array of files to return with favorited files
+  const recentFiles = [] //array of files to return that are recently opened (with their preferences and date)
+  const favoriteFiles = [] //array of files to return with favorited files (with their preferences and date)
 
   for (let i = 0; i < filePaths.length; i++) {
     if(fs.existsSync(filePaths[i])){
       const filePreferences = (JSON.parse(fs.readFileSync(filePaths[i], 'utf8'))); //get file preferences
       const fileStats = fs.statSync(filePaths[i]) //get file stats
 
-      let fileStructure={
-        recentId:`${fileStats.mtime.getTime()}`,
-
-        author:filePreferences.preferences.author, name:filePreferences.preferences.name,
-        path:filePaths[i], isFavorite:filePreferences.preferences.isFavorite,
+      let fileData={
+        recentId:`${fileStats.mtime.getTime()}`, //to sort files
+        filePath:filePaths[i],
+        preferences:filePreferences.preferences, //all preferences
         date:{
-          modifiedDate:`${fileStats.mtime.getDate()}/${fileStats.mtime.getMonth()}/${fileStats.mtime.getFullYear()}`,
-          createdDate:`${fileStats.birthtime.getDate()}/${fileStats.birthtime.getMonth()}/${fileStats.birthtime.getFullYear()}`
+          modifiedDate:`${fileStats.mtime.getDate()}/${fileStats.mtime.getMonth()}/${fileStats.mtime.getFullYear()}`, //get modified date
+          createdDate:`${fileStats.birthtime.getDate()}/${fileStats.birthtime.getMonth()}/${fileStats.birthtime.getFullYear()}` //get created date
         }
       }
 
-      if(filePreferences.preferences.isFavorite){favoriteFiles.push(fileStructure)} //add to array if isFavorite
-      recentFiles.push(fileStructure)
-
+      if(filePreferences.preferences.isFavorite){favoriteFiles.push(fileData)} //add to array if isFavorite
+      recentFiles.push(fileData) //add to array if is a recent file.
       newFilePaths.push(filePaths[i]) //add to newFilePaths if file exists
     }
   }
@@ -215,12 +192,29 @@ function gatherFiles(){
     favoriteFiles.sort((a, b) => (b.recentId) - (a.recentId)) //sort files by date
   }
 
-  return [recentFiles, favoriteFiles]
+  return [recentFiles, favoriteFiles, currentFile]
 }
 
 ipcMain.handle('get-inbox-info', (event) => {
   const result = gatherFiles()
   return result
+})
+
+//open file from inbox  
+ipcMain.handle('open-inbox-file', (event, filePath) => {
+
+  if(fs.existsSync(filePath)){ //check if file exists
+
+    console.log('true')
+
+  //update last opened
+  let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
+  settingPrefParse.lastOpened = filePath
+  fs.writeFileSync(settingPreferences, JSON.stringify(settingPrefParse, null, 2))
+
+  //refresh application
+  mainWindow.webContents.reloadIgnoringCache()
+  }
 })
 
 //on save data

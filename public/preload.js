@@ -9,9 +9,6 @@ contextBridge.exposeInMainWorld("api", {
       refreshApplication : () => {
         ipcRenderer.invoke("refresh-application")
       },
-      openRecovery : () => {
-        ipcRenderer.invoke("open-recovery")
-      },
 
       deleteFile : () => {
         ipcRenderer.invoke('delete-file')
@@ -41,6 +38,10 @@ contextBridge.exposeInMainWorld("api", {
 
       saveData : (preferences, content) => {
         ipcRenderer.invoke('save-data', preferences, content)
+      },
+
+      openInboxFile : (filePath) => {
+        ipcRenderer.invoke('open-inbox-file', filePath)
       },
 
       getData : () => {

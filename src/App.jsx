@@ -1,5 +1,7 @@
 import React from 'react';
 import './Css/App.css'
+
+//pages
 import Page from './Page';
 import Menu from './Menu'
 import Inbox from './Inbox'
@@ -9,7 +11,7 @@ async function saveData(preferences, content){
   await window.api.saveData(preferences, content);
 }
 
-//application interface (main)
+//application interface
 class App extends React.Component {
   constructor(){
     super();
@@ -17,31 +19,31 @@ class App extends React.Component {
       menuOpen:false, // true or false of menu displaying
       inboxOpen:false, //true or false of inbox displaying
       characterCount: null, // handles character count when menu opened
-      tempContent:null, // handles the content when opened menu
+      tempContent:null, // handles the content when opened menu (is temporary content)
 
-      //default
+      //default preferences
       preferences:
       {
-        name:"Untitled", //name of file
+        name:"Untitled", //title of file
         author:null, //author of file
         isFavorite:false, //is file favorited
-        fontStyle:'Pt Sans', //font style of file
+        fontStyle:'Pt Sans', //font style of file (default is arial)
         spellCheck:true, //spell check of editor
-        autoSave:false // autosaving of file
+        autoSave:false // autosaving of file (when saved, closed, exited, renamed)
       }
     }
-    this.handleMenu = this.handleMenu.bind(this);
-    this.handleInbox = this.handleInbox.bind(this);
-    this.handleSaveData = this.handleSaveData.bind(this);
-    this.setPreferences = this.setPreferences.bind(this);
-    this.setAuthor = this.setAuthor.bind(this);
-    this.setName = this.setName.bind(this);
+    this.handleMenu = this.handleMenu.bind(this); // Page.jsx sends 'handleMenu' -> opening menu
+    this.handleInbox = this.handleInbox.bind(this); // Page.jsx sends 'handleInbox' -> opening inbox
+    this.handleSaveData = this.handleSaveData.bind(this); // Page.jsx sends 'handleSaveData' -> saving data to file
+    this.setPreferences = this.setPreferences.bind(this); // Page.jsx sends 'setPreferences' when application is opened
+    this.setAuthor = this.setAuthor.bind(this); // Page.jsx sends 'setAuthor' when author is submitted
+    this.setName = this.setName.bind(this); // Page.jsx sends 'setName' when changing name is submitted
   }
 
-  handleMenu(characterCount, content){this.setState({ characterCount, tempContent:content, menuOpen:true })} //opens menu -> updates characterCount and gives temporary sample of current content
+  handleMenu(characterCount, tempContent){this.setState({ characterCount, tempContent:tempContent, menuOpen:true })} //opens menu -> updates characterCount and gives temporary sample of current content
   handleInbox(){this.setState({ inboxOpen:true })} //opens inbox
-  handleSaveData(content){saveData(this.state.preferences, content)} //sends api to main-process, 'save-data' to save content and preferences
-  setPreferences(preferences){this.setState(preferences)} //on editor-ready, Page.jsx sends 'setPreferences' -> changing this.state.preferences to load file
+  handleSaveData(content){saveData(this.state.preferences, content)} //sends api to main-process, 'save-data' to save content and preferences to current file
+  setPreferences(preferences){this.setState(preferences)} //on editor-ready (application loaded), Page.jsx sends 'setPreferences' -> changing this.state.preferences to load file
   setAuthor(author){var preferences=this.state.preferences; preferences.author=author; this.setState({preferences})} //in Page.jsx, when changed author -> sends 'setAuthor' -> changing author preferences
   setName(rename){var preferences=this.state.preferences; preferences.name=rename; this.setState({preferences})} //in Page.jsx, when changed rename -> sends 'setRename' -> changing name preferences
   setSerif(){var preferences=this.state.preferences; preferences.fontStyle='Pt Serif'; this.setState({preferences})} //in Menu.jsx, when changed serif -> sends 'setSerif' -> changing font preferences
@@ -54,51 +56,54 @@ class App extends React.Component {
   render(){
     return(
       <div className='app'>
-        {this.state.menuOpen ?
-        <Menu
-        //configure file preferences
-        setDefault={()=>{this.setDefault()}}
-        setMono={()=>{this.setMono()}}
-        setSerif={()=>{this.setSerif()}}
-        toggleSpellCheck={()=>{this.toggleSpellCheck()}}
-        toggleAutoSave={()=>{this.toggleAutoSave()}}
-        close={()=>{this.setState({menuOpen:false})}}
-        saveData={this.handleSaveData}
+        {
+        this.state.menuOpen ? // displaying menu determined by 'this.state.menuOpen'
+          <Menu
+          // sends api functions to App.jsx from Menu.jsx
+          setDefault={()=>{this.setDefault()}} // sets font to default (arial)
+          setMono={()=>{this.setMono()}} // sets font to mono
+          setSerif={()=>{this.setSerif()}} // sets font to serif
+          toggleSpellCheck={()=>{this.toggleSpellCheck()}} // toggles spell check
+          toggleAutoSave={()=>{this.toggleAutoSave()}} // toggles auto save
+          close={()=>{this.setState({menuOpen:false})}} // closes menu
+          saveData={this.handleSaveData} // sends api functions to App.jsx from Menu.jsx to save data (preferences, content) -> to file
 
-        //file preferences being passed to Menu.jsx
-        name={this.state.preferences.name}
-        author={this.state.preferences.author}
-        tempContent={this.state.tempContent}
-        spellCheck={this.state.preferences.spellCheck}
-        autoSave={this.state.preferences.autoSave}
-        characterCount={this.state.characterCount}
-        ></Menu>
-         : null}
+          // passes states to Menu.jsx from App.jsx
+          name={this.state.preferences.name} // name preferences
+          author={this.state.preferences.author} // author preferences
+          tempContent={this.state.tempContent} // temporary content (is temporary sample of current content in editor)
+          spellCheck={this.state.preferences.spellCheck} // spell check preferences
+          autoSave={this.state.preferences.autoSave} // auto save preferences
+          characterCount={this.state.characterCount} // character count
+          />
+         : null
+        }
 
-        {this.state.inboxOpen ? 
-        <Inbox
-        close={()=>{this.setState({inboxOpen:false})}}
-        
-        ></Inbox>
-         : null}
+        {
+        this.state.inboxOpen ? // displaying inbox determined by 'this.state.inboxOpen'
+          <Inbox
+          close={()=>{this.setState({inboxOpen:false})}} // closes inbox
+          />
+         : null
+         }
 
         <div className='app-content'>
           <Page
-          //configure file preferences/content/functions
-          setFavorite={()=>{this.setFavorite()}}
-          saveData={this.handleSaveData}
-          setAuthor={this.setAuthor}
-          setRename={this.setName}
-          setPreferences={this.setPreferences}
-          inboxClick={this.handleInbox}
-          menuClick={this.handleMenu}
+          // sends api functions to App.jsx from Page.jsx
+          setFavorite={()=>{this.setFavorite()}} // toggles favorite
+          saveData={this.handleSaveData} // sends api functions to App.jsx from Page.jsx to save data (preferences, content) -> to file
+          setAuthor={this.setAuthor} // sends api functions to App.jsx from Page.jsx to change author
+          setRename={this.setName} // sends api functions to App.jsx from Page.jsx to change name
+          setPreferences={this.setPreferences} // sends api functions to App.jsx from Page.jsx to change preferences (on editor ready or application loaded)
+          inboxClick={this.handleInbox} // opens inbox
+          menuClick={this.handleMenu} // opens menu
           
-          //file preferences being passed to Page.jsx
-          author={this.state.preferences.author}
-          fontStyle={this.state.preferences.fontStyle}
-          name={this.state.preferences.name}
-          isFavorite={this.state.preferences.isFavorite}
-          spellCheck={this.state.preferences.spellCheck}
+          //passes states to Page.jsx from App.jsx
+          author={this.state.preferences.author} // author preferences
+          fontStyle={this.state.preferences.fontStyle} // font preferences
+          name={this.state.preferences.name} // name preferences
+          isFavorite={this.state.preferences.isFavorite} // favorite preferences
+          spellCheck={this.state.preferences.spellCheck} // spell check preferences
           ></Page>
         </div>
       </div>
