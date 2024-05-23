@@ -31,7 +31,7 @@ import './Css/Page.css'
 
 //icons
 import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoInbox, GoKebabHorizontal, GoPerson, GoRepoPush } from "react-icons/go";
-import { TbCopy, TbTrash, TbChevronDown } from "react-icons/tb";
+import { TbTrash, TbChevronDown } from "react-icons/tb";
 import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
 import { FiEdit3 } from "react-icons/fi";
@@ -143,55 +143,54 @@ export function NodeList({
       <div className='hoverdiv-close' onClick={()=>{handleClose()}}></div>
       {showList.active ?
         <div className='hoverdiv-box' ref={listRef} style={{position:'absolute', zIndex:2, left: nodeLeft-10, top: hoveringListDiv.top, height:hoveringListDiv.height, width:'120px', padding:'2px', flexDirection:'column'}}>
-          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Text size</p>
-          <button className='hoverdiv-btn2' onClick={setText}><p className='hoverdiv-colorp'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Text</p></button>
-          <button className='hoverdiv-btn2' onClick={setTitle}><p className='hoverdiv-colorp'><VscTextSize size={17} strokeWidth={.2} color='rgba(0,0,0,1)'/></p><p style={{fontSize:'.9em'}}>Title</p></button>
-          <button className='hoverdiv-btn2' onClick={setSubtitle}><p className='hoverdiv-colorp'><VscTextSize size={17} color='rgba(0,0,0,.8)'/></p><p style={{fontSize:'.9em'}}>Subtitle</p></button>
-          <button className='hoverdiv-btn2' onClick={setLargeText}><p className='hoverdiv-colorp'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em'}}>Large text</p></button>
+          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.4)'}}>Text size</p>
+          <button className='hoverdiv-btn2' onClick={setText}><p className='hoverdiv-colorp'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Text</p></button>
+          <button className='hoverdiv-btn2' onClick={setTitle}><p className='hoverdiv-colorp'><VscTextSize size={17} strokeWidth={.2} color='rgba(0,0,0,1)'/></p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Title</p></button>
+          <button className='hoverdiv-btn2' onClick={setSubtitle}><p className='hoverdiv-colorp'><VscTextSize size={17} color='rgba(0,0,0,.8)'/></p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Subtitle</p></button>
+          <button className='hoverdiv-btn2' onClick={setLargeText}><p className='hoverdiv-colorp'><VscTextSize size={17} color='rgba(0,0,0,.6)'/></p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Large text</p></button>
           <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
-          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>List items</p>
-          <button className='hoverdiv-btn2' onClick={setBulletList}><p className='hoverdiv-colorp'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Bullet list</p></button>
-          <button className='hoverdiv-btn2' onClick={setOrderedList}><p className='hoverdiv-colorp'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em'}}>Ordered list</p></button>
+          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.4)'}}>List items</p>
+          <button className='hoverdiv-btn2' onClick={setBulletList}><p className='hoverdiv-colorp'><List size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Bullet list</p></button>
+          <button className='hoverdiv-btn2' onClick={setOrderedList}><p className='hoverdiv-colorp'><ListOrdered size={17} strokeWidth={1.5}/></p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Ordered list</p></button>
         </div>
         : null
       }
       {showColor.active ?
         <div className='hoverdiv-box' ref={colorRef} style={{position:'absolute', zIndex:2, left: nodeLeft+120, top: hoveringColorDiv.top, height: hoveringColorDiv.height, width:'120px', padding:'2px', flexDirection:'column'}}>
-          <button className='hoverdiv-btn2' onClick={clearFormatting}><p className='hoverdiv-listp' style={{color:'#000000'}}>X</p><p style={{fontSize:'.9em'}}>Clear</p></button>
+          <button className='hoverdiv-btn2' onClick={clearFormatting}><p className='hoverdiv-listp' style={{color:'#000000'}}>X</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Clear</p></button>
           <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
-          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Color</p>
-          <button className='hoverdiv-btn2' onClick={colorDefault}><p className='hoverdiv-listp' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
-          <button className='hoverdiv-btn2' onClick={colorGrey}><p className='hoverdiv-listp' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
-          <button className='hoverdiv-btn2' onClick={colorRed}><p className='hoverdiv-listp' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
-          <button className='hoverdiv-btn2' onClick={colorBrown}><p className='hoverdiv-listp' style={{color:'rgb(125, 90, 70)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
-          <button className='hoverdiv-btn2' onClick={colorOrange}><p className='hoverdiv-listp' style={{color:'rgb(200, 120, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
-          <button className='hoverdiv-btn2' onClick={colorGreen}><p className='hoverdiv-listp' style={{color:'rgb(90, 160, 80)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
-          <button className='hoverdiv-btn2' onClick={colorBlue}><p className='hoverdiv-listp' style={{color:'rgb(60, 140, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
-          <button className='hoverdiv-btn2' onClick={colorPurple}><p className='hoverdiv-listp' style={{color:'rgb(90, 80, 200)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
-          <button className='hoverdiv-btn2' onClick={colorViolet}><p className='hoverdiv-listp' style={{color:'rgb(200, 80, 190)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
+          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.4)'}}>Color</p>
+          <button className='hoverdiv-btn2' onClick={colorDefault}><p className='hoverdiv-listp' style={{color:'rgb(0, 0, 0)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Default</p></button>
+          <button className='hoverdiv-btn2' onClick={colorGrey}><p className='hoverdiv-listp' style={{color:'rgb(150, 150, 150)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Grey</p></button>
+          <button className='hoverdiv-btn2' onClick={colorRed}><p className='hoverdiv-listp' style={{color:'rgb(200, 80, 80)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Red</p></button>
+          <button className='hoverdiv-btn2' onClick={colorBrown}><p className='hoverdiv-listp' style={{color:'rgb(125, 90, 70)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Brown</p></button>
+          <button className='hoverdiv-btn2' onClick={colorOrange}><p className='hoverdiv-listp' style={{color:'rgb(200, 120, 80)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Orange</p></button>
+          <button className='hoverdiv-btn2' onClick={colorGreen}><p className='hoverdiv-listp' style={{color:'rgb(90, 160, 80)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Green</p></button>
+          <button className='hoverdiv-btn2' onClick={colorBlue}><p className='hoverdiv-listp' style={{color:'rgb(60, 140, 200)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Blue</p></button>
+          <button className='hoverdiv-btn2' onClick={colorPurple}><p className='hoverdiv-listp' style={{color:'rgb(90, 80, 200)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Purple</p></button>
+          <button className='hoverdiv-btn2' onClick={colorViolet}><p className='hoverdiv-listp' style={{color:'rgb(200, 80, 190)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Violet</p></button>
           <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}></div>
-          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>Background Color</p>
-          <button className='hoverdiv-btn2' onClick={colorFillDefault}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em'}}>Default</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillGrey}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em'}}>Grey</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillRed}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Red</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillBrown}><p className='hoverdiv-listp' style={{backgroundColor:'rgba(130, 90, 75, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Brown</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillOrange}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(255, 100, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Orange</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillGreen}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(0, 210, 0, .1)'}}>A</p><p style={{fontSize:'.9em'}}>Green</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillBlue}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(0, 100, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Blue</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillPurple}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(120, 80, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Purple</p></button>
-          <button className='hoverdiv-btn2' onClick={colorFillViolet}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(210, 80 , 210, 0.1)'}}>A</p><p style={{fontSize:'.9em'}}>Violet</p></button>
+          <p style={{margin:'4px 0 6px 10px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.4)'}}>Background Color</p>
+          <button className='hoverdiv-btn2' onClick={colorFillDefault}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(0, 0, 0, 0)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Default</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillGrey}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(240, 240, 240)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Grey</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillRed}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(210, 0, 0, .1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Red</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillBrown}><p className='hoverdiv-listp' style={{backgroundColor:'rgba(130, 90, 75, 0.1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Brown</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillOrange}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(255, 100, 0, .1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Orange</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillGreen}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(0, 210, 0, .1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Green</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillBlue}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(0, 100, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Blue</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillPurple}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(120, 80, 210, 0.1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Purple</p></button>
+          <button className='hoverdiv-btn2' onClick={colorFillViolet}><p className='hoverdiv-listp' style={{backgroundColor:'rgb(210, 80 , 210, 0.1)'}}>A</p><p style={{fontSize:'.9em', color:'rgba(0,0,0,.6)'}}>Violet</p></button>
         </div>
         : null
       }
-      <div className='hoverdiv-box' ref={ref} style={{position:'absolute', opacity:opacity.opacity, left: nodeLeft, top: hoveringDiv.top, width:'fit-content', height:'27px', flexDirection:'row', overflow:'hidden'}}>
-        <button className='hoverdiv-btn' style={{borderTopLeftRadius:'4px', borderBottomLeftRadius:'4px', minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleList()}}>Text <TbChevronDown size={8}/></button>
+      <div className='hoverdiv-box' ref={ref} style={{position:'absolute', opacity:opacity.opacity, left: nodeLeft, top: hoveringDiv.top, width:'fit-content', height:'23px', flexDirection:'row', overflow:'hidden', alignItems:'center', padding:'2px'}}>
+        <button className='hoverdiv-btn' style={{minWidth:'55px', fontSize:'.8em'}} onClick={()=>{handleList()}}>Text <TbChevronDown size={8}/></button>
         <button className='hoverdiv-btn' style={{minWidth:'22px', fontWeight:800, fontSize:'.7em'}} onClick={setBold}>B</button>
         <button className='hoverdiv-btn' style={{minWidth:'18px', fontWeight:400, fontStyle:'italic', fontSize:'.7em'}} onClick={setItalic}>i</button>
         <button className='hoverdiv-btn' style={{minWidth:'21px', fontWeight:400, textDecoration:'underline', fontSize:'.7em'}} onClick={setUnderline}>U</button>
         <button className='hoverdiv-btn' style={{minWidth:'21px', fontWeight:400, textDecoration:'line-through', fontSize:'.7em'}} onClick={setStrike}>S</button>
         <button className='hoverdiv-btn' style={{minWidth:'40px', fontSize:'.8em'}} onClick={()=>{handleColor()}}>A <TbChevronDown size={8}/></button>
-        <button className='hoverdiv-btn' style={{minWidth:'fit-content'}}><TbCopy size={14}/></button>
-        <button className='hoverdiv-btn' style={{borderTopRightRadius:'4px', borderBottomRightRadius:'4px', minWidth:'fit-content'}} onClick={deleteSelection}><TbTrash size={14}/></button>
+        <button className='hoverdiv-btn' style={{minWidth:'fit-content'}} onClick={deleteSelection}><TbTrash size={14}/></button>
       </div>
     </div>
   </>
@@ -260,7 +259,7 @@ export function RenameFile({close, submitRename, name}){
 }
 
 //page (main editor)
-export default function Page({menuClick, inboxClick, fontStyle, author, name, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor, setRename}) {
+export default function Page({menuClick, inboxClick, fontStyle, autoSave, author, name, isFavorite, setFavorite, spellCheck, saveData, setPreferences, setAuthor, setRename}) {
   
   const [hoveringNode, setHoveringNode] = useState({active:false, left:null, top:null, width:null, height:null})
   const [nodeList, setNodeList] = useState(false)
@@ -373,9 +372,9 @@ export default function Page({menuClick, inboxClick, fontStyle, author, name, is
             <button className='page-headerbtn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
             <button className='page-headerbtn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
             <div className='divider-y' style={{height:'50%'}}></div>
-            <button className='page-headerbtn' style={{zIndex:25}} onClick={()=>{inboxClick()}}><GoInbox size={14}/></button>
+            <button className='page-headerbtn' style={{zIndex:25}} onClick={()=>{if(autoSave){saveData(editor.getJSON())}; inboxClick()}}><GoInbox size={14}/></button>
             <button className='page-headerbtn' onClick={setFavorite}>{isFavorite ? <GoBookmarkFill color='#ffd012' size={14}/> : <GoBookmark color='#ffd012' size={14}/>}</button>
-            <button className='page-headerbtn' style={{zIndex:25}} onClick={()=>{menuClick(editor.storage.characterCount.words(), editor.getJSON())}}><GoKebabHorizontal size={14}/></button>
+            <button className='page-headerbtn' style={{zIndex:25}} onClick={()=>{if(autoSave){saveData(editor.getJSON())}; menuClick(editor.storage.characterCount.words(), editor.getJSON())}}><GoKebabHorizontal size={14}/></button>
             <div style={{marginRight:'4px'}}></div>
           </div>
         </div>

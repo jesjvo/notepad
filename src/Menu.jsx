@@ -8,7 +8,7 @@ import { IoCheckmarkOutline, IoCloseOutline, IoWarningOutline } from "react-icon
 
 //api send
 async function openMenu(){const result =await window.api.openMenu(); return result} // result[0] -> is file, result[1] -> modifiedDate, result[2] -> createdDate
-async function exitApplication(){await window.api.exitApplication()} // closes application and saves data (if autosave)
+async function closeApplication(){await window.api.exitApplication()} // closes application and saves data (if autosave)
 async function refreshApplication(){await window.api.refreshApplication()} // refreshes application and saves data (if autosave)
 async function deleteFile(){await window.api.deleteFile()} // deletes current file
 async function newFile(){await window.api.newFile()} // creates new file and saves data (if autosave)
@@ -66,8 +66,8 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}>File Configuration{isCurrentFile ? null : <IoWarningOutline style={{marginLeft:'5px'}} size={12} color='rgb(200, 120, 80)'/>}</p>
             <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={()=>{saveData(tempContent); renameFile()}}><TbFileExport size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Rename</button>
             <button className='menu-settingbtn' onClick={()=>{saveData(tempContent); close();}}><TbFileUpload size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Save File</button>
-            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; newFile()}}><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File</button>
-            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; openFile()}}><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File</button>
+            <button className='menu-settingbtn' onClick={()=>{newFile()}}><TbFilePlus size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>New File</button>
+            <button className='menu-settingbtn' onClick={()=>{openFile()}}><TbFile size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Open File</button>
             <button className='menu-settingbtn' disabled={isCurrentFile ? false : true} onClick={()=>{deleteFile()}}><TbTrash size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Delete</button>
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
@@ -82,8 +82,8 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>
-            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; exitApplication()}}><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh</button>
-            <button className='menu-settingbtn' onClick={()=>{if(autoSave){saveData(tempContent)}; refreshApplication()}}><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit</button>
+            <button className='menu-settingbtn' onClick={()=>{refreshApplication()}}><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh</button>
+            <button className='menu-settingbtn' onClick={()=>{closeApplication()}}><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit</button>
         </div>
       </div>
     </div>

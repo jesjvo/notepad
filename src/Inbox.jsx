@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react'
 import './Css/Inbox.css'
 
 //icons
-import { TbBookmark, TbClock, TbFile } from 'react-icons/tb';
+import { TbBookmark, TbClock, TbFile, TbUser } from 'react-icons/tb';
 
 //api
 async function loadInboxFiles(){ // loads array of recently loaded files, favorited files, current file when inbox is opened
@@ -52,35 +52,14 @@ export default function Inbox({close}){
     <div className='inbox'>
         <div onClick={close} className='div-inboxclose' />
         <div style={{opacity:display.opacity, height:refHeight.height, width:refWidth.width, overflowY:'scroll'}} ref={ref} className='div-inbox'>
-          <p style={{margin:'6px 0 2px 4px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}><TbFile size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Current file</p>
+          <p style={{margin:'8px 0 2px 4px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.8)', display:'flex', alignItems:'center'}}><TbFile size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Current file</p>
           <div className='divider-x'/>
           {lastOpenedFile===null ? // dislay current file if it exists
             <div className='inbox-currentfile'>No file found</div>
             :
             <div className='inbox-currentfile'>{lastOpenedFile}</div> 
           }
-          <p style={{margin:'6px 0 2px 6px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}><TbClock size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Recent files</p>
-          <div className='divider-x'/>
-          <div className='div-inboxrecent'>
-          {recentFiles.length>0 ? recentFiles.map((file, index) => { // for each recent file in recentFiles 
-                    return (
-                        <div key={index} onClick={() => openFile(file.filePath)} className='inbox-recentbox'>
-                          <div className='recentbox-fileName'>
-                            <div style={{marginLeft:'6px', fontSize:'.9em', color:'rgba(0,0,0,.8)'}}>{file.preferences.name}</div>
-                            <div style={{marginLeft:'6px', fontSize:'.8em', color:'rgba(0,0,0,.4)'}}><TbFile size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>{file.filePath}</div>
-                          </div>
-                          <div className='recentbox-fileDate'>
-                            <TbClock size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>
-                            <div style={{fontSize:'.7em', color:'rgba(0,0,0,.4)'}}>{file.date.modifiedDate}</div>
-                          </div>
-                        </div>
-                      )
-                    }
-                  )   
-                :
-                <div className='inbox-nofilefound'>No files found</div>}
-          </div>
-          <p style={{margin:'6px 0 2px 6px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)', display:'flex', alignItems:'center'}}><TbBookmark size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Favorite files</p>
+          <p style={{margin:'10px 0 2px 6px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.8)', display:'flex', alignItems:'center'}}><TbBookmark size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Favorite files</p>
           <div className='divider-x'/>
           <div className='div-inboxfavorite'>
             {favoritedFiles.length>0 ? favoritedFiles.map((file, index) => { // for each favorited file in favoritedFiles
@@ -91,8 +70,8 @@ export default function Inbox({close}){
                           <div style={{marginLeft:'6px', fontSize:'.8em', color:'rgba(0,0,0,.4)'}}><TbFile size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>{file.filePath}</div>
                         </div>
                         <div className='recentbox-fileDate'>
-                          <TbClock size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>
-                          <div style={{fontSize:'.7em', color:'rgba(0,0,0,.4)'}}>{file.date.modifiedDate}</div>
+                          <TbUser size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>
+                          <div style={{fontSize:'.7em', color:'rgba(0,0,0,.4)'}}>{file.preferences.author}</div>
                         </div>
                       </div>
                       )
@@ -100,6 +79,27 @@ export default function Inbox({close}){
                   )   
                 :
                 <div className='inbox-nofilefound'>No files found</div>} 
+          </div>
+          <p style={{margin:'8px 0 2px 6px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.8)', display:'flex', alignItems:'center'}}><TbClock size={15} strokeWidth={1.5} style={{marginRight:'6px'}}/>Recent files</p>
+          <div className='divider-x'/>
+          <div className='div-inboxrecent'>
+          {recentFiles.length>0 ? recentFiles.map((file, index) => { // for each recent file in recentFiles 
+                    return (
+                        <div key={index} onClick={() => openFile(file.filePath)} className='inbox-recentbox'>
+                          <div className='recentbox-fileName'>
+                            <div style={{marginLeft:'6px', fontSize:'.9em', color:'rgba(0,0,0,.8)'}}>{file.preferences.name}</div>
+                            <div style={{marginLeft:'6px', fontSize:'.8em', color:'rgba(0,0,0,.4)'}}><TbFile size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>{file.filePath}</div>
+                          </div>
+                          <div className='recentbox-fileDate'>
+                            <TbUser size={12} strokeWidth={2} style={{marginRight:'2px', color:'rgba(0,0,0,.4)'}}/>
+                            <div style={{fontSize:'.7em', color:'rgba(0,0,0,.4)'}}>{file.preferences.author}</div>
+                          </div>
+                        </div>
+                      )
+                    }
+                  )   
+                :
+                <div className='inbox-nofilefound'>No files found</div>}
           </div>
         </div>
     </div>

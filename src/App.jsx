@@ -99,6 +99,7 @@ class App extends React.Component {
           menuClick={this.handleMenu} // opens menu
           
           //passes states to Page.jsx from App.jsx
+          autoSave={this.state.preferences.autoSave} // auto save preferences
           author={this.state.preferences.author} // author preferences
           fontStyle={this.state.preferences.fontStyle} // font preferences
           name={this.state.preferences.name} // name preferences
