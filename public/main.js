@@ -24,6 +24,7 @@ let mainWindow;
 app.on("ready", () => {
     mainWindow = new BrowserWindow({
         frame:false, // remove title bar
+        icon: `file://${path.join(__dirname, '../build/main.ico')}`,
         minWidth: 380, minHeight: 320, // minimum size
         webPreferences: { 
             nodeIntegration:false, // disable node integration
@@ -38,9 +39,12 @@ app.on("ready", () => {
     );
 
     //show devtools
-    mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
 
-    mainWindow.loadURL('http://localhost:3000') // temporary url
+    mainWindow.loadURL(
+      //isDev
+      //'http://localhost:3000')
+      `file://${path.join(__dirname, '../build/index.html')}`)
 });
 
 //Security Risk Prvention

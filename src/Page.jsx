@@ -26,6 +26,21 @@ import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
 import CharacterCount from '@tiptap/extension-character-count'
 
+//Pt Mono
+import '@fontsource/pt-mono/400.css';
+
+//Pt Sans
+import '@fontsource/pt-sans/400-italic.css'; //regular italic
+import '@fontsource/pt-sans/400.css'; //regular
+import '@fontsource/pt-sans/700.css'; //bold regular
+import '@fontsource/pt-sans/700-italic.css'; //bold italic
+
+//Pt Serif
+import "@fontsource/pt-serif/400-italic.css"; //regular italic
+import "@fontsource/pt-serif/400.css"; //regular
+import "@fontsource/pt-serif/700.css"; //bold regular
+import "@fontsource/pt-serif/700-italic.css"; //bold italic
+
 //css
 import './Css/Page.css'
 
@@ -34,7 +49,7 @@ import { GoBookmark, GoBookmarkFill, GoChevronLeft, GoChevronRight, GoInbox, GoK
 import { TbTrash, TbChevronDown } from "react-icons/tb";
 import { List, ListOrdered } from 'lucide-react';
 import { VscTextSize } from "react-icons/vsc";
-import { FiEdit3 } from "react-icons/fi";
+import { MdOutlineDragIndicator } from 'react-icons/md'
 
 //api send
 async function getData(){
@@ -104,12 +119,12 @@ export function NodeList({
       let replacement_height = hoveringColorDiv.hoveringColorDivHeight
       let hovering_color_div_top = hovering_div_top + hovering_div_height + 3 //placed below the hovering-div
 
-      if(hovering_color_div_top + hovering_color_div_height + 14 > innerHeight){ //if the hovering-color-div height is out of the screen
-        if(hovering_color_div_height + 54 > innerHeight){ //if the hovering-color-div height is out of the screen
-          replacement_height = innerHeight - 54 //consider padding and margin
+      if(hovering_color_div_top + hovering_color_div_height + 10 > innerHeight){ //if the hovering-color-div height is out of the screen
+        if(hovering_color_div_height + 50 > innerHeight){ //if the hovering-color-div height is out of the screen
+          replacement_height = innerHeight - 50 //consider padding and margin
           hovering_color_div_top = 40
         }else{
-          hovering_color_div_top = innerHeight - hovering_color_div_height - 14 //consider padding and margin
+          hovering_color_div_top = innerHeight - hovering_color_div_height - 10 //consider padding and margin
           replacement_height = 'fit-content' //repositioned along the bottom
         }
       }
@@ -122,12 +137,12 @@ export function NodeList({
       let replacement_height = hoveringListDiv.hoveringListDivHeight
       let hovering_list_div_top = hovering_div_top + hovering_div_height + 3 //placed below the hovering-div
 
-      if(hovering_list_div_top + hovering_list_div_height + 14 > innerHeight){ //if the hovering-color-div height is out of the screen=
-        if(hovering_list_div_height + 54 > innerHeight){ //if the hovering-color-div height is out of the screen
-          replacement_height = innerHeight - 54 //consider padding and margin
+      if(hovering_list_div_top + hovering_list_div_height + 10 > innerHeight){ //if the hovering-color-div height is out of the screen=
+        if(hovering_list_div_height + 50 > innerHeight){ //if the hovering-color-div height is out of the screen
+          replacement_height = innerHeight - 50 //consider padding and margin
           hovering_list_div_top = 40
         }else{
-          hovering_list_div_top = innerHeight - hovering_list_div_height - 14 //consider padding and margin
+          hovering_list_div_top = innerHeight - hovering_list_div_height - 10 //consider padding and margin
           replacement_height = 'fit-content' //repositioned along the bottom
         }
       }
@@ -363,13 +378,11 @@ export default function Page({menuClick, inboxClick, fontStyle, autoSave, author
           <div className='page-headerleft'>
             <div style={{marginLeft:'4px'}}></div>
             <button className='page-headerbtn' style={{display:'flex', flexDirection:'row', alignItems:'center'}} onClick={()=>{setAuthorActive(true)}}><GoPerson size={14}/>{author===null ? null : <div style={{marginLeft:'8px', letterSpacing:'.25px'}}>{author}</div>}</button>
-            <div className='divider-y' style={{height:'50%'}}></div>
-            <button className='page-headerbtn' style={{letterSpacing:'.25px', color:'rgba(0,0,0,.6)'}} onClick={()=>{setRenameFile(true)}}>{name}</button>
-            <div className='divider-y' style={{height:'50%'}}></div>
-            <button className='page-headerbtn' onClick={()=>{saveData(editor.getJSON())}}><GoRepoPush  size={14}/></button>
+            <button className='page-headerbtn' style={{letterSpacing:'.25px', color:'rgba(0,0,0,.4)'}} onClick={()=>{setRenameFile(true)}}>{name}</button>
+            <button className='page-headerbtn' onClick={()=>{saveData(editor.getJSON())}}><GoRepoPush size={14}/></button>
           </div>
           <div className='page-headerright'>
-            <button className='page-headerbtn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14}/></button>
+            <button className='page-headerbtn' onClick={()=>{editor.chain().focus().undo().run()}}><GoChevronLeft size={14} /></button>
             <button className='page-headerbtn' onClick={()=>{editor.chain().focus().redo().run()}}><GoChevronRight size={14}/></button>
             <div className='divider-y' style={{height:'50%'}}></div>
             <button className='page-headerbtn' style={{zIndex:25}} onClick={()=>{if(autoSave){saveData(editor.getJSON())}; inboxClick()}}><GoInbox size={14}/></button>
@@ -380,14 +393,13 @@ export default function Page({menuClick, inboxClick, fontStyle, autoSave, author
         </div>
 
         {editor && hoveringNode.active ? 
-          <div style={{top:hoveringNode.top, left:hoveringNode.left-45, height:hoveringNode.height}} className='extension-div'>
-            <FiEdit3 className="extension-btn" onClick={()=>{selectNode()}} size={'15px'}/>
-            <div className='divider-y' style={{height:'100%'}}></div>
+          <div style={{top:hoveringNode.top, left:hoveringNode.left-35, height:hoveringNode.height}} className='extension-div'>
+            <MdOutlineDragIndicator className="extension-btn" onClick={()=>{selectNode()}} size={'15px'}/>
           </div>
         :null}
       
         <div className='editor-center'>
-          <EditorContent editor={editor} style={{fontFamily:fontStyle}} spellCheck={spellCheck} ref={ref} className='Editor'/>
+          <EditorContent editor={editor} onScrollCapture={()=>setHoveringNode({active:false})} style={{fontFamily:fontStyle}} spellCheck={spellCheck} ref={ref} className='Editor'/>
         </div>
       </div>
     </div>

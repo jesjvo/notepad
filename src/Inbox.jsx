@@ -42,7 +42,7 @@ export default function Inbox({close}){
   function updatePosition(){
     const { height, width } = ref.current.getBoundingClientRect(); const { innerHeight, innerWidth } = window; // getting height and width of inbox container
 
-    if(height + 50 >= innerHeight){setRefHeight({height:innerHeight - 50})} // adjusting height
+    if(height + 45 >= innerHeight){setRefHeight({height:innerHeight - 45})} // adjusting height
     else{setRefHeight({height:'fit-content'})}
 
     if(width + 24 >= innerWidth){setRefWidth({width:innerWidth - 24})} // adjusting width

@@ -14,26 +14,25 @@
 .page-header{
   z-index: 10;
   -webkit-app-region: drag;
-  width: 100%; height: 35px;
+  width: 100%; height: 30px;
   background-color: white;
-  margin-bottom: 5px;
   display: flex; flex-direction: row;
 }
 
 .page-headerleft{
-  width: 50%; height: 35px;
+  width: 50%; height: 30px;
   display: flex; flex-direction: row; align-items: center; gap: 4px;
 }
 
 .page-headerright{
-  width: 50%; height: 35;
+  width: 50%; height: 30px;
   display: flex; flex-direction: row; align-items: center; justify-content: flex-end; gap: 4px;
 }
 
 .page-headerbtn{
   z-index: 15;
-  height: 25px;
-  background-color: transparent; color: rgba(0, 0, 0, 1);
+  height: 22px;
+  background-color: transparent; color: rgba(0, 0, 0, .8);
   border: none; border-radius: 4px;
 }.page-headerbtn:hover{
   background-color: rgba(0, 0, 0, 0.07);
@@ -43,12 +42,13 @@
 
 /*Editor*/
 .editor-center{
-  width: 100vw; height: calc(100vh - 40px);
+  width: 100vw; height: calc(100vh - 35px);
   display: flex; flex-direction: column;
 }
 
 .tiptap{
-  height: calc(100vh - 40px); width: calc(100vw - 200px); padding-left: 100px; padding-right: 100px;
+  margin-top: 5px;
+  height: calc(100vh - 35px); width: calc(100vw - 150px); padding-left: 75px; padding-right: 75px;
   color: rgba(0, 0, 0, .8);
   overflow-y: scroll; outline: none;
 }
