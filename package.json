@@ -1,10 +1,10 @@
 {
-  "name": "Notely",
-  "productName": "Notely",
+  "name": "Enotely",
+  "productName": "Enotely",
   "version": "0.1.0",
   "private": true,
   "author": "Jes",
-  "description": "",
+  "description": "Enotely",
   "dependencies": {
     "@fontsource/pt-mono": "^5.0.13",
     "@fontsource/pt-sans": "^5.0.13",
@@ -56,10 +56,11 @@
     "note:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js"
   },
   "build": {
+    "productName": "Enotely",
     "extends": null,
-    "appId": "",
+    "appId": "com.jes.Enotely",
     "mac": {
-      "icon": "",
+      "icon": "build/main.ico",
       "target": [
         "dmg"
       ]

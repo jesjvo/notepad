@@ -52,9 +52,5 @@
 # 18. Avoid usage of the file:// protocol and prefer usage of custom protocols #
 ~ Unsure ~
 
-# 19. Check which fuses you can change #
+### 19. Check which fuses you can change ###
 ~ Unsure ~
-
-## ----- ##
-CURRENT SECURITY RISK
-== None ==

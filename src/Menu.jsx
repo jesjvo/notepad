@@ -3,7 +3,7 @@ import './Css/Menu.css'
 
 //icons
 import { RiFontMono, RiFontSans, RiFontSansSerif } from "react-icons/ri";
-import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbRefresh, TbReload, TbTextCaption, TbTrash, TbUser, TbWorldUpload } from "react-icons/tb";
+import { TbCalendar, TbClipboardCheck, TbClock, TbDoorExit, TbFile, TbFileExport, TbFilePlus, TbFileUpload, TbFolder, TbRefresh, TbReload, TbTextCaption, TbTrash, TbUser } from "react-icons/tb";
 import { IoCheckmarkOutline, IoCloseOutline, IoWarningOutline } from "react-icons/io5";
 
 //api send
@@ -14,6 +14,8 @@ async function deleteFile(){await window.api.deleteFile()} // deletes current fi
 async function newFile(){await window.api.newFile()} // creates new file and saves data (if autosave)
 async function renameFile(){await window.api.renameFile()} // renames current file and saves data (regardless of autosave)
 async function openFile(){await window.api.openFile()} // opens current file and saves data (if autosave)
+async function openFolder(){await window.api.openFolder()} // opens current file and saves data (if autosave)
+
 
 //memu (editor settings)
 export default function Menu({close, setSerif, setDefault, setMono, saveData, toggleSpellCheck, spellCheck, author, name, toggleAutoSave, autoSave, characterCount, tempContent}){
@@ -82,6 +84,7 @@ export default function Menu({close, setSerif, setDefault, setMono, saveData, to
 
             <div className='divider-x' style={{marginTop:'4px', marginBottom:'4px'}}/>
             <p style={{margin:'4px 0 6px 12px', fontSize:'12px', fontFamily:'Arial', color:'rgba(0,0,0,.6)'}}>System</p>
+            <button className='menu-settingbtn' onClick={()=>{openFolder()}}><TbFolder size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Folder</button>
             <button className='menu-settingbtn' onClick={()=>{refreshApplication()}}><TbRefresh size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Refresh</button>
             <button className='menu-settingbtn' onClick={()=>{closeApplication()}}><TbDoorExit size={17} strokeWidth={1.5} style={{marginRight:'10px', marginLeft:'10px'}}/>Exit</button>
         </div>

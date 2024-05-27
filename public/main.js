@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron/main');
 const fs = require('node:fs') // file system
 const path = require('node:path'); // file path
 
-const folder = path.join(app.getPath('appData'), 'notely') // notely folder
+const folder = path.join(app.getPath('appData'), 'Enotely') // Enotely folder
 const settingPreferences = path.join(folder, 'SettingPreferences.json') // setting file
 
 const settingStructure =
@@ -14,7 +14,7 @@ const settingStructure =
 }
 
 function checkFolders(){ // check if folders exist
-  if (!fs.existsSync(folder)) {fs.mkdirSync(folder)} // notely folder
+  if (!fs.existsSync(folder)) {fs.mkdirSync(folder)} // Enotely folder
   if (!fs.existsSync(settingPreferences)) {fs.writeFileSync(settingPreferences, JSON.stringify(settingStructure, null, 2))} // setting file
 }
 
@@ -43,7 +43,7 @@ app.on("ready", () => {
 
     mainWindow.loadURL(
       //isDev
-      //'http://localhost:3000')
+      /*'http://localhost:3000'*/
       `file://${path.join(__dirname, '../build/index.html')}`)
 });
 
@@ -76,6 +76,11 @@ function updateLastOpened(filePaths, filePath){ //file path array from settingPr
 //Exit Application
 ipcMain.handle('exit-application', (event) => {
   app.quit()
+})
+
+//Open Folder
+ipcMain.handle('open-folder', (event) => {
+  shell.openPath(folder)
 })
 
 //Refresh Application
@@ -112,7 +117,7 @@ ipcMain.handle('open-file', (event) => {
   let openFile = dialog.showOpenDialogSync(mainWindow,{
     properties: ['openFile', 'openDirectory'],
     filters: [
-      { name: 'Notely extension', extensions: ['json'] },
+      { name: 'Enotely extension', extensions: ['json'] },
     ]
   })
 
@@ -186,7 +191,7 @@ ipcMain.handle('rename-file', (event) => {
   let newFile = dialog.showSaveDialogSync(mainWindow,{
     properties: ['openFile', 'openDirectory'],
     filters: [
-      { name: 'Notely extension', extensions: ['json'] },
+      { name: 'Enotely extension', extensions: ['json'] },
     ]
   })
 
@@ -226,7 +231,7 @@ ipcMain.handle('save-data', (event, preferences, content) => {
     let newFile = dialog.showSaveDialogSync(mainWindow,{
       properties: ['openFile', 'openDirectory'],
       filters: [
-        { name: 'Notely extension', extensions: ['json'] },
+        { name: 'Enotely extension', extensions: ['json'] },
       ]
     })
 
@@ -329,8 +334,6 @@ ipcMain.handle('get-menu-info', (event) => {
 
 /* Get Data (starting application) */
 ipcMain.handle('get-data', (event) => {
-
-  //shell.openPath(folder)
 
   //get settingPreference file content
   let settingPrefParse = (JSON.parse(fs.readFileSync(settingPreferences, 'utf8')));
