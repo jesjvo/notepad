@@ -9,5 +9,14 @@
 ```
 npm i
 npm run build
+npm run note
+
+//
+
 npm run note:build
 ```
+
+<br/>
+The application is unrecognized for a Valid Certificate (Apple's application verification method for publishing...)
+<br/>
+oh well, as far as i'll get for now... new project underway
